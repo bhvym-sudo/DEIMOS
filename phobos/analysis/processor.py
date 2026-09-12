@@ -7,7 +7,7 @@ from scripts.analyzer import IntelligenceAnalyzer
 from analysis.leak_detector import LeakDetector
 
 class NERProcessor:
-    def __init__(self, database_path='databases/crawler.db', engine='crawler'):
+    def __init__(self, database_path='databases/crawler.db', engine='crawler', profile_analyzer=None):
         self.database_path = database_path
         self.engine = engine
         self.go_db = sqlite3.connect(database_path, timeout=30)
@@ -17,6 +17,7 @@ class NERProcessor:
         self.nlp = spacy.load("en_core_web_sm")
         self.analyzer = IntelligenceAnalyzer()
         self.leak_detector = LeakDetector()
+        self.profile_analyzer = profile_analyzer
     
     def _init_analysis_db(self, database_path):
         conn = sqlite3.connect(database_path, timeout=30)

@@ -3,14 +3,16 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 from analysis.processor import NERProcessor
+from scripts.profile_analyzer import ProfileAnalyzer
 import time
 
 def main():
     print("[PHOBOS-PROCESSOR] Starting NER and Threat Analysis...")
     
+    profile_analyzer = ProfileAnalyzer('databases/profiles.db')
     processors = [
-        NERProcessor('databases/crawler.db', 'crawler'),
-        NERProcessor('databases/phobos_search.db', 'phobos-search'),
+        NERProcessor('databases/crawler.db', 'crawler', profile_analyzer),
+        NERProcessor('databases/phobos_search.db', 'phobos-search', profile_analyzer),
     ]
     
     while True:
@@ -23,6 +25,10 @@ def main():
                     did_work = True
                     print(f"[PROCESS] {processor.engine}: processing {min(100, stats['pending'])} pages...")
                     processor.process_batch(limit=100, save_json_threshold=0.4)
+                scanned, profiles = profile_analyzer.process_database(processor.engine, processor.database_path)
+                if scanned:
+                    did_work = True
+                    print(f"[PROFILE-SCAN] {processor.engine}: scanned={scanned} profiles={profiles}")
             if not did_work:
                 print("[IDLE] Both engine databases are fully analyzed. Waiting for new data...")
                 time.sleep(10)
@@ -36,6 +42,7 @@ def main():
     
     for processor in processors:
         processor.close()
+    profile_analyzer.close()
     print("[PHOBOS-PROCESSOR] Shutdown complete")
 
 if __name__ == "__main__":

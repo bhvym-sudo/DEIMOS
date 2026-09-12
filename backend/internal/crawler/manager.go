@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -274,6 +275,18 @@ func (m *Manager) worker(ctx context.Context, workerID int, config Config, datab
 		}
 		if item == nil {
 			m.pause(ctx, 2*time.Second)
+			continue
+		}
+		parsedURL, parseErr := url.Parse(item.URL)
+		normalizedURL, allowed := normalizeCrawlURL(parsedURL)
+		if parseErr != nil || !allowed {
+			database.complete(item.ID)
+			m.publish("engine.skipped", fmt.Sprintf("%s skipped non-content route %s", m.name, item.URL), "info", map[string]any{"url": item.URL})
+			continue
+		}
+		if normalizedURL != item.URL {
+			database.complete(item.ID)
+			_ = database.addTask(normalizedURL, item.Depth, item.URL, false)
 			continue
 		}
 		m.publish("engine.fetch", fmt.Sprintf("%s worker %02d fetching %s", m.name, workerID, item.URL), "info", map[string]any{"url": item.URL, "depth": item.Depth})

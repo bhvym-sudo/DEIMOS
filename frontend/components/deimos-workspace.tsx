@@ -23,13 +23,14 @@ import {
   Square,
   TerminalSquare,
   Trash2,
+  X,
 } from "lucide-react";
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, PointerEvent as ReactPointerEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useServiceSocket } from "@/hooks/use-service-socket";
 import { browserServiceUrl, goApi, pythonApi } from "@/lib/api";
-import type { CrawlerConfig, DatabasePage, OverviewStats, SearchResult, SeedURL, ServiceState, StreamEvent } from "@/lib/types";
+import type { CrawlerConfig, DatabasePage, OverviewStats, ProfileActivity, ProfileRecord, SearchResult, SeedURL, ServiceState, StreamEvent } from "@/lib/types";
 
-type View = "overview" | "crawl" | "crawler-data" | "search" | "intelligence" | "models" | "system";
+type View = "overview" | "crawl" | "crawler-data" | "search" | "intelligence" | "profiles" | "models" | "system";
 
 const GO_WS = `${browserServiceUrl(process.env.NEXT_PUBLIC_GO_WS_URL, 8787, "ws")}/ws`;
 const PYTHON_WS = `${browserServiceUrl(process.env.NEXT_PUBLIC_PYTHON_WS_URL, 8001, "ws")}/ws`;
@@ -106,6 +107,9 @@ export function DeimosWorkspace() {
   const [crawlerPages, setCrawlerPages] = useState<DatabasePage[]>([]);
   const [indexPages, setIndexPages] = useState<DatabasePage[]>([]);
   const [selectedPage, setSelectedPage] = useState<DatabasePage | null>(null);
+  const [profiles, setProfiles] = useState<ProfileRecord[]>([]);
+  const [profileCount, setProfileCount] = useState(0);
+  const [selectedProfile, setSelectedProfile] = useState<ProfileRecord | null>(null);
   const [pageLoading, setPageLoading] = useState(false);
   const [seeds, setSeeds] = useState<SeedURL[]>([]);
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -117,6 +121,8 @@ export function DeimosWorkspace() {
   const [torStatus, setTorStatus] = useState<ServiceState>("connecting");
   const [refreshing, setRefreshing] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [logsOpen, setLogsOpen] = useState(false);
+  const [logsHeight, setLogsHeight] = useState(300);
   const [crawlerBusy, setCrawlerBusy] = useState(false);
   const [settings, setSettings] = useState<CrawlerConfig>(defaultCrawlerConfig);
   const [searchSettings, setSearchSettings] = useState<CrawlerConfig>({ ...defaultCrawlerConfig, database_path: "phobos/databases/phobos_search.db", same_host_only: false, concurrent_crawlers: 20 });
@@ -130,7 +136,7 @@ export function DeimosWorkspace() {
 
   const loadData = useCallback(async () => {
     setRefreshing(true);
-    const [crawlerData, searchData, crawlerAnalysis, searchAnalysis, crawlerPageData, indexPageData, seedData, searchSeedData, torData] = await Promise.allSettled([
+    const [crawlerData, searchData, crawlerAnalysis, searchAnalysis, crawlerPageData, indexPageData, seedData, searchSeedData, torData, profileData] = await Promise.allSettled([
       goApi.get<Partial<OverviewStats>>("/api/crawler/stats"),
       goApi.get<Partial<OverviewStats>>("/api/phobos-search/stats"),
       pythonApi.get<Partial<OverviewStats>>("/api/stats/crawler"),
@@ -140,6 +146,7 @@ export function DeimosWorkspace() {
       goApi.get<{ seeds: SeedURL[] }>("/api/crawler/seeds"),
       goApi.get<{ seeds: SeedURL[] }>("/api/phobos-search/seeds"),
       goApi.get<{ status: "online" | "offline" }>("/api/tor/health"),
+      pythonApi.get<{ profiles: ProfileRecord[]; count: number }>("/api/profiles?limit=100"),
     ]);
 
     setStats((current) => ({
@@ -152,6 +159,10 @@ export function DeimosWorkspace() {
     if (indexPageData.status === "fulfilled") setIndexPages(indexPageData.value.pages);
     if (seedData.status === "fulfilled") setSeeds(seedData.value.seeds);
     if (searchSeedData.status === "fulfilled") setSearchSeeds(searchSeedData.value.seeds);
+    if (profileData.status === "fulfilled") {
+      setProfiles(profileData.value.profiles);
+      setProfileCount(profileData.value.count);
+    }
     setTorStatus(torData.status === "fulfilled" && torData.value.status === "online" ? "online" : "offline");
     setRefreshing(false);
   }, []);
@@ -182,6 +193,48 @@ export function DeimosWorkspace() {
     try { setSelectedPage(await goApi.get<DatabasePage>(`/api/${engine}/pages/${id}`)); }
     catch { setNotice("The selected database record could not be loaded."); }
     finally { setPageLoading(false); }
+  };
+
+  const openProfile = async (id: number) => {
+    setPageLoading(true);
+    try { setSelectedProfile(await pythonApi.get<ProfileRecord>("/api/profiles/" + id)); }
+    catch { setNotice("The selected profile record could not be loaded."); }
+    finally { setPageLoading(false); }
+  };
+
+  const reanalyzeProfiles = async (engine: "crawler" | "phobos-search") => {
+    try {
+      const response = await pythonApi.post<{ message: string }>("/api/profiles/reanalyze/" + engine);
+      setNotice(response.message + ". The analysis worker will process stored pages in the background.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Profile reanalysis could not be queued.");
+    }
+  };
+
+  const clearEngineDatabase = async (engine: "crawler" | "phobos-search") => {
+    const name = engine === "crawler" ? "Crawler" : "PHOBOS Search";
+    if (!window.confirm("Permanently clear all " + name + " pages, queue, and AI analysis records?")) return;
+    try {
+      const response = await goApi.delete<{ message: string }>("/api/" + engine + "/database", { confirmation: "CLEAR" });
+      setNotice(response.message);
+      setSelectedPage(null);
+      await loadData();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Database could not be cleared.");
+    }
+  };
+
+  const clearProfileDatabase = async () => {
+    if (!window.confirm("Permanently clear every extracted profile and profile scan checkpoint?")) return;
+    try {
+      const response = await pythonApi.delete<{ message: string }>("/api/profiles?confirmation=CLEAR");
+      setNotice(response.message);
+      setProfiles([]);
+      setProfileCount(0);
+      setSelectedProfile(null);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Profile database could not be cleared.");
+    }
   };
 
   const runCrawlerAction = async (action: "start" | "stop") => {
@@ -303,9 +356,28 @@ export function DeimosWorkspace() {
     { id: "crawler-data", label: "Crawler Data", icon: Database },
     { id: "search", label: "PHOBOS Search", icon: Search },
     { id: "intelligence", label: "Index Database", icon: FileSearch },
+    { id: "profiles", label: "Profiles", icon: Network },
     { id: "models", label: "AI models", icon: BrainCircuit },
     { id: "system", label: "System", icon: Settings2 },
   ];
+
+  const beginLogsResize = (event: ReactPointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const startY = event.clientY;
+    const startHeight = logsHeight;
+    document.body.style.userSelect = "none";
+    const resize = (pointerEvent: PointerEvent) => {
+      const maximum = Math.max(180, window.innerHeight - 110);
+      setLogsHeight(Math.min(maximum, Math.max(150, startHeight + startY - pointerEvent.clientY)));
+    };
+    const finish = () => {
+      document.body.style.userSelect = "";
+      window.removeEventListener("pointermove", resize);
+      window.removeEventListener("pointerup", finish);
+    };
+    window.addEventListener("pointermove", resize);
+    window.addEventListener("pointerup", finish);
+  };
 
   return (
     <main className="app-shell">
@@ -330,7 +402,7 @@ export function DeimosWorkspace() {
           <ServiceIndicator label="Python AI" status={pythonSocket.status} />
           <ServiceIndicator label="Tor network" status={torStatus} />
         </div>
-        <div className="operator"><span>VK</span><div><strong>Team Vulkans</strong><small>Local workspace</small></div></div>
+        <div className="operator"><span>VK</span><div><strong>DEIMOS</strong><small>Local workspace</small></div></div>
       </aside>
 
       <section className="workspace">
@@ -343,6 +415,9 @@ export function DeimosWorkspace() {
             <span className={`system-state ${stats.crawler_running ? "live" : ""}`}>
               <Activity size={14} /> {view === "search" ? (searchStats.crawler_running ? "PHOBOS Search active" : "PHOBOS Search idle") : (stats.crawler_running ? "Crawler active" : "Crawler idle")}
             </span>
+            <button className={`icon-control ${logsOpen ? "active" : ""}`} onClick={() => setLogsOpen((open) => !open)} aria-label={logsOpen ? "Close logs panel" : "Open logs panel"} aria-pressed={logsOpen} title="Toggle live logs">
+              <TerminalSquare size={17} />
+            </button>
             <button className="icon-control" onClick={() => void loadData()} aria-label="Refresh data">
               <RefreshCw className={refreshing ? "spin" : ""} size={17} />
             </button>
@@ -352,7 +427,7 @@ export function DeimosWorkspace() {
         {notice && <div className="notice" role="status">{notice}<button onClick={() => setNotice(null)}>Dismiss</button></div>}
 
         <div className="view-stage">
-          {view === "overview" && <Overview />}
+          {view === "overview" && <Overview crawlerStats={stats} searchStats={searchStats} profileCount={profileCount} />}
           {view === "crawl" && (
             <CollectionView
               stats={stats}
@@ -374,17 +449,32 @@ export function DeimosWorkspace() {
             <SearchView query={searchQuery} setQuery={setSearchQuery} submit={runSearch} results={results} searching={searching} hasSearched={hasSearched} home={() => { setHasSearched(false); setResults([]); setSearchQuery(""); }} stats={searchStats} settingsOpen={searchSettingsOpen} setSettingsOpen={setSearchSettingsOpen} settings={searchSettings} setSettings={setSearchSettings} dirty={savedSearchSettings !== null && JSON.stringify(savedSearchSettings) !== JSON.stringify(searchSettings)} busy={searchBusy} save={() => void saveSearchConfig()} start={() => void runSearchEngineAction("start")} stop={() => void runSearchEngineAction("stop")} seeds={searchSeeds} seedDraft={searchSeedDraft} setSeedDraft={setSearchSeedDraft} addSeed={addSearchSeed} deleteSeed={(url) => void deleteSearchSeed(url)} />
           )}
           {view === "intelligence" && <DatabaseView title="PHOBOS Search indexed pages" eyebrow="INDEX DATABASE" pages={indexPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("phobos-search", id)} close={() => setSelectedPage(null)} />}
+          {view === "profiles" && <ProfilesView profiles={profiles} selected={selectedProfile} loading={pageLoading} open={(id) => void openProfile(id)} close={() => setSelectedProfile(null)} reanalyze={(engine) => void reanalyzeProfiles(engine)} />}
           {view === "models" && <ModelsView />}
-          {view === "system" && <SystemView goStatus={goSocket.status} pythonStatus={pythonSocket.status} torStatus={torStatus} events={events} />}
+          {view === "system" && <SystemView goStatus={goSocket.status} pythonStatus={pythonSocket.status} torStatus={torStatus} events={events} crawlerStats={stats} searchStats={searchStats} clearDatabase={(engine) => void clearEngineDatabase(engine)} clearProfiles={() => void clearProfileDatabase()} />}
         </div>
       </section>
+      {logsOpen && <LogsDock events={events} height={logsHeight} close={() => setLogsOpen(false)} beginResize={beginLogsResize} />}
     </main>
   );
 }
 
-function Overview() {
+function Overview({ crawlerStats, searchStats, profileCount }: { crawlerStats: OverviewStats; searchStats: OverviewStats; profileCount: number }) {
+  const metrics = [
+    { label: "Crawled pages", value: crawlerStats.indexed_pages },
+    { label: "Indexed pages", value: searchStats.indexed_pages },
+    { label: "Detected profiles", value: profileCount },
+    { label: "AI analysis records", value: crawlerStats.analyzed_pages + searchStats.analyzed_pages },
+    { label: "Extracted entities", value: crawlerStats.entities_found + searchStats.entities_found },
+    { label: "Queued URLs", value: crawlerStats.queued_pages + searchStats.queued_pages },
+  ];
   return (
-    <section className="primary-panel overview-placeholder"><EmptyState icon={Gauge} title="Overview workspace reserved" copy="Crawler investigation summaries, entity resolution and correlation graph signals will be added here in the next phase." /></section>
+    <section className="overview-summary">
+      <div className="overview-heading"><span>INTELLIGENCE INVENTORY</span><h2>DEIMOS at a glance</h2></div>
+      <div className="overview-stat-grid">
+        {metrics.map((metric) => <article key={metric.label}><span>{metric.label}</span><strong>{formatNumber(metric.value)}</strong></article>)}
+      </div>
+    </section>
   );
 }
 
@@ -442,7 +532,7 @@ function SearchView({ query, setQuery, submit, results, searching, hasSearched, 
   return (
     <section className="search-surface">
       <div className="search-heading"><div><span>CONTINUOUS DARK-WEB INDEX</span><h2>PHOBOS Search</h2></div><div>{hasSearched && <button className="icon-control" onClick={home} aria-label="PHOBOS Search home"><Home size={17} /></button>}<button className={`icon-control ${settingsOpen ? "active" : ""}`} onClick={() => setSettingsOpen(!settingsOpen)} aria-label="PHOBOS Search settings"><Settings2 size={17} /></button></div></div>
-      {settingsOpen && <SearchSettings settings={settings} setSettings={setSettings} stats={stats} dirty={dirty} busy={busy} save={save} start={start} stop={stop} seeds={seeds} seedDraft={seedDraft} setSeedDraft={setSeedDraft} addSeed={addSeed} deleteSeed={deleteSeed} />}
+      {settingsOpen && <SearchSettings close={() => setSettingsOpen(false)} settings={settings} setSettings={setSettings} stats={stats} dirty={dirty} busy={busy} save={save} start={start} stop={stop} seeds={seeds} seedDraft={seedDraft} setSeedDraft={setSeedDraft} addSeed={addSeed} deleteSeed={deleteSeed} />}
       <form className="search-form" onSubmit={submit}>
         <Search size={20} />
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search aliases, wallets, domains, keywords or onion URLs" aria-label="Search indexed intelligence" />
@@ -463,8 +553,10 @@ function SearchView({ query, setQuery, submit, results, searching, hasSearched, 
   );
 }
 
-function SearchSettings({ settings, setSettings, stats, dirty, busy, save, start, stop, seeds, seedDraft, setSeedDraft, addSeed, deleteSeed }: { settings: CrawlerConfig; setSettings: (value: CrawlerConfig) => void; stats: OverviewStats; dirty: boolean; busy: boolean; save: () => void; start: () => void; stop: () => void; seeds: SeedURL[]; seedDraft: { url: string; remarks: string; added_by: string }; setSeedDraft: (value: { url: string; remarks: string; added_by: string }) => void; addSeed: (event: FormEvent) => void; deleteSeed: (url: string) => void }) {
-  return <section className="search-settings">
+function SearchSettings({ close, settings, setSettings, stats, dirty, busy, save, start, stop, seeds, seedDraft, setSeedDraft, addSeed, deleteSeed }: { close: () => void; settings: CrawlerConfig; setSettings: (value: CrawlerConfig) => void; stats: OverviewStats; dirty: boolean; busy: boolean; save: () => void; start: () => void; stop: () => void; seeds: SeedURL[]; seedDraft: { url: string; remarks: string; added_by: string }; setSeedDraft: (value: { url: string; remarks: string; added_by: string }) => void; addSeed: (event: FormEvent) => void; deleteSeed: (url: string) => void }) {
+  return <div className="settings-overlay" role="presentation" onMouseDown={close}><section className="search-settings settings-dialog" role="dialog" aria-modal="true" aria-label="PHOBOS Search settings" onMouseDown={(event) => event.stopPropagation()}>
+    <div className="settings-dialog-head"><div><span>PHOBOS SEARCH</span><h2>Engine settings</h2></div><button className="row-action" onClick={close}>Close</button></div>
+    <div className="settings-tab-content">
     <div className="section-title"><div><span>PHOBOS SEARCH SETTINGS</span><h2>Continuous indexer configuration {dirty && <em>Unsaved changes</em>}</h2></div><span className={`engine-pill ${stats.crawler_running ? "running" : ""}`}>{stats.crawler_running ? "Running" : "Stopped"}</span></div>
     <div className="settings-grid">
       <label>Maximum crawl depth<input type="number" min={0} max={12} value={settings.max_depth} onChange={(e) => setSettings({ ...settings, max_depth: Number(e.target.value) })} /></label>
@@ -478,7 +570,55 @@ function SearchSettings({ settings, setSettings, stats, dirty, busy, save, start
     </div>
     <div className="action-row"><button className="primary-action" onClick={start} disabled={busy || stats.crawler_running}><Play size={15} /> Start</button><button className="secondary-action" onClick={stop} disabled={busy || !stats.crawler_running}><Square size={14} /> Stop</button><button className="secondary-action" onClick={save} disabled={busy || stats.crawler_running || !dirty}><Save size={15} /> Save changes</button></div>
     <div className="settings-seeds"><div className="section-title"><div><span>DISCOVERY SOURCES</span><h2>PHOBOS Search seeds</h2></div><span className="count">{seeds.length}</span></div><form className="seed-form" onSubmit={addSeed}><input type="url" required placeholder="https://source.example or http://…onion" value={seedDraft.url} onChange={(e) => setSeedDraft({ ...seedDraft, url: e.target.value })} /><input placeholder="Source note" value={seedDraft.remarks} onChange={(e) => setSeedDraft({ ...seedDraft, remarks: e.target.value })} /><button className="primary-action" disabled={busy}><Plus size={15} /> Add</button></form><div className="mini-seed-list">{seeds.map((seed) => <div key={seed.url}><span><strong>{seed.url}</strong><small>{seed.remarks || seed.web_type}</small></span><button className="row-action danger" onClick={() => deleteSeed(seed.url)} disabled={busy}><Trash2 size={14} /></button></div>)}</div></div>
-  </section>;
+    </div>
+  </section></div>;
+}
+
+function ProfilesView({ profiles, selected, loading, open, close, reanalyze }: { profiles: ProfileRecord[]; selected: ProfileRecord | null; loading: boolean; open: (id: number) => void; close: () => void; reanalyze: (engine: "crawler" | "phobos-search") => void }) {
+  const list = (values?: string[]) => values?.length ? values.join("\n\n") : "—";
+  return <div className={"database-layout " + (selected ? "detail-open" : "")}>
+    <section className="table-panel database-browser">
+      <div className="section-title"><div><span>PROFILE INTELLIGENCE</span><h2>Detected forum and marketplace profiles</h2></div><div className="profile-actions"><span className="count">{profiles.length} profiles</span><button className="secondary-action" onClick={() => reanalyze("crawler")}><RefreshCw size={14} /> Reanalyse Crawler</button><button className="secondary-action" onClick={() => reanalyze("phobos-search")}><RefreshCw size={14} /> Reanalyse Index</button></div></div>
+      <div className="table-scroll"><table><thead><tr><th>Identity</th><th>Source</th><th>Role / territory</th><th>Activity</th><th>Confidence</th><th /></tr></thead>
+        <tbody>{profiles.map((profile) => <tr key={profile.id} className={selected?.id === profile.id ? "selected" : ""}>
+          <td><strong>@{profile.username || "unknown"}</strong><small className="full-url">{profile.profile_url}</small></td>
+          <td>{profile.source_domain || "Unknown"}<small>{profile.source_engine}</small></td>
+          <td>{profile.role || "Unspecified"}<small>{profile.territory || "No territory"}</small></td>
+          <td>{profile.posts.length} posts<small>{profile.comments.length} comments · {profile.observation_count || 1} observations</small></td>
+          <td><span className="severity medium">{Math.round(profile.detection_confidence * 100)}%</span><small>{formatTime(profile.last_seen)}</small></td>
+          <td><button className="row-action" onClick={() => open(profile.id)} aria-label={"Open profile " + profile.username}><ChevronRight size={17} /></button></td>
+        </tr>)}</tbody>
+      </table>{!profiles.length && <EmptyState icon={Network} title="No profiles detected yet" copy="Profile URLs discovered by either crawler will be classified, extracted and stored here." />}</div>
+    </section>
+    {selected && <aside className="record-detail"><div className="section-title"><div><span>PROFILE RECORD #{selected.id}</span><h2>@{selected.username || "unknown"}</h2></div><button className="row-action" onClick={close}>Close</button></div>{loading ? <p className="detail-loading">Loading profile…</p> : <div className="detail-content">
+      <Detail label="Profile URL" value={selected.profile_url} />
+      <div className="detail-grid"><Detail label="Display name" value={selected.display_name || "—"} /><Detail label="Source engine" value={selected.source_engine || "—"} /><Detail label="Role / type" value={selected.role || "—"} /><Detail label="Territory" value={selected.territory || "—"} /><Detail label="Joined" value={selected.joined_at || "—"} /><Detail label="Last active" value={selected.last_active || "—"} /><Detail label="Reputation" value={selected.reputation || "—"} /><Detail label="Detection confidence" value={Math.round(selected.detection_confidence * 100) + "%"} /></div>
+      <h3>Identifiers</h3><Detail label="Contacts" value={list(selected.contacts)} code /><Detail label="PGP identifiers" value={list(selected.pgp_identifiers)} code /><Detail label="Cryptocurrency wallets" value={list(selected.wallets)} code /><Detail label="Avatar URL" value={selected.avatar_url || "—"} />
+      <ActivityTimeline activity={selected.activity || []} />
+      <h3>Entity context</h3><Detail label="NER entities" value={JSON.stringify(selected.ner_entities || {}, null, 2)} code /><Detail label="Detection method" value={selected.detection_method || "—"} /><Detail label="First / last seen" value={formatTime(selected.first_seen) + " → " + formatTime(selected.last_seen)} /><Detail label="Observation history" value={JSON.stringify(selected.history || [], null, 2)} code />
+      <h3>Captured profile page</h3><Detail label="Extracted text" value={selected.profile_text || "No profile text extracted"} code /><details><summary>Raw HTML</summary><pre>{selected.raw_html || "Raw HTML unavailable"}</pre></details>
+    </div>}</aside>}
+  </div>;
+}
+
+function ActivityTimeline({ activity }: { activity: ProfileActivity[] }) {
+  const section = (type: "post" | "comment", title: string) => {
+    const records = activity.filter((item) => item.type === type);
+    return <section className="activity-section">
+      <div className="activity-heading"><span>{title}</span><strong>{records.length}</strong></div>
+      <div className="activity-timeline">{records.map((item, index) => <article className="activity-card" key={item.type + "-" + item.page_number + "-" + item.position + "-" + index}>
+        <i className={"timeline-dot " + item.type} />
+        <div className="activity-card-head"><span className={"activity-kind " + item.type}>{item.type}</span><time>{item.date_label || "Time unavailable"}</time></div>
+        {item.community && <span className="activity-community">{item.community}</span>}
+        {item.title && <h4>{item.type === "comment" ? "Comment on: " + item.title : item.title}</h4>}
+        {item.body && <p>{item.body}</p>}
+        <div className="activity-source"><span>Profile page {item.page_number}</span><span>{item.target_url || item.source_page_url}</span></div>
+      </article>)}
+      {!records.length && <p className="activity-empty">No {type === "post" ? "posts" : "comments"} extracted from the stored profile pages.</p>}
+      </div>
+    </section>;
+  };
+  return <div className="profile-activity"><h3>Activity timeline</h3>{section("post", "Posts")}{section("comment", "Comments")}</div>;
 }
 
 function DatabaseView({ title, eyebrow, pages, selected, loading, open, close }: { title: string; eyebrow: string; pages: DatabasePage[]; selected: DatabasePage | null; loading: boolean; open: (id: number) => void; close: () => void }) {
@@ -506,7 +646,7 @@ function ModelsView() {
   );
 }
 
-function SystemView({ goStatus, pythonStatus, torStatus, events }: { goStatus: string; pythonStatus: string; torStatus: string; events: StreamEvent[] }) {
+function SystemView({ goStatus, pythonStatus, torStatus, events, crawlerStats, searchStats, clearDatabase, clearProfiles }: { goStatus: string; pythonStatus: string; torStatus: string; events: StreamEvent[]; crawlerStats: OverviewStats; searchStats: OverviewStats; clearDatabase: (engine: "crawler" | "phobos-search") => void; clearProfiles: () => void }) {
   const [sourceFilter, setSourceFilter] = useState<"all" | "crawler" | "phobos-search" | "python">("all");
   const filteredEvents = events.filter((event) => {
     if (sourceFilter === "all") return true;
@@ -529,8 +669,41 @@ function SystemView({ goStatus, pythonStatus, torStatus, events }: { goStatus: s
         <div className="terminal-toolbar"><span>{filteredEvents.length} entries</span><label>Source<select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value as "all" | "crawler" | "phobos-search" | "python")}><option value="all">All services</option><option value="crawler">Crawler</option><option value="phobos-search">PHOBOS Search</option><option value="python">Python analysis</option></select></label></div>
         <textarea className="terminal-output" value={logText} readOnly spellCheck={false} aria-label="Read-only DEIMOS service logs" />
       </section>
+      <section className="database-admin-panel">
+        <div className="section-title"><div><span>SYSTEM STORAGE</span><h2>Database management</h2></div><ShieldAlert size={19} /></div>
+        <div className="database-management">
+          <div className="database-warning"><ShieldAlert size={18} /><div><strong>Permanent storage actions</strong><span>Stop the relevant engine before clearing data. The schema is preserved, but deleted records cannot be recovered.</span></div></div>
+          <article><div><strong>PHOBOS Search database</strong><span>{formatNumber(searchStats.indexed_pages)} indexed pages and associated AI analysis</span></div><button className="danger-action" disabled={searchStats.crawler_running} onClick={() => clearDatabase("phobos-search")}><Trash2 size={15} /> Clear data</button></article>
+          <article><div><strong>Crawler database</strong><span>{formatNumber(crawlerStats.indexed_pages)} collected pages and associated AI analysis</span></div><button className="danger-action" disabled={crawlerStats.crawler_running} onClick={() => clearDatabase("crawler")}><Trash2 size={15} /> Clear data</button></article>
+          <article><div><strong>Profile intelligence database</strong><span>Extracted identities, profile history, posts, comments and identifiers</span></div><button className="danger-action" onClick={clearProfiles}><Trash2 size={15} /> Clear profiles</button></article>
+        </div>
+      </section>
     </div>
   );
+}
+
+function LogsDock({ events, height, close, beginResize }: { events: StreamEvent[]; height: number; close: () => void; beginResize: (event: ReactPointerEvent<HTMLDivElement>) => void }) {
+  const [sourceFilter, setSourceFilter] = useState<"all" | "crawler" | "phobos-search" | "python">("all");
+  const filteredEvents = events.filter((event) => {
+    if (sourceFilter === "all") return true;
+    if (sourceFilter === "python") return event.source === "python";
+    const engine = String(event.data?.engine ?? "").toLowerCase().replace(" ", "-");
+    return event.source === "go" && engine === sourceFilter;
+  });
+  const logText = filteredEvents.length
+    ? filteredEvents.map((event) => `[${formatTime(event.timestamp)}] [${event.source.toUpperCase()}] [${event.level?.toUpperCase() ?? "INFO"}] ${event.type} :: ${event.message}`).join("\n")
+    : "No live events received for this source.";
+  return <section className="logs-dock" style={{ height }} aria-label="Live DEIMOS logs">
+    <div className="logs-resize-handle" onPointerDown={beginResize} title="Drag to resize logs" />
+    <header className="logs-dock-header">
+      <div><TerminalSquare size={15} /><strong>Logs</strong><span>{filteredEvents.length} entries</span></div>
+      <div className="logs-dock-actions">
+        <label>Source<select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value as "all" | "crawler" | "phobos-search" | "python")}><option value="all">All services</option><option value="crawler">Crawler</option><option value="phobos-search">PHOBOS Search</option><option value="python">Python analysis</option></select></label>
+        <button onClick={close} aria-label="Close logs panel" title="Close logs"><X size={17} /></button>
+      </div>
+    </header>
+    <textarea className="logs-dock-output" value={logText} readOnly spellCheck={false} aria-label="Read-only live service logs" />
+  </section>;
 }
 
 function EmptyState({ icon: Icon, title, copy }: { icon: typeof Search; title: string; copy: string }) {

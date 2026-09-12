@@ -156,9 +156,10 @@ func parsePage(htmlContent, rawURL string, depth int) page {
 					}
 					resolved := base.ResolveReference(reference)
 					resolved.Fragment = ""
-					if (resolved.Scheme == "http" || resolved.Scheme == "https") && resolved.Hostname() != "" && !seen[resolved.String()] {
-						seen[resolved.String()] = true
-						links = append(links, resolved.String())
+					normalized, allowed := normalizeCrawlURL(resolved)
+					if allowed && !seen[normalized] {
+						seen[normalized] = true
+						links = append(links, normalized)
 					}
 				}
 			}
@@ -189,4 +190,38 @@ func shouldFollow(parent, candidate string, sameHostOnly bool) bool {
 		return strings.EqualFold(parentURL.Hostname(), candidateURL.Hostname())
 	}
 	return strings.HasSuffix(strings.ToLower(candidateURL.Hostname()), ".onion")
+}
+
+func normalizeCrawlURL(value *url.URL) (string, bool) {
+	if value == nil || (value.Scheme != "http" && value.Scheme != "https") || value.Hostname() == "" {
+		return "", false
+	}
+	path := strings.ToLower(value.Path)
+	for _, prefix := range []string{"/auth/", "/vote/", "/ad/", "/settings/", "/modmail/", "/report/"} {
+		if strings.HasPrefix(path, prefix) {
+			return "", false
+		}
+	}
+	for _, suffix := range []string{".css", ".js", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".ico", ".woff", ".woff2", ".ttf", ".zip", ".mp4", ".mp3"} {
+		if strings.HasSuffix(path, suffix) {
+			return "", false
+		}
+	}
+	original := value.Query()
+	clean := url.Values{}
+	if strings.HasPrefix(path, "/u/") {
+		if activityType := strings.ToLower(original.Get("type")); activityType == "posts" || activityType == "comments" {
+			clean.Set("type", activityType)
+		}
+		if page := original.Get("page"); page != "" && page != "1" {
+			clean.Set("page", page)
+		}
+	} else if strings.HasPrefix(path, "/c/") {
+		if page := original.Get("page"); page != "" && page != "1" {
+			clean.Set("page", page)
+		}
+	}
+	value.RawQuery = clean.Encode()
+	value.Fragment = ""
+	return value.String(), true
 }

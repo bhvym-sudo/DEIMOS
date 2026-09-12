@@ -95,8 +95,36 @@ func (s *Server) registerEngine(mux *http.ServeMux, value *engine, searchable bo
 	mux.HandleFunc("POST "+prefix+"/retry-failed", s.retryFailed(value))
 	mux.HandleFunc("GET "+prefix+"/pages", s.pages(value))
 	mux.HandleFunc("GET "+prefix+"/pages/{id}", s.page(value))
+	mux.HandleFunc("DELETE "+prefix+"/database", s.clearDatabase(value))
 	if searchable {
 		mux.HandleFunc("GET "+prefix+"/search", s.search)
+	}
+}
+
+func (s *Server) clearDatabase(value *engine) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if value.manager.Status().Running {
+			writeError(w, http.StatusConflict, fmt.Errorf("stop %s before clearing its database", value.name))
+			return
+		}
+		var request struct {
+			Confirmation string
+		}
+		if err := decodeJSON(r, &request); err != nil {
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		if request.Confirmation != "CLEAR" {
+			writeError(w, http.StatusBadRequest, fmt.Errorf("confirmation must equal CLEAR"))
+			return
+		}
+		count, err := value.store.Clear()
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, err)
+			return
+		}
+		s.hub.Publish(events.Event{Type: "database.cleared", Source: "go", Message: fmt.Sprintf("%s database cleared", value.name), Level: "warning", Data: map[string]any{"engine": value.name, "pages_removed": count}})
+		writeJSON(w, http.StatusOK, map[string]any{"message": fmt.Sprintf("%s database cleared", value.name), "pages_removed": count})
 	}
 }
 

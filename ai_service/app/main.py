@@ -3,11 +3,12 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import os
+import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from .repository import IntelligenceRepository
@@ -85,7 +86,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=list(ALLOWED_ORIGINS),
     allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With"],
 )
 
@@ -122,9 +123,39 @@ async def entities(limit: int = Query(default=100, ge=1, le=500)) -> dict[str, A
 
 
 @app.get("/api/profiles")
-async def profiles() -> dict[str, Any]:
-    rows = await asyncio.to_thread(repository.profiles)
-    return {"profiles": rows, "count": len(rows)}
+async def profiles(limit: int = Query(default=100, ge=1, le=500), q: str = "") -> dict[str, Any]:
+    rows, total = await asyncio.gather(
+        asyncio.to_thread(repository.profiles, limit, q),
+        asyncio.to_thread(repository.profile_count),
+    )
+    return {"profiles": rows, "count": total}
+
+
+@app.get("/api/profiles/{profile_id}")
+async def profile(profile_id: int) -> dict[str, Any]:
+    row = await asyncio.to_thread(repository.profile, profile_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return row
+
+
+@app.delete("/api/profiles")
+async def clear_profiles(confirmation: str = Query(default="")) -> dict[str, Any]:
+    if confirmation != "CLEAR":
+        raise HTTPException(status_code=400, detail="confirmation=CLEAR is required")
+    count = await asyncio.to_thread(repository.clear_profiles)
+    return {"message": f"Cleared {count} profile records", "count": count}
+
+
+@app.post("/api/profiles/reanalyze/{engine}")
+async def reanalyze_profiles(engine: str) -> dict[str, Any]:
+    if engine not in {"crawler", "phobos-search"}:
+        raise HTTPException(status_code=404, detail="Unknown database engine")
+    try:
+        await asyncio.to_thread(repository.request_profile_rescan, engine)
+    except sqlite3.DatabaseError as error:
+        raise HTTPException(status_code=409, detail=f"Profile database is not ready: {error}") from error
+    return {"message": f"Profile reanalysis queued for {engine}", "engine": engine}
 
 
 @app.websocket("/ws")

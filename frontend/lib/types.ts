@@ -82,3 +82,49 @@ export interface CrawlerStatus {
   pending_urls: number;
   failed_urls: number;
 }
+
+export interface ProfileRecord {
+  id: number;
+  profile_url: string;
+  source_engine: string;
+  source_domain: string;
+  username: string;
+  display_name: string;
+  role: string;
+  territory: string;
+  joined_at: string;
+  last_active: string;
+  reputation: string;
+  bio: string;
+  avatar_url: string;
+  contacts: string[];
+  pgp_identifiers: string[];
+  wallets: string[];
+  posts: string[];
+  comments: string[];
+  ner_entities: Record<string, string[]>;
+  profile_text: string;
+  raw_html: string;
+  detection_method: string;
+  detection_confidence: number;
+  first_seen: string;
+  last_seen: string;
+  crawled_at: string;
+  observation_count: number;
+  history: Array<Record<string, unknown> & { observed_at: string }>;
+  activity: ProfileActivity[];
+}
+
+export interface ProfileActivity {
+  type: "post" | "comment";
+  title: string;
+  body: string;
+  community: string;
+  date_label: string;
+  source_page_url: string;
+  target_url: string;
+  page_number: number;
+  position: number;
+  first_seen: string;
+  last_seen: string;
+}

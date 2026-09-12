@@ -159,6 +159,35 @@ func (s *Store) Page(id int) (PageRecord, error) {
 
 func (s *Store) Close() { _ = s.index.Close(); _ = s.analysis.Close() }
 
+func (s *Store) Clear() (int64, error) {
+	tx, err := s.index.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+	var removed int64
+	for _, table := range []string{"pages", "crawl_queue", "ner_results", "threat_analysis", "processing_status"} {
+		exists := 0
+		if err := tx.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?", table).Scan(&exists); err != nil {
+			return 0, err
+		}
+		if exists == 0 {
+			continue
+		}
+		result, err := tx.Exec("DELETE FROM " + table)
+		if err != nil {
+			return 0, err
+		}
+		if table == "pages" {
+			removed, _ = result.RowsAffected()
+		}
+	}
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+	return removed, nil
+}
+
 func count(db *sql.DB, query string, args ...any) int {
 	var value int
 	if err := db.QueryRow(query, args...).Scan(&value); err != nil {

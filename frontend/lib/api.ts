@@ -38,4 +38,5 @@ export const pythonApi = {
   get: <T>(path: string) => request<T>(PYTHON_API(), path),
   post: <T>(path: string, body?: unknown) =>
     request<T>(PYTHON_API(), path, { method: "POST", body: JSON.stringify(body ?? {}) }),
+  delete: <T>(path: string) => request<T>(PYTHON_API(), path, { method: "DELETE" }),
 };
