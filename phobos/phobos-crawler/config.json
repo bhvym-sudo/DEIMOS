@@ -1,0 +1,16 @@
+{
+    "crawler": {
+        "max_depth": 3,
+        "concurrent_crawlers": 20,
+        "download_delay": 1,
+        "use_tor": true,
+        "tor_proxy": "127.0.0.1:9050",
+        "database_path": "../databases/phobos_index.db",
+        "seed_urls_path": "../seed_urls_dark.json"
+    },
+    "status": {
+        "running": true,
+        "last_started": "2026-01-03 15:14:07.674256",
+        "pages_crawled": 2364
+    }
+}

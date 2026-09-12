@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ query }} - PHOBOS Search</title>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0a; 
+            color: #e0e0e0;
+        }
+        .header {
+            background: #0a0a0a;
+            padding: 20px 40px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 300;
+            color: #ffffff;
+            letter-spacing: 6px;
+            text-decoration: none;
+        }
+        .search-box {
+            flex: 1;
+            max-width: 600px;
+        }
+        .search-box form {
+            position: relative;
+        }
+        .search-box input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 16px;
+            font-size: 14px;
+            border: 1px solid #333;
+            border-radius: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-box input[type="text"]:focus {
+            border-color: #666;
+            background: #222;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 40px;
+        }
+        .stats {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+        .result {
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .result:last-child {
+            border-bottom: none;
+        }
+        .result-url {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+        .result-title {
+            font-size: 18px;
+            color: #5b9bd5;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .result-title:hover {
+            text-decoration: underline;
+        }
+        .result-snippet {
+            font-size: 13px;
+            color: #999;
+            line-height: 1.6;
+        }
+        .result-meta {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        .result-meta span {
+            margin-right: 15px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .no-results h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/" class="logo">PHOBOS</a>
+        <div class="search-box">
+            <form action="/search" method="GET">
+                <input type="text" name="q" value="{{ query }}" autofocus>
+            </form>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="stats">
+            About {{ result_count }} results ({{ indexed_count }} pages indexed)
+        </div>
+        
+        {% if results %}
+            {% for result in results %}
+            <div class="result">
+                <div class="result-url">{{ result.domain }} • {{ result.url[:80] }}{% if result.url|length > 80 %}...{% endif %}</div>
+                <a href="{{ result.url }}" class="result-title" target="_blank">{{ result.title }}</a>
+                <div class="result-snippet">{{ result.snippet }}{% if result.snippet|length >= 300 %}...{% endif %}</div>
+                <div class="result-meta">
+                    <span>Crawled: {{ result.crawled_at }}</span>
+                    <span>Score: {{ result.score }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-results">
+                <h2>No results found</h2>
+                <p>Try different keywords or check if the crawler is running</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-11-15T22:55:04.049271",
+  "train_accuracy": 1.0,
+  "test_accuracy": 0.9827586206896551,
+  "total_samples": 290,
+  "threat_samples": 160,
+  "safe_samples": 130,
+  "iterations": 15
+}

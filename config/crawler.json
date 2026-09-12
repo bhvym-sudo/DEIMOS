@@ -1,0 +1,12 @@
+{
+  "max_depth": 3,
+  "concurrent_crawlers": 10,
+  "download_delay": 1,
+  "use_tor": true,
+  "tor_proxy": "tor:9050",
+  "request_timeout_seconds": 60,
+  "max_body_bytes": 5242880,
+  "user_agent": "DEIMOS-Crawler/0.3 (+authorized-security-research)",
+  "database_path": "phobos/databases/crawler.db",
+  "same_host_only": true
+}

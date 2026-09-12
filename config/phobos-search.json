@@ -1,0 +1,12 @@
+{
+  "max_depth": 5,
+  "concurrent_crawlers": 20,
+  "download_delay": 1,
+  "use_tor": true,
+  "tor_proxy": "127.0.0.1:9050",
+  "request_timeout_seconds": 60,
+  "max_body_bytes": 5242880,
+  "user_agent": "PHOBOS-Search/0.3 (+authorized-security-research)",
+  "database_path": "phobos/databases/phobos_search.db",
+  "same_host_only": false
+}

@@ -1,0 +1,17 @@
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Go
+backend/deimos.exe
+backend/deimos
+
+# Local configuration and logs
+.env
+*.log

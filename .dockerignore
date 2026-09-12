@@ -1,0 +1,11 @@
+.git
+.gitignore
+**/__pycache__
+**/*.pyc
+frontend/node_modules
+frontend/.next
+phobos/logs
+phobos/reports
+phobos/tor
+phobos/phobos-crawler/phobos-crawler.exe
+*.log

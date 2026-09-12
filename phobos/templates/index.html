@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PHOBOS Intelligence Reports</title>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0a; 
+            color: #e0e0e0;
+        }
+        
+        .header {
+            background: #0a0a0a;
+            padding: 20px 40px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 300;
+            color: #ffffff;
+            letter-spacing: 6px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 600px;
+        }
+        
+        .search-box form {
+            position: relative;
+        }
+        
+        .search-box input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 16px;
+            font-size: 14px;
+            border: 1px solid #333;
+            border-radius: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        .search-box input[type="text"]:focus {
+            border-color: #666;
+            background: #222;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+        }
+        
+        .clear-search {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            display: none;
+        }
+        
+        .clear-search:hover {
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 40px;
+        }
+        
+        .stats {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+        
+        .result {
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        
+        .result:last-child {
+            border-bottom: none;
+        }
+        
+        .result-title {
+            font-size: 18px;
+            color: #8ab4f8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 6px;
+            word-break: break-all;
+        }
+        
+        .result-title:hover {
+            text-decoration: underline;
+        }
+        
+        .result-url {
+            color: #5f8f5f;
+            font-size: 12px;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .result-snippet {
+            color: #bdc1c6;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .result-meta {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .threat-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .threat-CRITICAL {
+            background: #ff4444;
+            color: #000;
+        }
+        
+        .threat-HIGH {
+            background: #ff9800;
+            color: #000;
+        }
+        
+        .threat-MEDIUM {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .threat-LOW {
+            background: #4caf50;
+            color: #000;
+        }
+        
+        .score {
+            font-weight: bold;
+            color: #8ab4f8;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: #8ab4f8;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #252525;
+            border-color: #555;
+        }
+        
+        .btn-summary {
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .btn-summary:hover {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background-color: #0f0f0f;
+            margin: 3% auto;
+            padding: 0;
+            border: 1px solid #333;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 8px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1;
+        }
+        
+        .modal-title {
+            font-size: 16px;
+            color: #8ab4f8;
+            font-weight: normal;
+        }
+        
+        .close {
+            color: #999;
+            font-size: 32px;
+            font-weight: 300;
+            cursor: pointer;
+            line-height: 20px;
+        }
+        
+        .close:hover {
+            color: #fff;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .detail-section {
+            margin-bottom: 30px;
+        }
+        
+        .detail-section h3 {
+            font-size: 13px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: normal;
+        }
+        
+        .detail-content {
+            background: #1a1a1a;
+            padding: 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            line-height: 1.6;
+            border: 1px solid #252525;
+        }
+        
+        .detail-content pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+        }
+        
+        .entity-list {
+            list-style: none;
+        }
+        
+        .entity-list li {
+            padding: 8px 12px;
+            background: #1a1a1a;
+            border-left: 3px solid #8ab4f8;
+            margin-bottom: 6px;
+        }
+        
+        .entity-type {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        
+        .entity-value {
+            color: #bdc1c6;
+        }
+        
+        .no-data {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: #1a1a1a;
+            padding: 4px 10px;
+            border-radius: 3px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #ce9178;
+            border: 1px solid #252525;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">PHOBOS</div>
+        <div class="search-box">
+            <form action="/" method="GET">
+                <input type="text" name="q" placeholder="Search reports..." value="{{ query or '' }}" id="searchInput">
+                <span class="clear-search" id="clearSearch" onclick="clearSearch()">&times;</span>
+            </form>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="stats">
+            {% if query %}
+                {{ reports|length }} results found for "<strong>{{ query }}</strong>" ({{ total }} total reports)
+            {% else %}
+                {{ total }} intelligence reports indexed
+            {% endif %}
+        </div>
+        
+        {% for report in reports %}
+        <div class="result">
+            <a href="{{ report.url }}" class="result-title" target="_blank">
+                {{ report.url }}
+            </a>
+            
+            <div class="result-url">{{ report.url }}</div>
+            
+            <div class="result-meta">
+                <span class="meta-item">
+                    Threat Score: <span class="score">{{ "%.3f"|format(report.threat_score) }}</span>
+                </span>
+                <span class="threat-badge threat-{{ report.alert_info.threat_level }}">
+                    {{ report.alert_info.threat_level }}
+                </span>
+                <span class="meta-item">{{ report.timestamp }}</span>
+                <span class="meta-item">{{ report.text_length }} chars</span>
+            </div>
+            
+            <div class="result-snippet">
+                {% if report.alert_info.threat_sentences %}
+                    {{ report.alert_info.threat_sentences[0][:250] }}{% if report.alert_info.threat_sentences[0]|length > 250 %}...{% endif %}
+                {% elif report.alert_info.matched_keywords %}
+                    Keywords matched: {{ report.alert_info.matched_keywords|join(', ') }}
+                {% else %}
+                    Threat score: {{ report.threat_score }}
+                {% endif %}
+            </div>
+            
+            <div class="buttons">
+                <button class="btn" onclick="showDetails({{ report.id }})">
+                    Details
+                </button>
+                <button class="btn btn-summary" disabled>
+                    Summary (Coming Soon)
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% if not reports %}
+        <div style="text-align: center; padding: 100px 20px; color: #666;">
+            <p>No reports found</p>
+            <p style="margin-top: 10px; font-size: 13px;">Start crawler to generate intelligence reports</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+        // Show/hide clear button
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearch');
+        
+        function updateClearButton() {
+            if (searchInput.value.trim()) {
+                clearBtn.style.display = 'block';
+            } else {
+                clearBtn.style.display = 'none';
+            }
+        }
+        
+        searchInput.addEventListener('input', updateClearButton);
+        updateClearButton();
+        
+        function clearSearch() {
+            searchInput.value = '';
+            window.location.href = '/';
+        }
+        
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">Report Details</span>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+                Loading...
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showDetails(reportId) {
+            const modal = document.getElementById('detailsModal');
+            const modalBody = document.getElementById('modalBody');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modal.style.display = 'block';
+            modalBody.innerHTML = 'Loading...';
+            
+            fetch('/report/' + reportId)
+                .then(response => response.json())
+                .then(data => {
+                    modalTitle.textContent = data.url;
+                    modalBody.innerHTML = formatDetails(data);
+                })
+                .catch(error => {
+                    modalBody.innerHTML = '<p style="color: #ff4444;">Error loading report details</p>';
+                });
+        }
+        
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+        
+        function formatDetails(data) {
+            let html = '';
+            
+            // Threat Information
+            html += '<div class="detail-section">';
+            html += '<h3>Threat Assessment</h3>';
+            html += '<div class="detail-content">';
+            html += '<div style="margin-bottom: 12px;"><strong>Threat Level:</strong> <span class="threat-badge threat-' + data.alert_info.threat_level + '">' + data.alert_info.threat_level + '</span></div>';
+            html += '<div style="margin-bottom: 12px;"><strong>Threat Score:</strong> ' + data.threat_score.toFixed(3) + '</div>';
+            html += '<div style="margin-bottom: 12px;"><strong>Timestamp:</strong> ' + data.timestamp + '</div>';
+            html += '<div style="margin-bottom: 12px;"><strong>Text Length:</strong> ' + data.text_length + ' characters</div>';
+            html += '<div><strong>Keyword Count:</strong> ' + data.keyword_count + '</div>';
+            html += '</div></div>';
+            
+            // Matched Keywords
+            if (data.alert_info.matched_keywords && data.alert_info.matched_keywords.length > 0) {
+                html += '<div class="detail-section">';
+                html += '<h3>Matched Keywords</h3>';
+                html += '<div class="detail-content">';
+                data.alert_info.matched_keywords.forEach(kw => {
+                    html += '<span class="keyword-tag">' + kw + '</span>';
+                });
+                html += '</div></div>';
+            }
+            
+            // Entities
+            html += '<div class="detail-section">';
+            html += '<h3>Extracted Entities</h3>';
+            html += '<div class="detail-content">';
+            
+            if (data.entities.persons && data.entities.persons.length > 0) {
+                html += '<div style="margin-bottom: 16px;"><strong>Persons:</strong></div>';
+                html += '<ul class="entity-list">';
+                data.entities.persons.forEach(person => {
+                    html += '<li><div class="entity-type">Person</div><div class="entity-value">' + person + '</div></li>';
+                });
+                html += '</ul>';
+            }
+            
+            if (data.entities.organizations && data.entities.organizations.length > 0) {
+                html += '<div style="margin-bottom: 16px; margin-top: 16px;"><strong>Organizations:</strong></div>';
+                html += '<ul class="entity-list">';
+                data.entities.organizations.forEach(org => {
+                    html += '<li><div class="entity-type">Organization</div><div class="entity-value">' + org + '</div></li>';
+                });
+                html += '</ul>';
+            }
+            
+            if (data.entities.locations && data.entities.locations.length > 0) {
+                html += '<div style="margin-bottom: 16px; margin-top: 16px;"><strong>Locations:</strong></div>';
+                html += '<ul class="entity-list">';
+                data.entities.locations.forEach(loc => {
+                    html += '<li><div class="entity-type">Location</div><div class="entity-value">' + loc + '</div></li>';
+                });
+                html += '</ul>';
+            }
+            
+            if (data.entities.dates && data.entities.dates.length > 0) {
+                html += '<div style="margin-bottom: 16px; margin-top: 16px;"><strong>Dates:</strong></div>';
+                html += '<ul class="entity-list">';
+                data.entities.dates.forEach(date => {
+                    html += '<li><div class="entity-type">Date</div><div class="entity-value">' + date + '</div></li>';
+                });
+                html += '</ul>';
+            }
+            
+            if ((!data.entities.persons || data.entities.persons.length === 0) &&
+                (!data.entities.organizations || data.entities.organizations.length === 0) &&
+                (!data.entities.locations || data.entities.locations.length === 0) &&
+                (!data.entities.dates || data.entities.dates.length === 0)) {
+                html += '<span class="no-data">No entities extracted</span>';
+            }
+            
+            html += '</div></div>';
+            
+            // Summary
+            if (data.summary) {
+                html += '<div class="detail-section">';
+                html += '<h3>Summary</h3>';
+                html += '<div class="detail-content">' + data.summary + '</div>';
+                html += '</div>';
+            }
+            
+            // Threat Sentences
+            if (data.alert_info.threat_sentences && data.alert_info.threat_sentences.length > 0) {
+                html += '<div class="detail-section">';
+                html += '<h3>Threat Sentences</h3>';
+                html += '<div class="detail-content">';
+                html += '<ul class="entity-list">';
+                data.alert_info.threat_sentences.forEach(sentence => {
+                    html += '<li>' + sentence + '</li>';
+                });
+                html += '</ul>';
+                html += '</div></div>';
+            }
+            
+            // Full Text
+            if (data.full_text) {
+                html += '<div class="detail-section">';
+                html += '<h3>Full Text Content</h3>';
+                html += '<div class="detail-content"><pre>' + data.full_text + '</pre></div>';
+                html += '</div>';
+            }
+            
+            return html;
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailsModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
