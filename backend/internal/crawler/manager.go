@@ -277,14 +277,18 @@ func (m *Manager) worker(ctx context.Context, workerID int, config Config, datab
 			continue
 		}
 		m.publish("engine.fetch", fmt.Sprintf("%s worker %02d fetching %s", m.name, workerID, item.URL), "info", map[string]any{"url": item.URL, "depth": item.Depth})
-		htmlContent, err := fetch(ctx, client, config, item.URL)
+		fetched, err := fetch(ctx, client, config, item.URL)
 		if err != nil {
 			database.fail(item.ID)
 			m.failures.Add(1)
 			m.publish("engine.error", fmt.Sprintf("%s fetch failed for %s: %v", m.name, item.URL, err), "warning", map[string]any{"url": item.URL})
 			continue
 		}
-		parsed := parsePage(htmlContent, item.URL, item.Depth)
+		parsed := parsePage(fetched.HTML, item.URL, item.Depth)
+		parsed.StatusCode, parsed.ContentType, parsed.Server, parsed.PoweredBy, parsed.Headers, parsed.TLS = fetched.StatusCode, fetched.ContentType, fetched.Server, fetched.PoweredBy, fetched.Headers, fetched.TLS
+		if item.Depth == 0 {
+			parsed.StatusPages = probeStatusPages(ctx, client, config, item.URL)
+		}
 		if err := database.savePage(parsed); err != nil {
 			database.fail(item.ID)
 			m.failures.Add(1)

@@ -7,7 +7,7 @@ services:
       dockerfile: infra/tor/Dockerfile
     restart: unless-stopped
     ports:
-      - "127.0.0.1:9050:9050"
+      - "9050:9050"
     volumes:
       - tor_data:/var/lib/tor
     networks:
@@ -23,8 +23,9 @@ services:
       DEIMOS_ROOT: /app
       DEIMOS_GO_ADDR: 0.0.0.0:8787
       DEIMOS_TOR_PROXY: tor:9050
+      DEIMOS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000
     ports:
-      - "127.0.0.1:8787:8787"
+      - "8787:8787"
     volumes:
       - ./phobos/databases:/app/phobos/databases
       - ./config:/app/config
@@ -41,8 +42,9 @@ services:
     restart: unless-stopped
     environment:
       DEIMOS_ROOT: /app
+      DEIMOS_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000
     ports:
-      - "127.0.0.1:8001:8001"
+      - "8001:8001"
     volumes:
       - ./phobos/databases:/app/phobos/databases
       - ./phobos/config_files:/app/phobos/config_files
@@ -70,13 +72,13 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        NEXT_PUBLIC_GO_API_URL: http://127.0.0.1:8787
-        NEXT_PUBLIC_GO_WS_URL: ws://127.0.0.1:8787/ws
-        NEXT_PUBLIC_PYTHON_API_URL: http://127.0.0.1:8001
-        NEXT_PUBLIC_PYTHON_WS_URL: ws://127.0.0.1:8001/ws
+        NEXT_PUBLIC_GO_API_URL: http://10.12.13.8:8787
+        NEXT_PUBLIC_GO_WS_URL: ws://10.12.13.8:8787/ws
+        NEXT_PUBLIC_PYTHON_API_URL: http://10.12.13.8:8001
+        NEXT_PUBLIC_PYTHON_WS_URL: ws://10.12.13.8:8001/ws
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
     depends_on:
       go-service:
         condition: service_healthy

@@ -15,6 +15,7 @@ from .repository import IntelligenceRepository
 
 ROOT = Path(os.getenv("DEIMOS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 repository = IntelligenceRepository(ROOT)
+ALLOWED_ORIGINS = {origin.strip() for origin in os.getenv("DEIMOS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000").split(",") if origin.strip()}
 
 
 class EventStream:
@@ -82,10 +83,10 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title="DEIMOS Intelligence Service", version="0.1.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=list(ALLOWED_ORIGINS),
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With"],
 )
 
 
@@ -129,7 +130,7 @@ async def profiles() -> dict[str, Any]:
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
     origin = websocket.headers.get("origin", "")
-    if origin and not origin.startswith(("http://localhost:", "http://127.0.0.1:")):
+    if origin and origin not in ALLOWED_ORIGINS:
         await websocket.close(code=1008)
         return
     await stream.connect(websocket)

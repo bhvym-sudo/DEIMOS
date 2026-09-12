@@ -26,13 +26,13 @@ import {
 } from "lucide-react";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useServiceSocket } from "@/hooks/use-service-socket";
-import { goApi, pythonApi } from "@/lib/api";
-import type { CrawlerConfig, OverviewStats, SearchResult, SeedURL, StreamEvent, ThreatReport } from "@/lib/types";
+import { browserServiceUrl, goApi, pythonApi } from "@/lib/api";
+import type { CrawlerConfig, DatabasePage, OverviewStats, SearchResult, SeedURL, ServiceState, StreamEvent } from "@/lib/types";
 
-type View = "overview" | "crawl" | "search" | "intelligence" | "models" | "system";
+type View = "overview" | "crawl" | "crawler-data" | "search" | "intelligence" | "models" | "system";
 
-const GO_WS = process.env.NEXT_PUBLIC_GO_WS_URL ?? "ws://127.0.0.1:8787/ws";
-const PYTHON_WS = process.env.NEXT_PUBLIC_PYTHON_WS_URL ?? "ws://127.0.0.1:8001/ws";
+const GO_WS = `${browserServiceUrl(process.env.NEXT_PUBLIC_GO_WS_URL, 8787, "ws")}/ws`;
+const PYTHON_WS = `${browserServiceUrl(process.env.NEXT_PUBLIC_PYTHON_WS_URL, 8001, "ws")}/ws`;
 
 const emptyStats: OverviewStats = {
   indexed_pages: 0,
@@ -103,7 +103,10 @@ export function DeimosWorkspace() {
   const [view, setView] = useState<View>("overview");
   const [stats, setStats] = useState<OverviewStats>(emptyStats);
   const [searchStats, setSearchStats] = useState<OverviewStats>(emptyStats);
-  const [reports, setReports] = useState<ThreatReport[]>([]);
+  const [crawlerPages, setCrawlerPages] = useState<DatabasePage[]>([]);
+  const [indexPages, setIndexPages] = useState<DatabasePage[]>([]);
+  const [selectedPage, setSelectedPage] = useState<DatabasePage | null>(null);
+  const [pageLoading, setPageLoading] = useState(false);
   const [seeds, setSeeds] = useState<SeedURL[]>([]);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -111,6 +114,7 @@ export function DeimosWorkspace() {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchSettingsOpen, setSearchSettingsOpen] = useState(false);
   const [searchBusy, setSearchBusy] = useState(false);
+  const [torStatus, setTorStatus] = useState<ServiceState>("connecting");
   const [refreshing, setRefreshing] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [crawlerBusy, setCrawlerBusy] = useState(false);
@@ -126,14 +130,16 @@ export function DeimosWorkspace() {
 
   const loadData = useCallback(async () => {
     setRefreshing(true);
-    const [crawlerData, searchData, crawlerAnalysis, searchAnalysis, reportData, seedData, searchSeedData] = await Promise.allSettled([
+    const [crawlerData, searchData, crawlerAnalysis, searchAnalysis, crawlerPageData, indexPageData, seedData, searchSeedData, torData] = await Promise.allSettled([
       goApi.get<Partial<OverviewStats>>("/api/crawler/stats"),
       goApi.get<Partial<OverviewStats>>("/api/phobos-search/stats"),
       pythonApi.get<Partial<OverviewStats>>("/api/stats/crawler"),
       pythonApi.get<Partial<OverviewStats>>("/api/stats/phobos-search"),
-      pythonApi.get<{ reports: ThreatReport[] }>("/api/reports?limit=30"),
+      goApi.get<{ pages: DatabasePage[] }>("/api/crawler/pages?limit=75"),
+      goApi.get<{ pages: DatabasePage[] }>("/api/phobos-search/pages?limit=75"),
       goApi.get<{ seeds: SeedURL[] }>("/api/crawler/seeds"),
       goApi.get<{ seeds: SeedURL[] }>("/api/phobos-search/seeds"),
+      goApi.get<{ status: "online" | "offline" }>("/api/tor/health"),
     ]);
 
     setStats((current) => ({
@@ -142,9 +148,11 @@ export function DeimosWorkspace() {
       ...(crawlerAnalysis.status === "fulfilled" ? crawlerAnalysis.value : {}),
     }));
     setSearchStats((current) => ({ ...current, ...(searchData.status === "fulfilled" ? searchData.value : {}), ...(searchAnalysis.status === "fulfilled" ? searchAnalysis.value : {}) }));
-    if (reportData.status === "fulfilled") setReports(reportData.value.reports);
+    if (crawlerPageData.status === "fulfilled") setCrawlerPages(crawlerPageData.value.pages);
+    if (indexPageData.status === "fulfilled") setIndexPages(indexPageData.value.pages);
     if (seedData.status === "fulfilled") setSeeds(seedData.value.seeds);
     if (searchSeedData.status === "fulfilled") setSearchSeeds(searchSeedData.value.seeds);
+    setTorStatus(torData.status === "fulfilled" && torData.value.status === "online" ? "online" : "offline");
     setRefreshing(false);
   }, []);
 
@@ -168,6 +176,13 @@ export function DeimosWorkspace() {
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 300);
   }, [goSocket.events, pythonSocket.events]);
+
+  const openDatabasePage = async (engine: "crawler" | "phobos-search", id: number) => {
+    setPageLoading(true);
+    try { setSelectedPage(await goApi.get<DatabasePage>(`/api/${engine}/pages/${id}`)); }
+    catch { setNotice("The selected database record could not be loaded."); }
+    finally { setPageLoading(false); }
+  };
 
   const runCrawlerAction = async (action: "start" | "stop") => {
     setCrawlerBusy(true);
@@ -285,8 +300,9 @@ export function DeimosWorkspace() {
   const navigation: Array<{ id: View; label: string; icon: typeof Gauge }> = [
     { id: "overview", label: "Overview", icon: Gauge },
     { id: "crawl", label: "Crawler", icon: Radar },
+    { id: "crawler-data", label: "Crawler Data", icon: Database },
     { id: "search", label: "PHOBOS Search", icon: Search },
-    { id: "intelligence", label: "Intelligence", icon: ShieldAlert },
+    { id: "intelligence", label: "Index Database", icon: FileSearch },
     { id: "models", label: "AI models", icon: BrainCircuit },
     { id: "system", label: "System", icon: Settings2 },
   ];
@@ -301,7 +317,7 @@ export function DeimosWorkspace() {
 
         <nav aria-label="Primary navigation">
           {navigation.map(({ id, label, icon: Icon }) => (
-            <button key={id} className={view === id ? "active" : ""} onClick={() => setView(id)}>
+            <button key={id} className={view === id ? "active" : ""} onClick={() => { setView(id); setSelectedPage(null); }}>
               <Icon size={18} strokeWidth={1.8} />
               <span>{label}</span>
             </button>
@@ -312,6 +328,7 @@ export function DeimosWorkspace() {
           <p>Service channels</p>
           <ServiceIndicator label="Go gateway" status={goSocket.status} />
           <ServiceIndicator label="Python AI" status={pythonSocket.status} />
+          <ServiceIndicator label="Tor network" status={torStatus} />
         </div>
         <div className="operator"><span>VK</span><div><strong>Team Vulkans</strong><small>Local workspace</small></div></div>
       </aside>
@@ -352,12 +369,13 @@ export function DeimosWorkspace() {
               stop={() => void runCrawlerAction("stop")}
             />
           )}
+          {view === "crawler-data" && <DatabaseView title="Crawler Data" eyebrow="INVESTIGATION DATABASE" pages={crawlerPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("crawler", id)} close={() => setSelectedPage(null)} />}
           {view === "search" && (
             <SearchView query={searchQuery} setQuery={setSearchQuery} submit={runSearch} results={results} searching={searching} hasSearched={hasSearched} home={() => { setHasSearched(false); setResults([]); setSearchQuery(""); }} stats={searchStats} settingsOpen={searchSettingsOpen} setSettingsOpen={setSearchSettingsOpen} settings={searchSettings} setSettings={setSearchSettings} dirty={savedSearchSettings !== null && JSON.stringify(savedSearchSettings) !== JSON.stringify(searchSettings)} busy={searchBusy} save={() => void saveSearchConfig()} start={() => void runSearchEngineAction("start")} stop={() => void runSearchEngineAction("stop")} seeds={searchSeeds} seedDraft={searchSeedDraft} setSeedDraft={setSearchSeedDraft} addSeed={addSearchSeed} deleteSeed={(url) => void deleteSearchSeed(url)} />
           )}
-          {view === "intelligence" && <IntelligenceView reports={reports} />}
+          {view === "intelligence" && <DatabaseView title="PHOBOS Search indexed pages" eyebrow="INDEX DATABASE" pages={indexPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("phobos-search", id)} close={() => setSelectedPage(null)} />}
           {view === "models" && <ModelsView />}
-          {view === "system" && <SystemView goStatus={goSocket.status} pythonStatus={pythonSocket.status} events={events} />}
+          {view === "system" && <SystemView goStatus={goSocket.status} pythonStatus={pythonSocket.status} torStatus={torStatus} events={events} />}
         </div>
       </section>
     </main>
@@ -463,16 +481,21 @@ function SearchSettings({ settings, setSettings, stats, dirty, busy, save, start
   </section>;
 }
 
-function IntelligenceView({ reports }: { reports: ThreatReport[] }) {
-  return (
-    <section className="table-panel intelligence-table">
-      <div className="section-title"><div><span>ANALYSIS DATABASE</span><h2>Threat findings</h2></div><span className="count">{reports.length} recent</span></div>
-      <div className="table-scroll"><table><thead><tr><th>Classification</th><th>Source</th><th>Score</th><th>Indicators</th><th>Analyzed</th><th /></tr></thead>
-        <tbody>{reports.map((report) => <tr key={report.id}><td><span className={`severity ${report.threat_level.toLowerCase()}`}>{report.risk_classification || report.threat_level}</span></td><td><strong>{report.url}</strong><small>{report.origin_country || "Origin unconfirmed"}</small></td><td>{Math.round(report.threat_score * 100)}%</td><td><div className="tag-row">{report.matched_keywords.slice(0, 3).map((keyword) => <span key={keyword}>{keyword}</span>)}</div></td><td>{formatTime(report.analyzed_at)}</td><td><button className="row-action" aria-label="Open finding"><ChevronRight size={17} /></button></td></tr>)}</tbody>
-      </table>{!reports.length && <EmptyState icon={ShieldAlert} title="No findings loaded" copy="Start the Python intelligence service to read existing PHOBOS analysis records." />}</div>
+function DatabaseView({ title, eyebrow, pages, selected, loading, open, close }: { title: string; eyebrow: string; pages: DatabasePage[]; selected: DatabasePage | null; loading: boolean; open: (id: number) => void; close: () => void }) {
+  const parsed = (value: string) => { try { return JSON.stringify(JSON.parse(value), null, 2); } catch { return value || "—"; } };
+  return <div className={`database-layout ${selected ? "detail-open" : ""}`}>
+    <section className="table-panel database-browser"><div className="section-title"><div><span>{eyebrow}</span><h2>{title}</h2></div><span className="count">Latest {pages.length}</span></div>
+      <div className="table-scroll"><table><thead><tr><th>URL / title</th><th>HTTP</th><th>Server</th><th>Rating</th><th>Crawled</th><th /></tr></thead><tbody>{pages.map((page) => <tr key={page.id} className={selected?.id === page.id ? "selected" : ""}><td><strong className="full-url">{page.url}</strong><small>{page.title || page.domain || "Untitled page"}</small></td><td>{page.status_code || "—"}<small>{page.content_type || "Unknown type"}</small></td><td>{page.server_banner || "—"}<small>{page.powered_by || "No framework banner"}</small></td><td><span className={`severity ${page.threat_level.toLowerCase()}`}>{page.threat_level || "Pending"}</span><small>{Math.round((page.threat_score || 0) * 100)}%</small></td><td>{formatTime(page.crawled_at)}</td><td><button className="row-action" onClick={() => open(page.id)} aria-label={`Open ${page.url}`}><ChevronRight size={17} /></button></td></tr>)}</tbody></table>{!pages.length && <EmptyState icon={Database} title="No pages stored" copy="Start this engine and add a valid seed to populate its database." />}</div>
     </section>
-  );
+    {selected && <aside className="record-detail"><div className="section-title"><div><span>PAGE RECORD #{selected.id}</span><h2>{selected.title || selected.domain}</h2></div><button className="row-action" onClick={close}>Close</button></div>{loading ? <p className="detail-loading">Loading record…</p> : <div className="detail-content">
+      <Detail label="Full URL" value={selected.url} /><div className="detail-grid"><Detail label="HTTP status" value={String(selected.status_code)} /><Detail label="Content size" value={`${formatNumber(selected.content_length)} bytes`} /><Detail label="Crawl depth" value={String(selected.crawl_depth)} /><Detail label="Crawl count" value={String(selected.crawl_count)} /><Detail label="Threat level" value={selected.threat_level || "Pending"} /><Detail label="Threat score" value={`${Math.round((selected.threat_score || 0) * 100)}%`} /></div>
+      <h3>Recon intelligence</h3><Detail label="Server banner" value={selected.server_banner || "Not exposed"} /><Detail label="Powered by" value={selected.powered_by || "Not exposed"} /><Detail label="TLS subject" value={selected.tls_subject || "No TLS certificate captured"} /><Detail label="TLS issuer" value={selected.tls_issuer || "—"} /><Detail label="TLS SHA-256 fingerprint" value={selected.tls_fingerprint_sha256 || "—"} /><Detail label="TLS validity" value={selected.tls_not_before ? `${formatTime(selected.tls_not_before)} → ${formatTime(selected.tls_not_after)}` : "—"} /><Detail label="Status pages" value={parsed(selected.status_pages)} code /> <Detail label="Response headers" value={parsed(selected.response_headers)} code />
+      <h3>Extracted page content</h3><Detail label="Text" value={selected.content || "No text extracted"} code /><details><summary>Raw HTML</summary><pre>{selected.html || "Raw HTML unavailable"}</pre></details>
+    </div>}</aside>}
+  </div>;
 }
+
+function Detail({ label, value, code = false }: { label: string; value: string; code?: boolean }) { return <div className={`detail-field ${code ? "code" : ""}`}><span>{label}</span><p>{value}</p></div>; }
 
 function ModelsView() {
   return (
@@ -483,7 +506,7 @@ function ModelsView() {
   );
 }
 
-function SystemView({ goStatus, pythonStatus, events }: { goStatus: string; pythonStatus: string; events: StreamEvent[] }) {
+function SystemView({ goStatus, pythonStatus, torStatus, events }: { goStatus: string; pythonStatus: string; torStatus: string; events: StreamEvent[] }) {
   const [sourceFilter, setSourceFilter] = useState<"all" | "crawler" | "phobos-search" | "python">("all");
   const filteredEvents = events.filter((event) => {
     if (sourceFilter === "all") return true;
@@ -499,6 +522,7 @@ function SystemView({ goStatus, pythonStatus, events }: { goStatus: string; pyth
       <section className="service-panel"><div className="section-title"><div><span>SERVICE HEALTH</span><h2>Runtime connections</h2></div><Server size={19} /></div>
         <div className="service-card"><Database size={20} /><div><strong>Go gateway</strong><small>REST commands, crawler control and index search</small></div><ServiceIndicator label="Port 8787" status={goStatus} /></div>
         <div className="service-card"><BrainCircuit size={20} /><div><strong>Python intelligence</strong><small>NER, threat analysis, profiles and reports</small></div><ServiceIndicator label="Port 8001" status={pythonStatus} /></div>
+        <div className="service-card"><Network size={20} /><div><strong>Tor network</strong><small>SOCKS5 routing for onion-service collection</small></div><ServiceIndicator label="Port 9050" status={torStatus} /></div>
       </section>
       <section className="terminal-panel">
         <div className="section-title"><div><span>EVENT JOURNAL</span><h2>Live service and PHOBOS Search logs</h2></div><TerminalSquare size={19} /></div>

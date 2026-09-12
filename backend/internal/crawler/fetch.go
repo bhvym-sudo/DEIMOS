@@ -2,6 +2,8 @@ package crawler
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +16,26 @@ import (
 	"golang.org/x/net/html"
 	"golang.org/x/net/proxy"
 )
+
+type tlsMetadata struct {
+	Subject     string   `json:"subject"`
+	Issuer      string   `json:"issuer"`
+	Serial      string   `json:"serial"`
+	NotBefore   string   `json:"not_before"`
+	NotAfter    string   `json:"not_after"`
+	DNSNames    []string `json:"dns_names"`
+	Fingerprint string   `json:"fingerprint_sha256"`
+}
+
+type fetchResult struct {
+	HTML        string
+	StatusCode  int
+	ContentType string
+	Server      string
+	PoweredBy   string
+	Headers     map[string]string
+	TLS         *tlsMetadata
+}
 
 func buildHTTPClient(config Config) (*http.Client, error) {
 	transport := &http.Transport{MaxIdleConns: config.ConcurrentCrawlers * 2, MaxIdleConnsPerHost: config.ConcurrentCrawlers, IdleConnTimeout: 60 * time.Second}
@@ -36,34 +58,72 @@ func buildHTTPClient(config Config) (*http.Client, error) {
 	return client, nil
 }
 
-func fetch(ctx context.Context, client *http.Client, config Config, rawURL string) (string, error) {
+func fetch(ctx context.Context, client *http.Client, config Config, rawURL string) (fetchResult, error) {
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
 	if err != nil {
-		return "", err
+		return fetchResult{}, err
 	}
 	request.Header.Set("User-Agent", config.UserAgent)
 	request.Header.Set("Accept", "text/html,application/xhtml+xml")
 	response, err := client.Do(request)
 	if err != nil {
-		return "", err
+		return fetchResult{}, err
 	}
 	defer response.Body.Close()
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		return "", fmt.Errorf("HTTP %d", response.StatusCode)
+		return fetchResult{}, fmt.Errorf("HTTP %d", response.StatusCode)
 	}
 	contentType := strings.ToLower(response.Header.Get("Content-Type"))
 	if contentType != "" && !strings.Contains(contentType, "text/html") && !strings.Contains(contentType, "application/xhtml") {
-		return "", fmt.Errorf("unsupported content type %s", contentType)
+		return fetchResult{}, fmt.Errorf("unsupported content type %s", contentType)
 	}
 	limited := io.LimitReader(response.Body, config.MaxBodyBytes+1)
 	payload, err := io.ReadAll(limited)
 	if err != nil {
-		return "", err
+		return fetchResult{}, err
 	}
 	if int64(len(payload)) > config.MaxBodyBytes {
-		return "", errors.New("response exceeded configured size limit")
+		return fetchResult{}, errors.New("response exceeded configured size limit")
 	}
-	return string(payload), nil
+	headers := map[string]string{}
+	for _, name := range []string{"Server", "X-Powered-By", "Via", "X-AspNet-Version", "X-Generator"} {
+		if value := response.Header.Get(name); value != "" {
+			headers[name] = value
+		}
+	}
+	result := fetchResult{HTML: string(payload), StatusCode: response.StatusCode, ContentType: contentType, Server: response.Header.Get("Server"), PoweredBy: response.Header.Get("X-Powered-By"), Headers: headers}
+	if response.TLS != nil && len(response.TLS.PeerCertificates) > 0 {
+		certificate := response.TLS.PeerCertificates[0]
+		fingerprint := sha256.Sum256(certificate.Raw)
+		result.TLS = &tlsMetadata{Subject: certificate.Subject.String(), Issuer: certificate.Issuer.String(), Serial: certificate.SerialNumber.String(), NotBefore: certificate.NotBefore.UTC().Format(time.RFC3339), NotAfter: certificate.NotAfter.UTC().Format(time.RFC3339), DNSNames: certificate.DNSNames, Fingerprint: hex.EncodeToString(fingerprint[:])}
+	}
+	return result, nil
+}
+
+func probeStatusPages(ctx context.Context, client *http.Client, config Config, rawURL string) []map[string]any {
+	base, err := url.Parse(rawURL)
+	if err != nil || base.Hostname() == "" {
+		return nil
+	}
+	results := make([]map[string]any, 0)
+	for _, path := range []string{"/server-status", "/nginx_status", "/.well-known/security.txt"} {
+		candidate := *base
+		candidate.Path, candidate.RawQuery, candidate.Fragment = path, "", ""
+		request, err := http.NewRequestWithContext(ctx, http.MethodHead, candidate.String(), nil)
+		if err != nil {
+			continue
+		}
+		request.Header.Set("User-Agent", config.UserAgent)
+		response, err := client.Do(request)
+		if err != nil {
+			continue
+		}
+		_ = response.Body.Close()
+		if response.StatusCode == http.StatusOK || response.StatusCode == http.StatusUnauthorized || response.StatusCode == http.StatusForbidden {
+			results = append(results, map[string]any{"url": candidate.String(), "status_code": response.StatusCode, "server": response.Header.Get("Server")})
+		}
+	}
+	return results
 }
 
 func parsePage(htmlContent, rawURL string, depth int) page {

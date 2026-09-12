@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -70,6 +71,7 @@ func (s *Server) StartEngines() {
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", s.health)
+	mux.HandleFunc("GET /api/tor/health", s.torHealth)
 	s.registerEngine(mux, s.crawler, false)
 	s.registerEngine(mux, s.phobosSearch, true)
 	// Compatibility routes for clients built before the engine split.
@@ -91,8 +93,38 @@ func (s *Server) registerEngine(mux *http.ServeMux, value *engine, searchable bo
 	mux.HandleFunc("POST "+prefix+"/start", s.start(value))
 	mux.HandleFunc("POST "+prefix+"/stop", s.stop(value))
 	mux.HandleFunc("POST "+prefix+"/retry-failed", s.retryFailed(value))
+	mux.HandleFunc("GET "+prefix+"/pages", s.pages(value))
+	mux.HandleFunc("GET "+prefix+"/pages/{id}", s.page(value))
 	if searchable {
 		mux.HandleFunc("GET "+prefix+"/search", s.search)
+	}
+}
+
+func (s *Server) pages(value *engine) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+		offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
+		records, total, err := value.store.Pages(r.URL.Query().Get("q"), limit, offset)
+		if err != nil {
+			writeError(w, 500, err)
+			return
+		}
+		writeJSON(w, 200, map[string]any{"pages": records, "count": len(records), "total": total})
+	}
+}
+func (s *Server) page(value *engine) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.Atoi(r.PathValue("id"))
+		if err != nil {
+			writeError(w, 400, fmt.Errorf("invalid page id"))
+			return
+		}
+		record, err := value.store.Page(id)
+		if err != nil {
+			writeError(w, 404, err)
+			return
+		}
+		writeJSON(w, 200, record)
 	}
 }
 
@@ -113,6 +145,21 @@ func (s *Server) StartHeartbeat() {
 
 func (s *Server) health(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"status": "ok", "service": "deimos-go-gateway", "crawler": s.crawler.manager.Status(), "phobos_search": s.phobosSearch.manager.Status()})
+}
+
+func (s *Server) torHealth(w http.ResponseWriter, _ *http.Request) {
+	address := strings.TrimSpace(s.phobosSearch.manager.Config().TorProxy)
+	if address == "" {
+		writeJSON(w, http.StatusOK, map[string]any{"status": "offline", "message": "Tor proxy is not configured"})
+		return
+	}
+	connection, err := net.DialTimeout("tcp", address, 2*time.Second)
+	if err != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"status": "offline", "address": address, "message": err.Error()})
+		return
+	}
+	_ = connection.Close()
+	writeJSON(w, http.StatusOK, map[string]any{"status": "online", "address": address})
 }
 
 func (s *Server) engineStats(value *engine) http.HandlerFunc {
@@ -226,10 +273,15 @@ func (s *Server) retryFailed(value *engine) http.HandlerFunc {
 	}
 }
 
-var upgrader = websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 1024, CheckOrigin: func(r *http.Request) bool {
-	origin := r.Header.Get("Origin")
-	return origin == "" || strings.HasPrefix(origin, "http://localhost:") || strings.HasPrefix(origin, "http://127.0.0.1:")
-}}
+func allowedOrigin(origin string) bool {
+	if origin == "" { return true }
+	configured := os.Getenv("DEIMOS_ALLOWED_ORIGINS")
+	if configured == "" { configured = "http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000" }
+	for _, allowed := range strings.Split(configured, ",") { if strings.TrimSpace(allowed) == origin { return true } }
+	return false
+}
+
+var upgrader = websocket.Upgrader{ReadBufferSize: 1024, WriteBufferSize: 1024, CheckOrigin: func(r *http.Request) bool { return allowedOrigin(r.Header.Get("Origin")) }}
 
 func (s *Server) websocket(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -248,11 +300,14 @@ func (s *Server) websocket(w http.ResponseWriter, r *http.Request) {
 func (s *Server) localCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		if strings.HasPrefix(origin, "http://localhost:") || strings.HasPrefix(origin, "http://127.0.0.1:") {
+		if origin != "" && !allowedOrigin(origin) { http.Error(w, "origin not allowed", http.StatusForbidden); return }
+		if origin != "" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Add("Vary", "Origin")
 		}
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Max-Age", "600")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return

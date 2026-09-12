@@ -30,6 +30,15 @@ export interface SearchResult {
   score: number;
 }
 
+export interface DatabasePage {
+  id: number; url: string; title: string; domain: string; content?: string; html?: string;
+  content_length: number; crawl_depth: number; crawled_at: string; status_code: number; crawl_count: number;
+  threat_score: number; threat_level: string; analyzed_at: string; content_type: string; server_banner: string;
+  powered_by: string; response_headers: string; tls_subject: string; tls_issuer: string; tls_serial: string;
+  tls_not_before: string; tls_not_after: string; tls_dns_names: string; tls_fingerprint_sha256: string;
+  status_pages: string; recon_scanned_at: string;
+}
+
 export interface ThreatReport {
   id: number;
   page_id: number;

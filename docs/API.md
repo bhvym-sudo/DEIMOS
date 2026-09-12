@@ -7,6 +7,7 @@ The browser connects directly to two independently running services. Next.js doe
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | GET | `/api/health` | Service and crawler health |
+| GET | `/api/tor/health` | Live Tor SOCKS5 connectivity status |
 | GET | `/api/crawler/stats` | Investigation crawler totals |
 | GET | `/api/phobos-search/stats` | PHOBOS Search index, queue and rating totals |
 | GET | `/api/phobos-search/search?q=term&limit=50` | Search only the PHOBOS Search database |
@@ -17,11 +18,15 @@ The browser connects directly to two independently running services. Next.js doe
 | POST | `/api/crawler/stop` | Cancel workers and active requests |
 | POST | `/api/crawler/retry-failed` | Return failed queue entries to pending |
 | GET/POST/DELETE | `/api/crawler/seeds` | Manage Crawler sources |
+| GET | `/api/crawler/pages` | Browse paginated Crawler database records |
+| GET | `/api/crawler/pages/{id}` | Full Crawler record, recon metadata and raw HTML |
 | GET/PUT | `/api/phobos-search/config` | Read or save PHOBOS Search settings |
 | GET | `/api/phobos-search/status` | PHOBOS Search runtime state |
 | POST | `/api/phobos-search/start` | Start PHOBOS Search workers |
 | POST | `/api/phobos-search/stop` | Stop PHOBOS Search workers |
 | GET/POST/DELETE | `/api/phobos-search/seeds` | Manage PHOBOS Search discovery sources |
+| GET | `/api/phobos-search/pages` | Browse paginated PHOBOS Search index records |
+| GET | `/api/phobos-search/pages/{id}` | Full indexed record, rating, recon metadata and raw HTML |
 | GET | `/ws` | Live crawler events and heartbeats |
 
 Crawler settings/sources use `config/crawler.json` and `config/crawler-seeds.json`. PHOBOS Search uses `config/phobos-search.json` and `config/phobos-search-seeds.json`.
