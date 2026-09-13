@@ -26,10 +26,11 @@ type engine struct {
 }
 
 type Server struct {
-	root         string
-	hub          *events.Hub
-	crawler      *engine
-	phobosSearch *engine
+	root             string
+	hub              *events.Hub
+	crawler          *engine
+	phobosSearch     *engine
+	workspaceCrawler *engine
 }
 
 func New(root string) (*Server, error) {
@@ -42,8 +43,17 @@ func New(root string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+	workspaceDefaults := crawler.DefaultConfigFor("phobos/databases/workspace.db", "DEIMOS-Workspace-Crawler/0.1 (+authorized-security-research)")
+	workspaceDefaults.ConcurrentCrawlers = 1
+	workspaceDefaults.MaxDepth = 1
+	workspaceDefaults.SameHostOnly = true
+	workspaceManager, err := crawler.NewEngineManager(root, hub, "Workspace Crawler", "workspace-crawler.json", "workspace-crawler-seeds.json", workspaceDefaults)
+	if err != nil {
+		return nil, err
+	}
 	crawlerDB := filepath.Join(root, "phobos", "databases", "crawler.db")
 	searchDB := filepath.Join(root, "phobos", "databases", "phobos_search.db")
+	workspaceDB := filepath.Join(root, "phobos", "databases", "workspace.db")
 	crawlerStore, err := store.Open(crawlerDB, crawlerDB)
 	if err != nil {
 		return nil, err
@@ -53,14 +63,25 @@ func New(root string) (*Server, error) {
 		crawlerStore.Close()
 		return nil, err
 	}
+	workspaceStore, err := store.Open(workspaceDB, workspaceDB)
+	if err != nil {
+		crawlerStore.Close()
+		searchStore.Close()
+		return nil, err
+	}
 	return &Server{
 		root: root, hub: hub,
-		crawler:      &engine{slug: "crawler", name: "Crawler", manager: crawlerManager, store: crawlerStore},
-		phobosSearch: &engine{slug: "phobos-search", name: "PHOBOS Search", manager: searchManager, store: searchStore},
+		crawler:          &engine{slug: "crawler", name: "Crawler", manager: crawlerManager, store: crawlerStore},
+		phobosSearch:     &engine{slug: "phobos-search", name: "PHOBOS Search", manager: searchManager, store: searchStore},
+		workspaceCrawler: &engine{slug: "workspace-crawler", name: "Workspace Crawler", manager: workspaceManager, store: workspaceStore},
 	}, nil
 }
 
-func (s *Server) Close() { s.crawler.store.Close(); s.phobosSearch.store.Close() }
+func (s *Server) Close() {
+	s.crawler.store.Close()
+	s.phobosSearch.store.Close()
+	s.workspaceCrawler.store.Close()
+}
 
 func (s *Server) StartEngines() {
 	if err := s.phobosSearch.manager.Start(); err != nil {
@@ -74,6 +95,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/tor/health", s.torHealth)
 	s.registerEngine(mux, s.crawler, false)
 	s.registerEngine(mux, s.phobosSearch, true)
+	s.registerEngine(mux, s.workspaceCrawler, false)
 	// Compatibility routes for clients built before the engine split.
 	mux.HandleFunc("GET /api/stats", s.engineStats(s.phobosSearch))
 	mux.HandleFunc("GET /api/search", s.search)
@@ -93,6 +115,7 @@ func (s *Server) registerEngine(mux *http.ServeMux, value *engine, searchable bo
 	mux.HandleFunc("POST "+prefix+"/start", s.start(value))
 	mux.HandleFunc("POST "+prefix+"/stop", s.stop(value))
 	mux.HandleFunc("POST "+prefix+"/retry-failed", s.retryFailed(value))
+	mux.HandleFunc("POST "+prefix+"/queue", s.queueURL(value))
 	mux.HandleFunc("GET "+prefix+"/pages", s.pages(value))
 	mux.HandleFunc("GET "+prefix+"/pages/{id}", s.page(value))
 	mux.HandleFunc("DELETE "+prefix+"/database", s.clearDatabase(value))
@@ -163,16 +186,18 @@ func (s *Server) StartHeartbeat() {
 		for range ticker.C {
 			crawlerStatus := s.crawler.manager.Status()
 			searchStatus := s.phobosSearch.manager.Status()
+			workspaceStatus := s.workspaceCrawler.manager.Status()
 			s.hub.Publish(events.Event{Type: "heartbeat", Source: "go", Message: "DEIMOS crawler engines operational", Level: "info", Data: map[string]any{
-				"crawler":       s.crawler.store.Stats(crawlerStatus.Running, s.crawler.manager.Config().UseTor),
-				"phobos_search": s.phobosSearch.store.Stats(searchStatus.Running, s.phobosSearch.manager.Config().UseTor),
+				"crawler":           s.crawler.store.Stats(crawlerStatus.Running, s.crawler.manager.Config().UseTor),
+				"phobos_search":     s.phobosSearch.store.Stats(searchStatus.Running, s.phobosSearch.manager.Config().UseTor),
+				"workspace_crawler": s.workspaceCrawler.store.Stats(workspaceStatus.Running, s.workspaceCrawler.manager.Config().UseTor),
 			}})
 		}
 	}()
 }
 
 func (s *Server) health(w http.ResponseWriter, _ *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]any{"status": "ok", "service": "deimos-go-gateway", "crawler": s.crawler.manager.Status(), "phobos_search": s.phobosSearch.manager.Status()})
+	writeJSON(w, http.StatusOK, map[string]any{"status": "ok", "service": "deimos-go-gateway", "crawler": s.crawler.manager.Status(), "phobos_search": s.phobosSearch.manager.Status(), "workspace_crawler": s.workspaceCrawler.manager.Status()})
 }
 
 func (s *Server) torHealth(w http.ResponseWriter, _ *http.Request) {
@@ -264,6 +289,10 @@ func (s *Server) updateConfig(value *engine) http.HandlerFunc {
 			writeError(w, 400, err)
 			return
 		}
+		if value.slug == "workspace-crawler" {
+			config.ConcurrentCrawlers = 1
+			config.DatabasePath = "phobos/databases/workspace.db"
+		}
 		updated, err := value.manager.UpdateConfig(config)
 		if err != nil {
 			writeError(w, 409, err)
@@ -301,11 +330,37 @@ func (s *Server) retryFailed(value *engine) http.HandlerFunc {
 	}
 }
 
+func (s *Server) queueURL(value *engine) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var request struct {
+			URL            string `json:"url"`
+			DiscoveredFrom string `json:"discovered_from"`
+		}
+		if err := decodeJSON(r, &request); err != nil {
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		if err := value.manager.QueueURL(request.URL, request.DiscoveredFrom); err != nil {
+			writeError(w, http.StatusBadRequest, err)
+			return
+		}
+		writeJSON(w, http.StatusAccepted, map[string]any{"message": value.name + " queued workspace lead", "url": request.URL})
+	}
+}
+
 func allowedOrigin(origin string) bool {
-	if origin == "" { return true }
+	if origin == "" {
+		return true
+	}
 	configured := os.Getenv("DEIMOS_ALLOWED_ORIGINS")
-	if configured == "" { configured = "http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000" }
-	for _, allowed := range strings.Split(configured, ",") { if strings.TrimSpace(allowed) == origin { return true } }
+	if configured == "" {
+		configured = "http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000"
+	}
+	for _, allowed := range strings.Split(configured, ",") {
+		if strings.TrimSpace(allowed) == origin {
+			return true
+		}
+	}
 	return false
 }
 
@@ -328,7 +383,10 @@ func (s *Server) websocket(w http.ResponseWriter, r *http.Request) {
 func (s *Server) localCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		if origin != "" && !allowedOrigin(origin) { http.Error(w, "origin not allowed", http.StatusForbidden); return }
+		if origin != "" && !allowedOrigin(origin) {
+			http.Error(w, "origin not allowed", http.StatusForbidden)
+			return
+		}
 		if origin != "" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Add("Vary", "Origin")

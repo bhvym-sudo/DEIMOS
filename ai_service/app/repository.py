@@ -5,6 +5,8 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
+from .workspace_graph import WorkspaceGraphBuilder
+
 
 def _read_json(value: str | None) -> list[str]:
     if not value:
@@ -23,6 +25,7 @@ class IntelligenceRepository:
         self.engine_paths = {
             "crawler": database_root / "crawler.db",
             "phobos-search": database_root / "phobos_search.db",
+            "workspace-crawler": database_root / "workspace.db",
         }
         self.profiles_path = database_root / "profiles.db"
 
@@ -218,3 +221,7 @@ class IntelligenceRepository:
             connection.commit()
         finally:
             connection.close()
+
+    def workspace_graph(self, profile_ids: list[int], page_url: str, depth: int, max_activities: int) -> dict[str, Any]:
+        builder = WorkspaceGraphBuilder(self.profiles_path, self.engine_paths)
+        return builder.build(profile_ids, page_url, depth, max_activities)

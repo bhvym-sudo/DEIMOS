@@ -254,6 +254,42 @@ func (m *Manager) RetryFailed() (int64, error) {
 	return count, err
 }
 
+// QueueURL schedules a single investigation lead without making it a permanent seed.
+// Running workers pick it up immediately; otherwise it remains queued for the next start.
+func (m *Manager) QueueURL(rawURL, discoveredFrom string) error {
+	parsed, err := url.Parse(strings.TrimSpace(rawURL))
+	if err != nil {
+		return fmt.Errorf("invalid URL: %w", err)
+	}
+	normalized, allowed := normalizeCrawlURL(parsed)
+	if !allowed {
+		return errors.New("URL is not an allowed crawl target")
+	}
+	m.mu.RLock()
+	database := m.database
+	m.mu.RUnlock()
+	openedHere := false
+	if database == nil {
+		config := m.Config()
+		database, err = openDatabase(m.store.DatabasePath(config))
+		if err != nil {
+			return err
+		}
+		openedHere = true
+	}
+	if openedHere {
+		defer database.close()
+	}
+	if strings.TrimSpace(discoveredFrom) == "" {
+		discoveredFrom = "workspace"
+	}
+	if err := database.addTask(normalized, 0, discoveredFrom, true); err != nil {
+		return err
+	}
+	m.publish("workspace.queued", m.name+" queued workspace lead "+normalized, "success", map[string]any{"url": normalized})
+	return nil
+}
+
 func (m *Manager) worker(ctx context.Context, workerID int, config Config, database *crawlDatabase, client *http.Client) {
 	m.workers.Add(1)
 	defer m.workers.Add(-1)

@@ -13,6 +13,7 @@ def main():
     processors = [
         NERProcessor('databases/crawler.db', 'crawler', profile_analyzer),
         NERProcessor('databases/phobos_search.db', 'phobos-search', profile_analyzer),
+        NERProcessor('databases/workspace.db', 'workspace-crawler', profile_analyzer),
     ]
     
     while True:
@@ -30,7 +31,7 @@ def main():
                     did_work = True
                     print(f"[PROFILE-SCAN] {processor.engine}: scanned={scanned} profiles={profiles}")
             if not did_work:
-                print("[IDLE] Both engine databases are fully analyzed. Waiting for new data...")
+                print("[IDLE] All engine databases are fully analyzed. Waiting for new data...")
                 time.sleep(10)
                 
         except KeyboardInterrupt:

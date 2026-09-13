@@ -10,6 +10,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 from .repository import IntelligenceRepository
 
@@ -17,6 +18,13 @@ from .repository import IntelligenceRepository
 ROOT = Path(os.getenv("DEIMOS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 repository = IntelligenceRepository(ROOT)
 ALLOWED_ORIGINS = {origin.strip() for origin in os.getenv("DEIMOS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000").split(",") if origin.strip()}
+
+
+class WorkspaceAnalysisRequest(BaseModel):
+    profile_ids: list[int] = Field(default_factory=list, max_length=12)
+    page_url: str = Field(default="", max_length=2048)
+    depth: int = Field(default=2, ge=1, le=4)
+    max_activities: int = Field(default=12, ge=2, le=30)
 
 
 class EventStream:
@@ -156,6 +164,31 @@ async def reanalyze_profiles(engine: str) -> dict[str, Any]:
     except sqlite3.DatabaseError as error:
         raise HTTPException(status_code=409, detail=f"Profile database is not ready: {error}") from error
     return {"message": f"Profile reanalysis queued for {engine}", "engine": engine}
+
+
+@app.post("/api/workspace/analyze")
+async def analyze_workspace(request: WorkspaceAnalysisRequest) -> dict[str, Any]:
+    if not request.profile_ids and not request.page_url.strip():
+        raise HTTPException(status_code=400, detail="Select a profile or provide an indexed page URL")
+    try:
+        graph = await asyncio.to_thread(
+            repository.workspace_graph,
+            request.profile_ids,
+            request.page_url.strip(),
+            request.depth,
+            request.max_activities,
+        )
+    except sqlite3.DatabaseError as error:
+        raise HTTPException(status_code=409, detail=f"Workspace intelligence databases are busy: {error}") from error
+    if not graph["roots"]:
+        raise HTTPException(status_code=404, detail="No selected profile or indexed website was found")
+    await stream.publish(
+        "workspace.analyzed",
+        f"Workspace generated {len(graph['nodes'])} nodes and {len(graph['edges'])} links",
+        "success",
+        {"nodes": len(graph["nodes"]), "edges": len(graph["edges"]), "depth": graph["depth"]},
+    )
+    return graph
 
 
 @app.websocket("/ws")

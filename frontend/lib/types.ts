@@ -128,3 +128,34 @@ export interface ProfileActivity {
   first_seen: string;
   last_seen: string;
 }
+
+export type WorkspaceNodeType = "profile" | "post" | "comment" | "lead" | "website";
+
+export interface WorkspaceNode {
+  id: string;
+  type: WorkspaceNodeType;
+  label: string;
+  subtitle: string;
+  url: string;
+  depth: number;
+  side: number;
+  known: boolean;
+  profile_id?: number;
+  metadata: Record<string, unknown>;
+}
+
+export interface WorkspaceEdge {
+  id: string;
+  source: string;
+  target: string;
+  relationship: string;
+}
+
+export interface WorkspaceGraph {
+  nodes: WorkspaceNode[];
+  edges: WorkspaceEdge[];
+  roots: string[];
+  crawl_urls: string[];
+  depth: number;
+  truncated: boolean;
+}
