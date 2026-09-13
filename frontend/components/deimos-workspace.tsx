@@ -30,10 +30,11 @@ import {
 import { FormEvent, PointerEvent as ReactPointerEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useServiceSocket } from "@/hooks/use-service-socket";
 import { InvestigationWorkspace } from "@/components/investigation-workspace";
-import { browserServiceUrl, goApi, pythonApi } from "@/lib/api";
-import type { CrawlerConfig, DatabasePage, OverviewStats, ProfileActivity, ProfileRecord, SearchResult, SeedURL, ServiceState, StreamEvent, WorkspaceGraph, WorkspaceNode } from "@/lib/types";
+import { PhobosTweeterView, defaultTwitterConfig, executeTwitterScan } from "@/components/phobos-tweeter-view";
+import { browserServiceUrl, goApi, pythonApi, twitterApi } from "@/lib/api";
+import type { CrawlerConfig, DatabasePage, OverviewStats, PersonaMatch, PersonaModelStatus, ProfileActivity, ProfileRecord, SearchResult, SeedURL, ServiceState, StreamEvent, TwitterAccount, TwitterPost, TwitterScanConfig, WorkspaceGraph, WorkspaceNode } from "@/lib/types";
 
-type View = "overview" | "workspace" | "crawl" | "crawler-data" | "search" | "intelligence" | "profiles" | "models" | "system";
+type View = "overview" | "workspace" | "crawl" | "crawler-data" | "search" | "intelligence" | "profiles" | "twitter" | "models" | "system";
 
 const GO_WS = `${browserServiceUrl(process.env.NEXT_PUBLIC_GO_WS_URL, 8787, "ws")}/ws`;
 const PYTHON_WS = `${browserServiceUrl(process.env.NEXT_PUBLIC_PYTHON_WS_URL, 8001, "ws")}/ws`;
@@ -66,6 +67,42 @@ function mergeWorkspaceGraphs(current: WorkspaceGraph, incoming: WorkspaceGraph)
   };
 }
 
+function twitterWorkspaceGraph(posts: TwitterPost[], account: TwitterAccount | null, parentId = ""): WorkspaceGraph {
+  const nodes = new Map<string, WorkspaceNode>();
+  const edges = new Map<string, WorkspaceGraph["edges"][number]>();
+  const accountMetadata = account ? { ...account.fields, sections: account.sections, source: "PHOBOS-Tweeter account API" } : {};
+  for (const post of posts) {
+    const handle = String(post.author?.screen_name || account?.screenName || "unknown").replace(/^@/, "");
+    const accountId = `twitter:account:${handle.toLowerCase()}`;
+    const postId = `twitter:post:${post.id}`;
+    if (!nodes.has(accountId)) nodes.set(accountId, {
+      id: accountId, type: "social_account", label: `@${handle}`,
+      subtitle: String(post.author?.name || account?.name || "X account candidate"),
+      url: `https://x.com/${handle}`, depth: parentId ? 1 : 0, side: 1, known: true,
+      metadata: { ...accountMetadata, ...post.author, platform: "X", correlation: "alias search" },
+    });
+    nodes.set(postId, {
+      id: postId, type: "social_post", label: post.text.slice(0, 100) || `Post ${post.id}`,
+      subtitle: `${handle} · ${formatTime(post.createdAt)}`, url: post.url,
+      depth: parentId ? 2 : 1, side: 1, known: true,
+      metadata: { platform: "X", query: post.query, metrics: post.metrics, entities: post.entities, text: post.text, created_at: post.createdAt },
+    });
+    const authoredId = `${accountId}|${postId}|authored`;
+    edges.set(authoredId, { id: authoredId, source: accountId, target: postId, relationship: "authored on X" });
+    if (parentId) {
+      const matchId = `${parentId}|${accountId}|twitter-match`;
+      edges.set(matchId, { id: matchId, source: parentId, target: accountId, relationship: "possible X identity" });
+    }
+  }
+  if (account && !posts.length) {
+    const accountId = `twitter:account:${account.screenName.toLowerCase()}`;
+    nodes.set(accountId, { id: accountId, type: "social_account", label: `@${account.screenName}`, subtitle: account.name || "X account candidate", url: `https://x.com/${account.screenName}`, depth: parentId ? 1 : 0, side: 1, known: true, metadata: accountMetadata });
+    if (parentId) edges.set(`${parentId}|${accountId}|twitter-match`, { id: `${parentId}|${accountId}|twitter-match`, source: parentId, target: accountId, relationship: "possible X identity" });
+  }
+  const accountRoots = [...nodes.values()].filter((node) => node.type === "social_account").map((node) => node.id);
+  return { nodes: [...nodes.values()], edges: [...edges.values()], roots: parentId ? [] : accountRoots, crawl_urls: [], depth: 2, truncated: false };
+}
+
 const defaultCrawlerConfig: CrawlerConfig = {
   max_depth: 3,
   concurrent_crawlers: 10,
@@ -80,11 +117,11 @@ const defaultCrawlerConfig: CrawlerConfig = {
 };
 
 const modelRows = [
-  { name: "PHOBOS-NER", role: "Cyber entity extraction", stage: "Prototype", health: 62 },
-  { name: "ECHO-STYLE", role: "Stylometric persona matching", stage: "Planned", health: 15 },
-  { name: "HYDRA-LINK", role: "Cross-platform entity resolution", stage: "Planned", health: 20 },
-  { name: "ARGUS-BEHAVIOR", role: "Temporal and behavioral profiling", stage: "Planned", health: 10 },
-  { name: "THEMIS-FUSION", role: "Evidence and confidence fusion", stage: "Planned", health: 8 },
+  { name: "PHOBOS-NER", role: "Cyber entity and identifier extraction", stage: "Active", health: 76 },
+  { name: "ECHO-STYLE", role: "Character n-gram stylometric fingerprinting", stage: "Active", health: 72 },
+  { name: "HYDRA-LINK", role: "Aliases, wallets, PGP and contact overlap", stage: "Active", health: 68 },
+  { name: "ARGUS-BEHAVIOR", role: "Writing activity and behavioural profiling", stage: "Active", health: 66 },
+  { name: "THEMIS-FUSION", role: "Explainable confidence-weighted attribution", stage: "Active", health: 74 },
 ];
 
 function formatNumber(value: number) {
@@ -139,6 +176,7 @@ export function DeimosWorkspace() {
   const [searchSettingsOpen, setSearchSettingsOpen] = useState(false);
   const [searchBusy, setSearchBusy] = useState(false);
   const [torStatus, setTorStatus] = useState<ServiceState>("connecting");
+  const [twitterStatus, setTwitterStatus] = useState<ServiceState>("connecting");
   const [refreshing, setRefreshing] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [logsOpen, setLogsOpen] = useState(false);
@@ -152,6 +190,7 @@ export function DeimosWorkspace() {
   const [workspaceBusy, setWorkspaceBusy] = useState(false);
   const [workspaceCrawlerStats, setWorkspaceCrawlerStats] = useState<OverviewStats>(emptyStats);
   const [workspaceCrawlerConfig, setWorkspaceCrawlerConfig] = useState<CrawlerConfig>({ ...defaultCrawlerConfig, max_depth: 1, concurrent_crawlers: 1, database_path: "phobos/databases/workspace.db", user_agent: "DEIMOS-Workspace-Crawler/0.1 (+authorized-security-research)" });
+  const [twitterWorkspaceConfig, setTwitterWorkspaceConfig] = useState<TwitterScanConfig>({ ...defaultTwitterConfig, mode: "custom", maxPosts: 40 });
   const [crawlerBusy, setCrawlerBusy] = useState(false);
   const [settings, setSettings] = useState<CrawlerConfig>(defaultCrawlerConfig);
   const [searchSettings, setSearchSettings] = useState<CrawlerConfig>({ ...defaultCrawlerConfig, database_path: "phobos/databases/phobos_search.db", same_host_only: false, concurrent_crawlers: 20 });
@@ -165,7 +204,7 @@ export function DeimosWorkspace() {
 
   const loadData = useCallback(async () => {
     setRefreshing(true);
-    const [crawlerData, searchData, workspaceCrawlerData, crawlerAnalysis, searchAnalysis, crawlerPageData, indexPageData, seedData, searchSeedData, torData, profileData] = await Promise.allSettled([
+    const [crawlerData, searchData, workspaceCrawlerData, crawlerAnalysis, searchAnalysis, crawlerPageData, indexPageData, seedData, searchSeedData, torData, profileData, twitterData] = await Promise.allSettled([
       goApi.get<Partial<OverviewStats>>("/api/crawler/stats"),
       goApi.get<Partial<OverviewStats>>("/api/phobos-search/stats"),
       goApi.get<Partial<OverviewStats>>("/api/workspace-crawler/stats"),
@@ -177,6 +216,7 @@ export function DeimosWorkspace() {
       goApi.get<{ seeds: SeedURL[] }>("/api/phobos-search/seeds"),
       goApi.get<{ status: "online" | "offline" }>("/api/tor/health"),
       pythonApi.get<{ profiles: ProfileRecord[]; count: number }>("/api/profiles?limit=100"),
+      twitterApi.get<{ ok: boolean }>("/health"),
     ]);
 
     setStats((current) => ({
@@ -195,6 +235,7 @@ export function DeimosWorkspace() {
       setProfileCount(profileData.value.count);
     }
     setTorStatus(torData.status === "fulfilled" && torData.value.status === "online" ? "online" : "offline");
+    setTwitterStatus(twitterData.status === "fulfilled" && twitterData.value.ok ? "online" : "offline");
     setRefreshing(false);
   }, []);
 
@@ -203,6 +244,11 @@ export function DeimosWorkspace() {
     void goApi.get<CrawlerConfig>("/api/crawler/config").then(setSettings).catch(() => undefined);
     void goApi.get<CrawlerConfig>("/api/phobos-search/config").then((value) => { setSearchSettings(value); setSavedSearchSettings(value); }).catch(() => undefined);
     void goApi.get<CrawlerConfig>("/api/workspace-crawler/config").then(setWorkspaceCrawlerConfig).catch(() => undefined);
+    const storedTwitterWorkspace = window.localStorage.getItem("deimos-phobos-tweeter-workspace-config");
+    if (storedTwitterWorkspace) {
+      try { setTwitterWorkspaceConfig({ ...defaultTwitterConfig, mode: "custom", ...JSON.parse(storedTwitterWorkspace) }); }
+      catch { /* Keep safe defaults when local settings are damaged. */ }
+    }
     const interval = setInterval(() => void loadData(), 10000);
     return () => clearInterval(interval);
   }, [loadData]);
@@ -270,6 +316,35 @@ export function DeimosWorkspace() {
     setView("workspace");
     setSelectedProfile(null);
     void runWorkspaceAnalysis(nextRoots);
+  };
+
+  const sendTwitterPostToWorkspace = (post: TwitterPost) => {
+    const graph = twitterWorkspaceGraph([post], null);
+    setWorkspaceGraph((current) => current.nodes.length ? mergeWorkspaceGraphs(current, graph) : graph);
+    setView("workspace");
+    setNotice("X post and author sent to Workspace.");
+  };
+
+  const analyzeProfileWithTwitter = async (profile: ProfileRecord) => {
+    const alias = (profile.username || profile.display_name || "").trim().replace(/^@/, "");
+    if (!alias) return setNotice("This profile has no alias to search on X.");
+    const nextRoots = workspaceRootIds.includes(profile.id) ? workspaceRootIds : [...workspaceRootIds, profile.id];
+    setWorkspaceRootIds(nextRoots); setSelectedProfile(null); setView("workspace"); setWorkspaceBusy(true);
+    const safeAlias = alias.replace(/["()]/g, "");
+    const display = (profile.display_name || "").trim().replace(/["()]/g, "");
+    const queryParts = [`from:${safeAlias}`, `@${safeAlias}`, `"${safeAlias}"`];
+    if (display && display.toLowerCase() !== safeAlias.toLowerCase()) queryParts.push(`"${display}"`);
+    const scanConfig: TwitterScanConfig = { ...twitterWorkspaceConfig, mode: "custom", customQuery: `(${queryParts.join(" OR ")})` };
+    try {
+      const baseGraph = await pythonApi.post<WorkspaceGraph>("/api/workspace/analyze", { profile_ids: nextRoots, page_url: "", depth: workspaceDepth, max_activities: workspaceMaxActivities });
+      const accountPromise = twitterApi.post<TwitterAccount>("/account", { screenName: safeAlias }).catch(() => null);
+      const [scan, account] = await Promise.all([executeTwitterScan(scanConfig), accountPromise]);
+      const social = twitterWorkspaceGraph(scan.posts, account, `profile:${profile.id}`);
+      setWorkspaceGraph(mergeWorkspaceGraphs(baseGraph, social));
+      setNotice(`PHOBOS-Tweeter linked ${scan.posts.length} X posts${account ? " and one account candidate" : ""} to @${alias}.`);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Twitter correlation failed.");
+    } finally { setWorkspaceBusy(false); }
   };
 
   const analyzeWorkspaceNode = async (node: WorkspaceNode) => {
@@ -359,6 +434,16 @@ export function DeimosWorkspace() {
       setSelectedProfile(null);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Profile database could not be cleared.");
+    }
+  };
+
+  const clearPersonaData = async () => {
+    if (!window.confirm("Permanently clear persona fingerprints, attribution hypotheses, and the fitted local persona model?")) return;
+    try {
+      const response = await pythonApi.delete<{ message: string }>("/api/persona?confirmation=CLEAR");
+      setNotice(response.message);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Persona AI data could not be cleared.");
     }
   };
 
@@ -483,6 +568,7 @@ export function DeimosWorkspace() {
     { id: "search", label: "PHOBOS Search", icon: Search },
     { id: "intelligence", label: "Index Database", icon: FileSearch },
     { id: "profiles", label: "Profiles", icon: Network },
+    { id: "twitter", label: "PHOBOS-Tweeter", icon: Radio },
     { id: "models", label: "AI models", icon: BrainCircuit },
     { id: "system", label: "System", icon: Settings2 },
   ];
@@ -527,6 +613,7 @@ export function DeimosWorkspace() {
           <ServiceIndicator label="Go gateway" status={goSocket.status} />
           <ServiceIndicator label="Python AI" status={pythonSocket.status} />
           <ServiceIndicator label="Tor network" status={torStatus} />
+          <ServiceIndicator label="PHOBOS-Tweeter" status={twitterStatus} />
         </div>
         <div className="operator"><span>VK</span><div><strong>DEIMOS</strong><small>Local workspace</small></div></div>
       </aside>
@@ -554,7 +641,7 @@ export function DeimosWorkspace() {
 
         <div className="view-stage">
           {view === "overview" && <Overview crawlerStats={stats} searchStats={searchStats} profileCount={profileCount} />}
-          {view === "workspace" && <InvestigationWorkspace graph={workspaceGraph} roots={workspaceRoots} depth={workspaceDepth} maxActivities={workspaceMaxActivities} pageUrl={workspacePageUrl} autoCrawl={workspaceAutoCrawl} busy={workspaceBusy} crawlerStats={workspaceCrawlerStats} crawlerConfig={workspaceCrawlerConfig} setCrawlerConfig={setWorkspaceCrawlerConfig} saveCrawlerConfig={() => void saveWorkspaceCrawlerConfig()} startCrawler={() => void runWorkspaceCrawlerAction("start")} stopCrawler={() => void runWorkspaceCrawlerAction("stop")} setDepth={setWorkspaceDepth} setMaxActivities={setWorkspaceMaxActivities} setPageUrl={setWorkspacePageUrl} setAutoCrawl={setWorkspaceAutoCrawl} run={() => void runWorkspaceAnalysis()} removeRoot={removeWorkspaceRoot} clear={clearWorkspace} analyzeNode={(node) => void analyzeWorkspaceNode(node)} crawlNode={(node) => void crawlWorkspaceNode(node)} />}
+          {view === "workspace" && <InvestigationWorkspace graph={workspaceGraph} roots={workspaceRoots} depth={workspaceDepth} maxActivities={workspaceMaxActivities} pageUrl={workspacePageUrl} autoCrawl={workspaceAutoCrawl} busy={workspaceBusy} crawlerStats={workspaceCrawlerStats} crawlerConfig={workspaceCrawlerConfig} twitterConfig={twitterWorkspaceConfig} setTwitterConfig={setTwitterWorkspaceConfig} setCrawlerConfig={setWorkspaceCrawlerConfig} saveCrawlerConfig={() => void saveWorkspaceCrawlerConfig()} startCrawler={() => void runWorkspaceCrawlerAction("start")} stopCrawler={() => void runWorkspaceCrawlerAction("stop")} setDepth={setWorkspaceDepth} setMaxActivities={setWorkspaceMaxActivities} setPageUrl={setWorkspacePageUrl} setAutoCrawl={setWorkspaceAutoCrawl} run={() => void runWorkspaceAnalysis()} removeRoot={removeWorkspaceRoot} clear={clearWorkspace} analyzeNode={(node) => void analyzeWorkspaceNode(node)} crawlNode={(node) => void crawlWorkspaceNode(node)} />}
           {view === "crawl" && (
             <CollectionView
               stats={stats}
@@ -576,9 +663,10 @@ export function DeimosWorkspace() {
             <SearchView query={searchQuery} setQuery={setSearchQuery} submit={runSearch} results={results} searching={searching} hasSearched={hasSearched} home={() => { setHasSearched(false); setResults([]); setSearchQuery(""); }} stats={searchStats} settingsOpen={searchSettingsOpen} setSettingsOpen={setSearchSettingsOpen} settings={searchSettings} setSettings={setSearchSettings} dirty={savedSearchSettings !== null && JSON.stringify(savedSearchSettings) !== JSON.stringify(searchSettings)} busy={searchBusy} save={() => void saveSearchConfig()} start={() => void runSearchEngineAction("start")} stop={() => void runSearchEngineAction("stop")} seeds={searchSeeds} seedDraft={searchSeedDraft} setSeedDraft={setSearchSeedDraft} addSeed={addSearchSeed} deleteSeed={(url) => void deleteSearchSeed(url)} />
           )}
           {view === "intelligence" && <DatabaseView title="PHOBOS Search indexed pages" eyebrow="INDEX DATABASE" pages={indexPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("phobos-search", id)} close={() => setSelectedPage(null)} />}
-          {view === "profiles" && <ProfilesView profiles={profiles} selected={selectedProfile} loading={pageLoading} open={(id) => void openProfile(id)} close={() => setSelectedProfile(null)} reanalyze={(engine) => void reanalyzeProfiles(engine)} send={sendProfileToWorkspace} />}
+          {view === "profiles" && <ProfilesView profiles={profiles} selected={selectedProfile} loading={pageLoading} open={(id) => void openProfile(id)} close={() => setSelectedProfile(null)} reanalyze={(engine) => void reanalyzeProfiles(engine)} send={sendProfileToWorkspace} twitter={(profile) => void analyzeProfileWithTwitter(profile)} />}
+          {view === "twitter" && <PhobosTweeterView sendToWorkspace={sendTwitterPostToWorkspace} />}
           {view === "models" && <ModelsView />}
-          {view === "system" && <SystemView goStatus={goSocket.status} pythonStatus={pythonSocket.status} torStatus={torStatus} events={events} crawlerStats={stats} searchStats={searchStats} workspaceCrawlerStats={workspaceCrawlerStats} clearDatabase={(engine) => void clearEngineDatabase(engine)} clearProfiles={() => void clearProfileDatabase()} />}
+          {view === "system" && <SystemView goStatus={goSocket.status} pythonStatus={pythonSocket.status} torStatus={torStatus} twitterStatus={twitterStatus} events={events} crawlerStats={stats} searchStats={searchStats} workspaceCrawlerStats={workspaceCrawlerStats} clearDatabase={(engine) => void clearEngineDatabase(engine)} clearProfiles={() => void clearProfileDatabase()} clearPersona={() => void clearPersonaData()} />}
         </div>
       </section>
       {logsOpen && <LogsDock events={events} height={logsHeight} close={() => setLogsOpen(false)} beginResize={beginLogsResize} />}
@@ -701,7 +789,7 @@ function SearchSettings({ close, settings, setSettings, stats, dirty, busy, save
   </section></div>;
 }
 
-function ProfilesView({ profiles, selected, loading, open, close, reanalyze, send }: { profiles: ProfileRecord[]; selected: ProfileRecord | null; loading: boolean; open: (id: number) => void; close: () => void; reanalyze: (engine: "crawler" | "phobos-search") => void; send: (profile: ProfileRecord) => void }) {
+function ProfilesView({ profiles, selected, loading, open, close, reanalyze, send, twitter }: { profiles: ProfileRecord[]; selected: ProfileRecord | null; loading: boolean; open: (id: number) => void; close: () => void; reanalyze: (engine: "crawler" | "phobos-search") => void; send: (profile: ProfileRecord) => void; twitter: (profile: ProfileRecord) => void }) {
   const list = (values?: string[]) => values?.length ? values.join("\n\n") : "—";
   return <div className={"database-layout " + (selected ? "detail-open" : "")}>
     <section className="table-panel database-browser">
@@ -713,7 +801,7 @@ function ProfilesView({ profiles, selected, loading, open, close, reanalyze, sen
           <td>{profile.role || "Unspecified"}<small>{profile.territory || "No territory"}</small></td>
           <td>{profile.posts.length} posts<small>{profile.comments.length} comments · {profile.observation_count || 1} observations</small></td>
           <td><span className="severity medium">{Math.round(profile.detection_confidence * 100)}%</span><small>{formatTime(profile.last_seen)}</small></td>
-          <td><div className="profile-row-actions"><button className="row-action send-workspace" onClick={() => send(profile)} aria-label={"Send " + profile.username + " to workspace"} title="Send to Workspace"><Send size={16} /></button><button className="row-action" onClick={() => open(profile.id)} aria-label={"Open profile " + profile.username} title="Open profile"><ChevronRight size={17} /></button></div></td>
+          <td><div className="profile-row-actions"><button className="row-action twitter-analyse" onClick={() => twitter(profile)} aria-label={"Analyse " + profile.username + " with Twitter"} title="Analyse with PHOBOS-Tweeter"><Radio size={16} /></button><button className="row-action send-workspace" onClick={() => send(profile)} aria-label={"Send " + profile.username + " to workspace"} title="Send to Workspace"><Send size={16} /></button><button className="row-action" onClick={() => open(profile.id)} aria-label={"Open profile " + profile.username} title="Open profile"><ChevronRight size={17} /></button></div></td>
         </tr>)}</tbody>
       </table>{!profiles.length && <EmptyState icon={Network} title="No profiles detected yet" copy="Profile URLs discovered by either crawler will be classified, extracted and stored here." />}</div>
     </section>
@@ -765,15 +853,51 @@ function DatabaseView({ title, eyebrow, pages, selected, loading, open, close }:
 function Detail({ label, value, code = false }: { label: string; value: string; code?: boolean }) { return <div className={`detail-field ${code ? "code" : ""}`}><span>{label}</span><p>{value}</p></div>; }
 
 function ModelsView() {
+  const [status, setStatus] = useState<PersonaModelStatus | null>(null);
+  const [matches, setMatches] = useState<PersonaMatch[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [threshold, setThreshold] = useState(0.55);
+  const load = useCallback(async () => {
+    try {
+      const [nextStatus, result] = await Promise.all([
+        pythonApi.get<PersonaModelStatus>("/api/persona/status"),
+        pythonApi.get<{ matches: PersonaMatch[] }>("/api/persona/matches?limit=100"),
+      ]);
+      setStatus(nextStatus); setMatches(result.matches); setError("");
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Persona intelligence is unavailable"); }
+  }, []);
+  useEffect(() => { void load(); }, [load]);
+  const train = async () => {
+    setBusy(true); setError("");
+    try {
+      await pythonApi.post<PersonaModelStatus>("/api/persona/train", { threshold, max_matches: 750 });
+      await load();
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Model training failed"); }
+    finally { setBusy(false); }
+  };
+  const run = status?.run;
   return (
-    <div className="models-layout">
-      <section className="model-intro"><BrainCircuit size={28} /><span>MODEL PIPELINE</span><h2>Specialized intelligence models</h2><p>Each model contributes independent evidence. THEMIS combines those signals into a reviewable confidence score.</p></section>
-      <section className="model-list">{modelRows.map((model, index) => <article key={model.name}><span className="model-index">0{index + 1}</span><div><h3>{model.name}</h3><p>{model.role}</p></div><span className={`stage ${model.stage.toLowerCase()}`}>{model.stage}</span><div className="model-progress"><span><i style={{ width: `${model.health}%` }} /></span><small>{model.health}%</small></div></article>)}</section>
+    <div className="persona-page">
+      <div className="models-layout">
+        <section className="model-intro"><BrainCircuit size={28} /><span>PERSONA INTELLIGENCE</span><h2>Explainable multi-model attribution</h2><p>Models analyse posts, comments, writing habits, topics and identifiers. Every result is an attribution hypothesis requiring investigator review.</p></section>
+        <section className="model-list">{modelRows.map((model, index) => <article key={model.name}><span className="model-index">0{index + 1}</span><div><h3>{model.name}</h3><p>{model.role}</p></div><span className={`stage ${model.stage.toLowerCase()}`}>{model.stage}</span><div className="model-progress"><span><i style={{ width: `${model.health}%` }} /></span><small>{model.health}%</small></div></article>)}</section>
+      </div>
+      <section className="persona-control">
+        <div className="section-title"><div><span>TRAINING CONTROL</span><h2>THEMIS persona-linking ensemble</h2></div><div className="persona-actions"><label>Minimum confidence<input type="number" min="0.25" max="0.95" step="0.01" value={threshold} onChange={(event) => setThreshold(Number(event.target.value))} /></label><button className="primary-action" disabled={busy} onClick={() => void train()}><Play size={15} />{busy ? "Training models…" : "Train & analyse profiles"}</button></div></div>
+        {error && <div className="persona-error">{error}</div>}
+        <div className="persona-metrics"><Metric label="Training profiles" value={formatNumber(run?.usable_profiles || 0)} /><Metric label="Activity samples" value={formatNumber(run?.activity_count || 0)} /><Metric label="Extracted features" value={formatNumber(run?.feature_count || 0)} accent="signal" /><Metric label="Attribution hypotheses" value={formatNumber(run?.match_count || 0)} /></div>
+        <div className="persona-model-meta"><span>{status?.trained ? `Model ${run?.model_version} trained ${formatTime(run?.trained_at)}` : "Model not trained"}</span><span>{status?.calibration ? `Evolution validation: AUC ${(status.calibration.roc_auc * 100).toFixed(1)}% · F1 ${(status.calibration.f1 * 100).toFixed(1)}% · ${status.calibration.authors} authors` : "Awaiting Evolution calibration"}</span></div>
+      </section>
+      <section className="table-panel persona-results">
+        <div className="section-title"><div><span>ATTRIBUTION HYPOTHESES</span><h2>Potential rebranded or migrated personas</h2></div><span className="count">Top {matches.length}</span></div>
+        <div className="table-scroll"><table><thead><tr><th>Candidate personas</th><th>Confidence</th><th>Model signals</th><th>Explainable evidence</th></tr></thead><tbody>{matches.map((match) => <tr key={match.id}><td><strong>@{match.left_username || match.left_profile_id} ↔ @{match.right_username || match.right_profile_id}</strong><a className="persona-url" href={match.left_profile_url} target="_blank" rel="noreferrer">{match.left_profile_url || "Profile URL unavailable"}</a><a className="persona-url" href={match.right_profile_url} target="_blank" rel="noreferrer">{match.right_profile_url || "Profile URL unavailable"}</a></td><td><span className={`severity ${match.confidence >= .72 ? "high" : "medium"}`}>{Math.round(match.confidence * 100)}%</span><small>{match.classification}</small></td><td><div className="signal-grid"><span>Style <b>{Math.round(match.stylometry_similarity * 100)}%</b></span><span>Topics <b>{Math.round(match.semantic_similarity * 100)}%</b></span><span>Behavior <b>{Math.round(match.behavioral_similarity * 100)}%</b></span><span>Identifiers <b>{Math.round(match.identifier_similarity * 100)}%</b></span></div></td><td><ul className="evidence-list">{match.evidence.slice(0, 4).map((item) => <li key={item}>{item}</li>)}</ul></td></tr>)}</tbody></table>{!matches.length && <EmptyState icon={BrainCircuit} title="No attribution hypotheses" copy="Train the models after collecting at least two profiles with sufficient authored posts or comments." />}</div>
+      </section>
     </div>
   );
 }
 
-function SystemView({ goStatus, pythonStatus, torStatus, events, crawlerStats, searchStats, workspaceCrawlerStats, clearDatabase, clearProfiles }: { goStatus: string; pythonStatus: string; torStatus: string; events: StreamEvent[]; crawlerStats: OverviewStats; searchStats: OverviewStats; workspaceCrawlerStats: OverviewStats; clearDatabase: (engine: "crawler" | "phobos-search") => void; clearProfiles: () => void }) {
+function SystemView({ goStatus, pythonStatus, torStatus, twitterStatus, events, crawlerStats, searchStats, workspaceCrawlerStats, clearDatabase, clearProfiles, clearPersona }: { goStatus: string; pythonStatus: string; torStatus: string; twitterStatus: string; events: StreamEvent[]; crawlerStats: OverviewStats; searchStats: OverviewStats; workspaceCrawlerStats: OverviewStats; clearDatabase: (engine: "crawler" | "phobos-search") => void; clearProfiles: () => void; clearPersona: () => void }) {
   const [sourceFilter, setSourceFilter] = useState<"all" | "crawler" | "phobos-search" | "workspace-crawler" | "python">("all");
   const filteredEvents = events.filter((event) => {
     if (sourceFilter === "all") return true;
@@ -791,6 +915,7 @@ function SystemView({ goStatus, pythonStatus, torStatus, events, crawlerStats, s
         <div className="service-card"><BrainCircuit size={20} /><div><strong>Python intelligence</strong><small>NER, threat analysis, profiles and reports</small></div><ServiceIndicator label="Port 8001" status={pythonStatus} /></div>
         <div className="service-card"><Network size={20} /><div><strong>Tor network</strong><small>SOCKS5 routing for onion-service collection</small></div><ServiceIndicator label="Port 9050" status={torStatus} /></div>
         <div className="service-card"><GitBranch size={20} /><div><strong>Workspace crawler</strong><small>Independent targeted queue with one worker</small></div><ServiceIndicator label="1 worker" status={workspaceCrawlerStats.crawler_running ? "online" : "offline"} /></div>
+        <div className="service-card"><Radio size={20} /><div><strong>PHOBOS-Tweeter</strong><small>Private authenticated X search and account intelligence</small></div><ServiceIndicator label="Internal" status={twitterStatus} /></div>
       </section>
       <section className="terminal-panel">
         <div className="section-title"><div><span>EVENT JOURNAL</span><h2>Live service and PHOBOS Search logs</h2></div><TerminalSquare size={19} /></div>
@@ -804,6 +929,7 @@ function SystemView({ goStatus, pythonStatus, torStatus, events, crawlerStats, s
           <article><div><strong>PHOBOS Search database</strong><span>{formatNumber(searchStats.indexed_pages)} indexed pages and associated AI analysis</span></div><button className="danger-action" disabled={searchStats.crawler_running} onClick={() => clearDatabase("phobos-search")}><Trash2 size={15} /> Clear data</button></article>
           <article><div><strong>Crawler database</strong><span>{formatNumber(crawlerStats.indexed_pages)} collected pages and associated AI analysis</span></div><button className="danger-action" disabled={crawlerStats.crawler_running} onClick={() => clearDatabase("crawler")}><Trash2 size={15} /> Clear data</button></article>
           <article><div><strong>Profile intelligence database</strong><span>Extracted identities, profile history, posts, comments and identifiers</span></div><button className="danger-action" onClick={clearProfiles}><Trash2 size={15} /> Clear profiles</button></article>
+          <article><div><strong>Persona AI database</strong><span>Stylometric fingerprints, calibrated attribution hypotheses and fitted local model</span></div><button className="danger-action" onClick={clearPersona}><Trash2 size={15} /> Clear AI data</button></article>
         </div>
       </section>
     </div>

@@ -1,11 +1,11 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Crosshair, FileText, GitBranch, Globe2, MessageSquare, Play, Radar, Save, Search, Settings2, Square, Trash2, UserRound } from "lucide-react";
+import { AtSign, ChevronDown, ChevronRight, Crosshair, FileText, GitBranch, Globe2, MessageSquare, Play, Radio, Radar, Save, Search, Settings2, Square, Trash2, UserRound } from "lucide-react";
 import { MouseEvent as ReactMouseEvent, useEffect, useMemo, useState } from "react";
-import type { CrawlerConfig, OverviewStats, ProfileRecord, WorkspaceGraph, WorkspaceNode } from "@/lib/types";
+import type { CrawlerConfig, OverviewStats, ProfileRecord, TwitterScanConfig, WorkspaceGraph, WorkspaceNode } from "@/lib/types";
 
-const nodeIcon = (type: WorkspaceNode["type"]) => type === "profile" || type === "lead" ? UserRound : type === "post" ? FileText : type === "comment" ? MessageSquare : Globe2;
-const nodeOrder: Record<WorkspaceNode["type"], number> = { profile: 0, website: 1, post: 2, comment: 3, lead: 4 };
+const nodeIcon = (type: WorkspaceNode["type"]) => type === "profile" || type === "lead" ? UserRound : type === "social_account" ? AtSign : type === "social_post" ? Radio : type === "post" ? FileText : type === "comment" ? MessageSquare : Globe2;
+const nodeOrder: Record<WorkspaceNode["type"], number> = { profile: 0, social_account: 1, website: 2, post: 3, social_post: 4, comment: 5, lead: 6 };
 
 type ContextMenu = { node: WorkspaceNode; x: number; y: number } | null;
 
@@ -40,7 +40,7 @@ function TreeBranch({ node, relationship, root, childrenById, nodesById, collaps
   </li>;
 }
 
-export function InvestigationWorkspace({ graph, roots, depth, maxActivities, pageUrl, autoCrawl, busy, crawlerStats, crawlerConfig, setCrawlerConfig, saveCrawlerConfig, startCrawler, stopCrawler, setDepth, setMaxActivities, setPageUrl, setAutoCrawl, run, removeRoot, clear, analyzeNode, crawlNode }: {
+export function InvestigationWorkspace({ graph, roots, depth, maxActivities, pageUrl, autoCrawl, busy, crawlerStats, crawlerConfig, twitterConfig, setTwitterConfig, setCrawlerConfig, saveCrawlerConfig, startCrawler, stopCrawler, setDepth, setMaxActivities, setPageUrl, setAutoCrawl, run, removeRoot, clear, analyzeNode, crawlNode }: {
   graph: WorkspaceGraph;
   roots: ProfileRecord[];
   depth: number;
@@ -50,6 +50,8 @@ export function InvestigationWorkspace({ graph, roots, depth, maxActivities, pag
   busy: boolean;
   crawlerStats: OverviewStats;
   crawlerConfig: CrawlerConfig;
+  twitterConfig: TwitterScanConfig;
+  setTwitterConfig: (value: TwitterScanConfig) => void;
   setCrawlerConfig: (value: CrawlerConfig) => void;
   saveCrawlerConfig: () => void;
   startCrawler: () => void;
@@ -116,6 +118,17 @@ export function InvestigationWorkspace({ graph, roots, depth, maxActivities, pag
           <label className="workspace-crawler-toggle"><input type="checkbox" checked={crawlerConfig.same_host_only} disabled={crawlerStats.crawler_running} onChange={(event) => setCrawlerConfig({ ...crawlerConfig, same_host_only: event.target.checked })} /> Same-host links only</label>
         </div>
         <div className="workspace-crawler-actions"><span><b>1</b> worker · <b>{crawlerStats.queued_pages}</b> queued · <b>{crawlerStats.indexed_pages}</b> collected</span><div><button onClick={startCrawler} disabled={crawlerStats.crawler_running}><Play size={14} /> Start</button><button onClick={stopCrawler} disabled={!crawlerStats.crawler_running}><Square size={13} fill="currentColor" /> Stop</button><button onClick={saveCrawlerConfig} disabled={crawlerStats.crawler_running}><Save size={14} /> Save settings</button></div></div>
+      </details>
+      <details className="workspace-crawler-config workspace-twitter-config">
+        <summary><span><Radio size={15} /><strong>PHOBOS-Tweeter correlation settings</strong><small>Used by “Analyse with Twitter” from Profiles</small></span><i className="running">Private service</i></summary>
+        <div className="workspace-crawler-grid">
+          <label>Result type<select value={twitterConfig.resultMode} onChange={(event) => setTwitterConfig({ ...twitterConfig, resultMode: event.target.value as "latest" | "top" })}><option value="latest">Latest</option><option value="top">Top</option></select></label>
+          <label>Maximum posts<input type="number" min={20} max={500} step={20} value={twitterConfig.maxPosts} onChange={(event) => setTwitterConfig({ ...twitterConfig, maxPosts: Number(event.target.value) })} /></label>
+          <label>Request delay (seconds)<input type="number" min={1} max={15} value={twitterConfig.scrollDelay} onChange={(event) => setTwitterConfig({ ...twitterConfig, scrollDelay: Number(event.target.value) })} /></label>
+          <label>From date<input type="date" value={twitterConfig.fromDate} onChange={(event) => setTwitterConfig({ ...twitterConfig, fromDate: event.target.value })} /></label>
+          <label>To date<input type="date" value={twitterConfig.toDate} onChange={(event) => setTwitterConfig({ ...twitterConfig, toDate: event.target.value })} /></label>
+        </div>
+        <div className="workspace-crawler-actions"><span>Searches exact account posts, mentions and alias keywords together</span><div><button onClick={() => window.localStorage.setItem("deimos-phobos-tweeter-workspace-config", JSON.stringify(twitterConfig))}><Save size={14} /> Save settings</button></div></div>
       </details>
     </section>
 

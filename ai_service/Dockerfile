@@ -6,6 +6,7 @@ WORKDIR /app
 COPY ai_service/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 COPY ai_service/ /app/ai_service/
+RUN mkdir -p /app/phobos/models
 ENV DEIMOS_ROOT=/app
 EXPOSE 8001
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=6 CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/api/health', timeout=2)" || exit 1

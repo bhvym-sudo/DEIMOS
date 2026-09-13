@@ -47,6 +47,7 @@ services:
       - "8001:8001"
     volumes:
       - ./phobos/databases:/app/phobos/databases
+      - ./phobos/models:/app/phobos/models
       - ./phobos/config_files:/app/phobos/config_files
     networks:
       - deimos_net
@@ -67,6 +68,27 @@ services:
     networks:
       - deimos_net
 
+  phobos-tweeter:
+    build:
+      context: .
+      dockerfile: phobos-twitter/Dockerfile
+    restart: unless-stopped
+    environment:
+      TREX_DATA_DIR: /data
+      TREX_SESSION_SOURCE: /data/sessions/x_session.json
+      PHOBOS_TWITTER_ADDR: 0.0.0.0:8790
+      PHOBOS_TWITTER_DIRECT_SEARCH: "0"
+      PHOBOS_TWITTER_API_TOKEN: ${PHOBOS_TWITTER_API_TOKEN}
+    expose:
+      - "8790"
+    volumes:
+      - ./phobos-twitter/config:/data/config:ro
+      - ./phobos-twitter/sessions:/data/sessions
+      - ./phobos-twitter/logs:/data/logs
+      - ./phobos-twitter/exports:/data/exports
+    networks:
+      - deimos_net
+
   frontend:
     build:
       context: .
@@ -77,6 +99,9 @@ services:
         NEXT_PUBLIC_PYTHON_API_URL: http://10.12.13.8:8001
         NEXT_PUBLIC_PYTHON_WS_URL: ws://10.12.13.8:8001/ws
     restart: unless-stopped
+    environment:
+      PHOBOS_TWITTER_INTERNAL_URL: http://phobos-tweeter:8790
+      PHOBOS_TWITTER_API_TOKEN: ${PHOBOS_TWITTER_API_TOKEN}
     ports:
       - "3000:3000"
     depends_on:
@@ -84,6 +109,8 @@ services:
         condition: service_healthy
       python-api:
         condition: service_healthy
+      phobos-tweeter:
+        condition: service_started
     networks:
       - deimos_net
 

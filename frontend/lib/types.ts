@@ -129,7 +129,7 @@ export interface ProfileActivity {
   last_seen: string;
 }
 
-export type WorkspaceNodeType = "profile" | "post" | "comment" | "lead" | "website";
+export type WorkspaceNodeType = "profile" | "post" | "comment" | "lead" | "website" | "social_account" | "social_post";
 
 export interface WorkspaceNode {
   id: string;
@@ -158,4 +158,84 @@ export interface WorkspaceGraph {
   crawl_urls: string[];
   depth: number;
   truncated: boolean;
+}
+
+export interface TwitterSessionStatus {
+  ready: boolean;
+  screenName?: string;
+  hasCookies: boolean;
+  hasBearer: boolean;
+  lastUpdated?: string;
+  message: string;
+}
+
+export interface TwitterScanConfig {
+  mode: "keywords" | "accounts" | "custom";
+  resultMode: "latest" | "top";
+  matchMode: "OR" | "AND";
+  terms: string[];
+  accountFilters: string[];
+  customQuery: string;
+  fromDate: string;
+  toDate: string;
+  maxPosts: number;
+  scrollDelay: number;
+}
+
+export interface TwitterPost {
+  id: string;
+  conversationId?: string;
+  text: string;
+  createdAt: string;
+  url: string;
+  query?: string;
+  author: Record<string, unknown> & { screen_name?: string; name?: string; profile_image_url?: string };
+  metrics: Record<string, unknown>;
+  entities?: Record<string, unknown>;
+  media?: unknown[];
+  raw?: Record<string, unknown>;
+}
+
+export interface TwitterJob {
+  id: string;
+  kind: string;
+  status: "queued" | "running" | "completed" | "failed" | "cancelled";
+  progress: number;
+  message: string;
+  count: number;
+  error?: string;
+}
+
+export interface TwitterAccount {
+  screenName: string;
+  name: string;
+  avatarUrl: string;
+  fields: Record<string, unknown>;
+  sections: Array<{ title: string; rows: Array<{ label: string; value: unknown }> }>;
+  rawProfile?: Record<string, unknown>;
+  rawAbout?: Record<string, unknown>;
+}
+
+export interface PersonaModelStatus {
+  trained: boolean;
+  model_path: string;
+  calibration?: null | {
+    dataset: string; authors: number; training_pairs: number; validation_pairs: number;
+    roc_auc: number; accuracy: number; precision: number; recall: number; f1: number;
+    brier: number; author_disjoint_validation: boolean;
+  };
+  run: null | {
+    id: number; trained_at: string; profile_count: number; usable_profiles: number;
+    activity_count: number; feature_count: number; match_count: number;
+    threshold: number; model_version: string;
+  };
+}
+
+export interface PersonaMatch {
+  id: number; left_profile_id: number; right_profile_id: number;
+  left_username: string; right_username: string; left_domain: string; right_domain: string;
+  left_profile_url: string; right_profile_url: string;
+  confidence: number; classification: string; stylometry_similarity: number;
+  semantic_similarity: number; behavioral_similarity: number;
+  identifier_similarity: number; alias_similarity: number; evidence: string[]; created_at: string;
 }

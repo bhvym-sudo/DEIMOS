@@ -1,0 +1,601 @@
+post_id,thread_id,username,timestamp,category,label,title,content,replies,upvotes
+1,1059,hexprime,2024-09-14 10:10:31,drugs,malicious,"New product line, samples ready",Anyone have experience with this vendor's turnaround time? First order feels slow.,39,40
+2,1018,ghost88447,2024-09-14 12:32:30,extremism,malicious,Recruitment thread - new members,"Sharing material for the cause, redistribute within trusted circles only.",33,20
+3,1168,drift_,2024-09-16 23:05:13,fraud_carding,malicious,"New phishing kit, private sale","Custom kit for sale, private deal only, proof available on request to serious buyers.",20,26
+4,1176,static99,2024-09-17 10:58:19,fraud_carding,malicious,"Fresh dumps available, high balance","Bulk verified account logs for sale, discount for buyers taking 10+.",45,-5
+5,1122,raven_,2024-09-18 03:54:23,extremism,malicious,Propaganda material share,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",26,-2
+6,1097,ghostcore,2024-09-18 04:01:02,extremism,malicious,Recruitment thread - new members,"Starting a funding drive, crypto wallet shared in the pinned members-only post. Only dealing with verified members.",26,12
+7,1221,cipher13,2024-09-19 12:22:04,benign_general,benign,Off-topic: what are you reading lately,"Weekly thread to check in, how's everyone's week been on here?",39,60
+8,1225,nomadcore,2024-09-21 14:01:52,extremism,malicious,Funding drive announcement,"Coordinating a private meetup, details shared only with verified members.",30,53
+9,1006,nomad9x,2024-09-22 03:02:09,weapons,malicious,Shipping question - customs risk,"Open to trading, have surplus accessories, looking for specific ammo type.",43,9
+10,1157,riven77,2024-09-22 06:05:24,marketplace_general,malicious,Vendor bond question,"Having a dispute over an order, mediator requested, ticket number in my profile.",41,15
+11,1120,kryox,2024-09-23 01:06:22,extremism,malicious,Funding drive announcement,"Looking to expand our private channel, message if you share the cause and want in.",45,12
+12,1042,specterv2,2024-09-25 11:11:41,drugs,malicious,"Reliable vendor, EU/US shipping","Restocked over the weekend, usual quality, DM for the menu and pricing list.",11,28
+13,1118,obscuracore75,2024-09-26 04:07:37,extremism,malicious,Propaganda material share,"Coordinating a private meetup, details shared only with verified members.",37,3
+14,1212,nomadzero,2024-09-27 17:57:03,drugs,malicious,"Escrow release delayed, advice?","Looking for a mid-size supplier for my region, must have prior positive feedback.",13,37
+15,1024,specter88,2024-09-28 09:06:58,weapons,malicious,Shipping question - customs risk,"Have a small batch of parts available this month, discreet packaging as always. No middlemen, direct contact only.",36,43
+16,1017,raven99,2024-10-01 14:09:04,drugs,malicious,Stealth packaging question,"Shipping worldwide, stealth methods discussed in private, vouches available on request. No middlemen, direct contact only.",42,19
+17,1030,rivendark,2024-10-03 07:10:14,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type. No middlemen, direct contact only.",5,24
+18,1129,onyxroot,2024-10-06 02:36:14,weapons,malicious,"Parts available, discreet shipping","Looking for a new supplier after my last contact went dark, vouches required.",24,49
+19,1138,obscura88,2024-10-07 06:46:09,extremism,malicious,Recruitment thread - new members,"Coordinating a private meetup, details shared only with verified members.",27,16
+20,1192,phantom_895,2024-10-07 11:59:57,drugs,malicious,Fresh batch available - restock,Anyone have experience with this vendor's turnaround time? First order feels slow.,12,8
+21,1212,byte88,2024-10-07 18:36:24,weapons,malicious,"Looking for supplier, serious buyers only","Open to trading, have surplus accessories, looking for specific ammo type. Prices negotiable for bulk.",17,47
+22,1105,driftzero,2024-10-11 18:21:59,extremism,malicious,Propaganda material share,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",23,5
+23,1204,nomadprime753,2024-10-13 16:43:02,weapons,malicious,Shipping question - customs risk,"Have a small batch of parts available this month, discreet packaging as always.",35,44
+24,1164,riven99,2024-10-14 04:22:47,hacking_malware,malicious,"RDP access, various countries","Builder tool for sale, private support included, no source code shared publicly.",43,36
+25,1194,rivendark542,2024-10-14 18:50:37,marketplace_general,malicious,Vendor bond question,"Left feedback for my last order, decent turnaround, packaging was solid.",4,33
+26,1025,spectercore,2024-10-15 02:35:53,hacking_malware,malicious,Zero-day rumor thread,"Renting out infrastructure by the hour or day, contact for current availability.",22,49
+27,1072,shadowx,2024-10-18 12:29:00,extremism,malicious,Funding drive announcement,"Coordinating a private meetup, details shared only with verified members.",41,28
+28,1028,phantomdark,2024-10-18 13:29:17,hacking_malware,malicious,Custom malware builder for sale,"Hiring a coder for a private project, paid in crypto, message with portfolio. Only dealing with verified members.",3,32
+29,1157,bytedark,2024-10-22 07:37:10,weapons,malicious,Shipping question - customs risk,"Looking for a new supplier after my last contact went dark, vouches required. No middlemen, direct contact only.",32,23
+30,1042,riven77,2024-10-22 11:51:57,benign_general,benign,"How to spot a scammer, general tips","Curious what people are using these days for their VPN, looking for recommendations.",21,26
+31,1031,fenrircore,2024-10-23 07:07:38,fraud_carding,malicious,"New phishing kit, private sale","Bulk verified account logs for sale, discount for buyers taking 10+.",13,29
+32,1162,bytezero,2024-10-24 23:57:35,drugs,malicious,Stealth packaging question,"Payment through escrow only, will not deal outside the platform's system.",0,27
+33,1138,obscura_,2024-10-25 13:03:29,hacking_malware,malicious,Custom malware builder for sale,"Have access to a number of compromised boxes, selling per-host, DM with your use case. Will update thread as stock changes.",23,-5
+34,1006,hex99,2024-10-28 04:49:03,weapons,malicious,"Parts available, discreet shipping","Have a small batch of parts available this month, discreet packaging as always.",15,5
+35,1184,null88168,2024-10-29 20:10:24,hacking_malware,malicious,"Looking for a coder, paid work","Renting out infrastructure by the hour or day, contact for current availability.",13,27
+36,1059,rivenroot,2024-10-31 23:49:27,hacking_malware,malicious,Custom malware builder for sale,"Hiring a coder for a private project, paid in crypto, message with portfolio. First come first served.",7,58
+37,1102,obscura_,2024-11-01 08:23:57,fraud_carding,malicious,"Chargeback question, need advice","Need a reliable cashout method for a specific region, willing to split profit. Prices negotiable for bulk.",10,50
+38,1023,phantom88220,2024-11-02 02:19:36,hacking_malware,malicious,"Looking for a coder, paid work","Renting out infrastructure by the hour or day, contact for current availability. First come first served.",26,47
+39,1061,shadowv2808,2024-11-04 16:24:56,weapons,malicious,"Parts available, discreet shipping","Worried about customs on this route, anyone shipped through here recently?",22,25
+40,1174,riven13,2024-11-05 16:20:19,benign_general,benign,Market etiquette for new users,"Off-topic but what has everyone been reading or watching lately, need suggestions. Prices negotiable for bulk.",14,43
+41,1165,ghostx,2024-11-09 02:27:23,drugs,malicious,"New product line, samples ready","Discount for bulk repeat buyers, ask for the loyalty menu. No middlemen, direct contact only.",3,17
+42,1100,onyx,2024-11-11 23:13:58,benign_general,benign,Site rules reminder,"Pinned thread on general operational security basics, please read before posting.",19,15
+43,1071,hex9x,2024-11-13 11:04:09,marketplace_general,malicious,"Escrow dispute, need mediator","Left feedback for my last order, decent turnaround, packaging was solid.",16,20
+44,1013,ghostzero,2024-11-14 10:24:00,extremism,malicious,Propaganda material share,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",11,3
+45,1013,riven77635,2024-11-15 21:17:44,marketplace_general,malicious,"Escrow dispute, need mediator","How much is the vendor bond on this market currently, and how long does it last? Will update thread as stock changes.",26,35
+46,1100,raven8876,2024-11-15 22:18:48,marketplace_general,malicious,Vendor bond question,"New here, been vending elsewhere for a year, moving over with existing vouches.",17,14
+47,1020,kryonight,2024-11-18 01:43:03,weapons,malicious,"Looking for supplier, serious buyers only","Open to trading, have surplus accessories, looking for specific ammo type.",18,60
+48,1178,shadow_,2024-11-19 15:52:53,benign_general,benign,PGP setup help,"New here, what's considered normal etiquette before messaging a vendor directly?",17,46
+49,1116,ravenprime,2024-11-21 14:15:58,hacking_malware,malicious,Selling access to compromised servers,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",6,8
+50,1102,null77,2024-11-21 19:37:49,fraud_carding,malicious,Looking for cashout method,"Need a reliable cashout method for a specific region, willing to split profit.",22,6
+51,1179,cipher,2024-11-22 05:49:39,weapons,malicious,Shipping question - customs risk,"Open to trading, have surplus accessories, looking for specific ammo type. Only dealing with verified members.",35,31
+52,1158,nomad77846,2024-11-22 19:25:47,weapons,malicious,"Parts available, discreet shipping","Have a small batch of parts available this month, discreet packaging as always.",38,33
+53,1163,nomadzero414,2024-11-23 15:00:12,fraud_carding,malicious,"New phishing kit, private sale","Selling fresh cards, high balance guaranteed, replacements offered within 24h.",22,23
+54,1128,fenrircore132,2024-11-23 15:37:12,hacking_malware,malicious,Selling access to compromised servers,"Have access to a number of compromised boxes, selling per-host, DM with your use case.",21,10
+55,1124,phantom88287,2024-11-24 11:09:23,extremism,malicious,Manifesto discussion,"Sharing material for the cause, redistribute within trusted circles only.",2,24
+56,1128,nomad99,2024-11-25 18:49:16,fraud_carding,malicious,"Fresh dumps available, high balance","Need a reliable cashout method for a specific region, willing to split profit.",29,8
+57,1038,phantomnight,2024-11-27 16:16:51,fraud_carding,malicious,"New phishing kit, private sale","Bulk verified account logs for sale, discount for buyers taking 10+.",40,0
+58,1158,fenrirx,2024-11-27 21:22:18,extremism,malicious,Funding drive announcement,"Sharing material for the cause, redistribute within trusted circles only.",42,23
+59,1034,cipherprime,2024-11-28 16:07:37,drugs,malicious,"Escrow release delayed, advice?","Restocked over the weekend, usual quality, DM for the menu and pricing list. Prices negotiable for bulk.",40,7
+60,1113,ghost77,2024-11-29 13:13:18,fraud_carding,malicious,"New phishing kit, private sale","Need a reliable cashout method for a specific region, willing to split profit.",40,53
+61,1201,glitch88,2024-11-29 13:45:42,drugs,malicious,Looking for trusted supplier in region,"Discount for bulk repeat buyers, ask for the loyalty menu.",20,57
+62,1190,nomad77191,2024-12-01 15:31:48,extremism,malicious,Propaganda material share,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",18,29
+63,1145,onyx13,2024-12-01 16:15:00,fraud_carding,malicious,Looking for cashout method,"Bulk verified account logs for sale, discount for buyers taking 10+.",0,60
+64,1049,phantom99,2024-12-02 01:25:46,drugs,malicious,"Escrow release delayed, advice?",Anyone have experience with this vendor's turnaround time? First order feels slow. Prices negotiable for bulk.,9,27
+65,1165,drift9x,2024-12-02 22:21:01,fraud_carding,malicious,"Chargeback question, need advice","Had a chargeback hit my account, anyone know how sellers usually handle it?",13,50
+66,1142,null,2024-12-04 06:11:23,fraud_carding,malicious,CVV service - daily updates,"Custom kit for sale, private deal only, proof available on request to serious buyers.",36,7
+67,1126,specterx160,2024-12-04 06:37:02,hacking_malware,malicious,Custom malware builder for sale,"Have access to a number of compromised boxes, selling per-host, DM with your use case.",10,52
+68,1176,byteprime371,2024-12-04 23:52:09,drugs,malicious,"Escrow release delayed, advice?","Restocked over the weekend, usual quality, DM for the menu and pricing list.",9,49
+69,1025,kryodark,2024-12-06 04:07:15,fraud_carding,malicious,"New phishing kit, private sale","Custom kit for sale, private deal only, proof available on request to serious buyers.",37,-2
+70,1152,ghostnight,2024-12-06 04:23:41,marketplace_general,malicious,Feedback for recent purchase,"Market's been down for hours, anyone else seeing the same outage?",41,-3
+71,1045,obscura99868,2024-12-06 06:21:03,hacking_malware,malicious,Selling access to compromised servers,"Renting out infrastructure by the hour or day, contact for current availability.",22,42
+72,1134,phantomcore,2024-12-08 08:43:25,fraud_carding,malicious,"Selling verified accounts, bulk discount","Selling fresh cards, high balance guaranteed, replacements offered within 24h. Will update thread as stock changes.",33,41
+73,1105,onyxv2,2024-12-10 16:02:13,benign_general,benign,PGP setup help,"Reminder from the mods: no doxxing, no personal info, follow the posted rules.",36,20
+74,1167,static99,2024-12-11 05:43:59,marketplace_general,malicious,Market downtime - status update,"Having a dispute over an order, mediator requested, ticket number in my profile. First come first served.",11,1
+75,1113,fenrir9x,2024-12-13 09:14:53,drugs,malicious,Stealth packaging question,"Looking for a mid-size supplier for my region, must have prior positive feedback.",15,21
+76,1083,hex88,2024-12-13 09:48:08,drugs,malicious,Stealth packaging question,"Looking for a mid-size supplier for my region, must have prior positive feedback. Will update thread as stock changes.",40,32
+77,1163,kryo88527,2024-12-14 21:55:49,fraud_carding,malicious,"Selling verified accounts, bulk discount","Need a reliable cashout method for a specific region, willing to split profit. Only dealing with verified members.",24,0
+78,1078,staticdark,2024-12-16 20:54:43,marketplace_general,malicious,"Escrow dispute, need mediator","How much is the vendor bond on this market currently, and how long does it last?",36,43
+79,1063,bytedark,2024-12-18 21:23:47,marketplace_general,malicious,"Escrow dispute, need mediator","Left feedback for my last order, decent turnaround, packaging was solid.",23,50
+80,1043,phantomx,2024-12-20 05:23:45,weapons,malicious,Shipping question - customs risk,"Have a small batch of parts available this month, discreet packaging as always.",17,36
+81,1055,byte9x,2024-12-21 11:15:45,marketplace_general,malicious,New vendor introduction,"Left feedback for my last order, decent turnaround, packaging was solid.",42,6
+82,1210,wraith,2024-12-22 23:02:32,benign_general,benign,Site rules reminder,"Off-topic but what has everyone been reading or watching lately, need suggestions.",39,58
+83,1217,fenrir77,2024-12-23 05:46:09,fraud_carding,malicious,"Fresh dumps available, high balance","Bulk verified account logs for sale, discount for buyers taking 10+.",1,55
+84,1073,wraithprime,2024-12-23 18:40:18,extremism,malicious,Manifesto discussion,"Coordinating a private meetup, details shared only with verified members.",23,60
+85,1009,obscura99553,2024-12-24 23:29:08,drugs,malicious,Looking for trusted supplier in region,"Restocked over the weekend, usual quality, DM for the menu and pricing list.",36,55
+86,1021,nullroot,2024-12-25 18:38:06,marketplace_general,malicious,Market downtime - status update,"How much is the vendor bond on this market currently, and how long does it last? First come first served.",29,35
+87,1161,specterzero,2024-12-26 18:48:40,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type. No middlemen, direct contact only.",31,-5
+88,1198,phantomcore,2024-12-26 23:11:14,drugs,malicious,"Escrow release delayed, advice?","Payment through escrow only, will not deal outside the platform's system. No middlemen, direct contact only.",30,20
+89,1067,obscura99126,2024-12-27 15:10:30,hacking_malware,malicious,Zero-day rumor thread,"Selling RDP access across multiple regions, uptime guaranteed for the listed period. Will update thread as stock changes.",4,52
+90,1223,obscuranight448,2024-12-27 16:03:27,benign_general,benign,Market etiquette for new users,"New here, what's considered normal etiquette before messaging a vendor directly? Only dealing with verified members.",5,12
+91,1202,vortex9x,2024-12-29 11:33:52,fraud_carding,malicious,CVV service - daily updates,"Had a chargeback hit my account, anyone know how sellers usually handle it? Will update thread as stock changes.",19,12
+92,1096,wraith_,2024-12-30 22:01:48,benign_general,benign,"How to spot a scammer, general tips","General tips thread on spotting scam listings, share your own red flags.",34,57
+93,1168,static9x847,2024-12-30 22:50:03,weapons,malicious,"Trade offer, ammo for parts","Have a small batch of parts available this month, discreet packaging as always. Will update thread as stock changes.",34,20
+94,1217,bytedark,2025-01-01 03:49:28,extremism,malicious,Funding drive announcement,"Starting a funding drive, crypto wallet shared in the pinned members-only post. Will update thread as stock changes.",45,31
+95,1113,onyxroot,2025-01-01 15:17:07,fraud_carding,malicious,CVV service - daily updates,"Daily updated list, DM for pricing tiers and sample checker output.",36,29
+96,1207,kryo9x,2025-01-03 12:41:27,fraud_carding,malicious,"Selling verified accounts, bulk discount","Custom kit for sale, private deal only, proof available on request to serious buyers.",11,1
+97,1176,cipher9x,2025-01-04 02:07:57,benign_general,benign,OPSEC basics megathread,"New here, what's considered normal etiquette before messaging a vendor directly?",30,50
+98,1032,obscura9x,2025-01-06 15:02:00,hacking_malware,malicious,Zero-day rumor thread,"Hiring a coder for a private project, paid in crypto, message with portfolio.",28,56
+99,1090,driftprime,2025-01-07 02:37:55,hacking_malware,malicious,Zero-day rumor thread,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",19,43
+100,1216,nulldark,2025-01-07 04:33:15,fraud_carding,malicious,"Selling verified accounts, bulk discount","Bulk verified account logs for sale, discount for buyers taking 10+.",10,30
+101,1175,drift9x,2025-01-07 09:02:12,drugs,malicious,Fresh batch available - restock,"Shipping worldwide, stealth methods discussed in private, vouches available on request.",38,7
+102,1153,obscura88,2025-01-10 03:30:36,drugs,malicious,Stealth packaging question,"Payment through escrow only, will not deal outside the platform's system.",13,-4
+103,1198,glitch88227,2025-01-10 04:49:20,extremism,malicious,Recruitment thread - new members,"Coordinating a private meetup, details shared only with verified members.",3,45
+104,1213,obscura513,2025-01-10 21:13:55,benign_general,benign,PGP setup help,"Curious what people are using these days for their VPN, looking for recommendations.",12,38
+105,1163,fenrir88960,2025-01-11 10:48:05,extremism,malicious,Meetup coordination - private channel,"Discussion thread on the recent manifesto circulating, thoughts welcome from members. Prices negotiable for bulk.",2,14
+106,1001,driftv2285,2025-01-11 23:21:43,extremism,malicious,Meetup coordination - private channel,"Looking to expand our private channel, message if you share the cause and want in.",13,38
+107,1196,ghostroot365,2025-01-12 11:03:41,extremism,malicious,Funding drive announcement,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",8,28
+108,1029,kryozero77,2025-01-12 18:59:37,fraud_carding,malicious,"Chargeback question, need advice","Daily updated list, DM for pricing tiers and sample checker output. Only dealing with verified members.",0,47
+109,1047,driftroot350,2025-01-13 11:20:08,marketplace_general,malicious,New vendor introduction,"New here, been vending elsewhere for a year, moving over with existing vouches.",23,34
+110,1134,hexv2140,2025-01-13 13:05:57,hacking_malware,malicious,Zero-day rumor thread,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",27,57
+111,1021,fenrir,2025-01-14 19:55:57,weapons,malicious,"Trade offer, ammo for parts","Open to trading, have surplus accessories, looking for specific ammo type.",30,52
+112,1074,vortexcore,2025-01-14 23:22:19,benign_general,benign,Market etiquette for new users,"Reminder from the mods: no doxxing, no personal info, follow the posted rules.",31,60
+113,1206,glitch13,2025-01-15 09:45:36,weapons,malicious,Accessory bundle for sale,"Have a small batch of parts available this month, discreet packaging as always.",24,43
+114,1006,phantomnight,2025-01-15 11:17:41,fraud_carding,malicious,"New phishing kit, private sale","Need a reliable cashout method for a specific region, willing to split profit. Only dealing with verified members.",43,49
+115,1172,vortex13,2025-01-16 10:51:44,hacking_malware,malicious,Zero-day rumor thread,"Have access to a number of compromised boxes, selling per-host, DM with your use case.",41,47
+116,1024,onyx88,2025-01-19 09:40:15,hacking_malware,malicious,"RDP access, various countries","Selling RDP access across multiple regions, uptime guaranteed for the listed period. Prices negotiable for bulk.",29,11
+117,1137,fenrir88430,2025-01-20 09:47:14,hacking_malware,malicious,"Looking for a coder, paid work","Have access to a number of compromised boxes, selling per-host, DM with your use case.",26,58
+118,1204,hexroot,2025-01-20 12:32:57,marketplace_general,malicious,New vendor introduction,"Having a dispute over an order, mediator requested, ticket number in my profile. No middlemen, direct contact only.",27,32
+119,1109,kryozero,2025-01-20 19:36:46,weapons,malicious,"Looking for supplier, serious buyers only","Worried about customs on this route, anyone shipped through here recently?",31,31
+120,1225,hexdark,2025-01-21 07:35:33,weapons,malicious,"Trade offer, ammo for parts","Bundle deal this week, message for the full list and current prices.",2,33
+121,1138,cipherv2,2025-01-23 08:00:17,drugs,malicious,Fresh batch available - restock,"Looking for a mid-size supplier for my region, must have prior positive feedback. Prices negotiable for bulk.",24,15
+122,1155,phantomnight663,2025-01-23 15:35:36,hacking_malware,malicious,"RDP access, various countries","Heard rumors of an unpatched issue in a popular product, anyone have more info? Only dealing with verified members.",21,40
+123,1142,obscura77,2025-01-24 23:02:59,benign_general,benign,Site rules reminder,"Weekly thread to check in, how's everyone's week been on here? No middlemen, direct contact only.",17,46
+124,1213,glitchdark,2025-01-27 03:29:17,fraud_carding,malicious,"Selling verified accounts, bulk discount","Need a reliable cashout method for a specific region, willing to split profit.",7,42
+125,1081,ghost944,2025-01-27 04:27:29,marketplace_general,malicious,New vendor introduction,"New here, been vending elsewhere for a year, moving over with existing vouches.",26,17
+126,1226,wraithcore,2025-01-27 10:41:43,extremism,malicious,Manifesto discussion,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",16,25
+127,1046,wraith77,2025-02-01 02:39:31,marketplace_general,malicious,Feedback for recent purchase,"New here, been vending elsewhere for a year, moving over with existing vouches. Prices negotiable for bulk.",9,46
+128,1011,phantomprime,2025-02-02 17:28:44,marketplace_general,malicious,Feedback for recent purchase,"New here, been vending elsewhere for a year, moving over with existing vouches. First come first served.",17,54
+129,1002,wraith13,2025-02-09 13:31:59,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type. Will update thread as stock changes.",45,3
+130,1140,kryo99828,2025-02-09 21:41:19,extremism,malicious,Funding drive announcement,"Starting a funding drive, crypto wallet shared in the pinned members-only post. No middlemen, direct contact only.",8,0
+131,1179,raven13,2025-02-11 07:13:35,extremism,malicious,Funding drive announcement,"Coordinating a private meetup, details shared only with verified members.",29,46
+132,1149,obscura,2025-02-11 07:34:24,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type.",32,10
+133,1110,obscura_,2025-02-11 18:28:22,hacking_malware,malicious,"RDP access, various countries","Renting out infrastructure by the hour or day, contact for current availability. Prices negotiable for bulk.",24,59
+134,1220,specterroot,2025-02-12 04:30:15,marketplace_general,malicious,"Escrow dispute, need mediator","How much is the vendor bond on this market currently, and how long does it last?",13,35
+135,1149,phantom_,2025-02-15 18:48:47,weapons,malicious,"Trade offer, ammo for parts","Bundle deal this week, message for the full list and current prices.",21,47
+136,1181,raven9x272,2025-02-20 19:38:50,marketplace_general,malicious,"Escrow dispute, need mediator","How much is the vendor bond on this market currently, and how long does it last?",14,20
+137,1207,nomad9x846,2025-02-21 11:39:34,drugs,malicious,"Escrow release delayed, advice?",Anyone have experience with this vendor's turnaround time? First order feels slow. Will update thread as stock changes.,3,18
+138,1210,driftzero,2025-02-23 04:48:55,fraud_carding,malicious,"Fresh dumps available, high balance","Had a chargeback hit my account, anyone know how sellers usually handle it?",44,21
+139,1167,cipherdark,2025-02-23 08:41:01,drugs,malicious,"Escrow release delayed, advice?",Anyone have experience with this vendor's turnaround time? First order feels slow.,22,22
+140,1200,vortex88551,2025-02-24 18:39:22,marketplace_general,malicious,New vendor introduction,"Left feedback for my last order, decent turnaround, packaging was solid.",13,28
+141,1145,spectercore989,2025-02-26 16:12:07,benign_general,benign,Off-topic: what are you reading lately,"Curious what people are using these days for their VPN, looking for recommendations. No middlemen, direct contact only.",14,23
+142,1176,kryox,2025-02-26 18:48:13,benign_general,benign,Which VPN do you use?,"Struggling to get my PGP key set up correctly, any beginner-friendly guides?",32,46
+143,1197,onyx13940,2025-03-01 02:20:19,extremism,malicious,Manifesto discussion,"Discussion thread on the recent manifesto circulating, thoughts welcome from members. Prices negotiable for bulk.",4,36
+144,1191,ghost9x683,2025-03-01 08:52:52,extremism,malicious,Funding drive announcement,"Looking to expand our private channel, message if you share the cause and want in. Prices negotiable for bulk.",7,25
+145,1025,null13,2025-03-01 12:10:03,fraud_carding,malicious,"Fresh dumps available, high balance","Custom kit for sale, private deal only, proof available on request to serious buyers. First come first served.",29,27
+146,1131,ghostcore971,2025-03-02 15:08:33,fraud_carding,malicious,CVV service - daily updates,"Selling fresh cards, high balance guaranteed, replacements offered within 24h. First come first served.",36,44
+147,1158,ghost9x,2025-03-05 08:30:32,extremism,malicious,Manifesto discussion,"Sharing material for the cause, redistribute within trusted circles only.",29,37
+148,1143,null9x,2025-03-09 06:26:54,drugs,malicious,Looking for trusted supplier in region,"Looking for a mid-size supplier for my region, must have prior positive feedback.",8,33
+149,1047,onyxzero721,2025-03-10 22:35:19,hacking_malware,malicious,"Looking for a coder, paid work","Have access to a number of compromised boxes, selling per-host, DM with your use case. No middlemen, direct contact only.",32,40
+150,1027,hexdark,2025-03-11 06:33:17,marketplace_general,malicious,Market downtime - status update,"Left feedback for my last order, decent turnaround, packaging was solid.",7,19
+151,1203,riven99,2025-03-11 13:31:58,drugs,malicious,"Escrow release delayed, advice?",Anyone have experience with this vendor's turnaround time? First order feels slow. Will update thread as stock changes.,43,-2
+152,1218,fenrirroot,2025-03-12 04:06:26,benign_general,benign,"How to spot a scammer, general tips","Curious what people are using these days for their VPN, looking for recommendations.",14,13
+153,1155,obscurav2,2025-03-14 08:30:33,weapons,malicious,Accessory bundle for sale,"Looking for a new supplier after my last contact went dark, vouches required. No middlemen, direct contact only.",0,-4
+154,1033,vortex88,2025-03-17 16:40:19,extremism,malicious,Funding drive announcement,"Sharing material for the cause, redistribute within trusted circles only.",36,44
+155,1195,byte13,2025-03-19 04:24:28,extremism,malicious,Meetup coordination - private channel,"Coordinating a private meetup, details shared only with verified members.",36,22
+156,1034,rivennight,2025-03-19 06:24:24,benign_general,benign,Market etiquette for new users,"New here, what's considered normal etiquette before messaging a vendor directly? Will update thread as stock changes.",31,13
+157,1198,glitch99,2025-03-20 10:05:41,marketplace_general,malicious,Market downtime - status update,"Having a dispute over an order, mediator requested, ticket number in my profile.",4,29
+158,1191,onyxcore,2025-03-21 00:31:40,hacking_malware,malicious,Selling access to compromised servers,"Builder tool for sale, private support included, no source code shared publicly.",0,0
+159,1034,wraithprime150,2025-03-21 21:11:03,marketplace_general,malicious,Feedback for recent purchase,"New here, been vending elsewhere for a year, moving over with existing vouches. Only dealing with verified members.",33,47
+160,1119,raven77,2025-03-22 02:26:49,weapons,malicious,"Trade offer, ammo for parts","Have a small batch of parts available this month, discreet packaging as always.",5,50
+161,1201,shadow77,2025-03-24 08:44:16,extremism,malicious,Recruitment thread - new members,"Discussion thread on the recent manifesto circulating, thoughts welcome from members. No middlemen, direct contact only.",33,34
+162,1188,onyxdark235,2025-03-24 08:49:10,weapons,malicious,"Trade offer, ammo for parts","Have a small batch of parts available this month, discreet packaging as always. Will update thread as stock changes.",18,51
+163,1189,nomadprime405,2025-03-26 07:24:55,extremism,malicious,Manifesto discussion,"Looking to expand our private channel, message if you share the cause and want in.",10,44
+164,1171,cipherzero,2025-03-27 14:55:29,extremism,malicious,Manifesto discussion,"Sharing material for the cause, redistribute within trusted circles only.",24,23
+165,1120,wraith_,2025-03-30 08:43:21,extremism,malicious,Meetup coordination - private channel,"Looking to expand our private channel, message if you share the cause and want in.",6,9
+166,1200,glitch77,2025-03-30 15:03:56,extremism,malicious,Manifesto discussion,"Looking to expand our private channel, message if you share the cause and want in.",10,2
+167,1188,wraithprime,2025-04-03 00:10:06,weapons,malicious,"Trade offer, ammo for parts","Looking for a new supplier after my last contact went dark, vouches required.",9,33
+168,1082,raven77,2025-04-03 18:24:14,marketplace_general,malicious,New vendor introduction,"Having a dispute over an order, mediator requested, ticket number in my profile.",24,25
+169,1007,obscurazero170,2025-04-07 02:01:40,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type.",33,49
+170,1137,byteroot12,2025-04-07 04:55:56,hacking_malware,malicious,Custom malware builder for sale,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",13,26
+171,1029,phantom,2025-04-07 12:45:44,marketplace_general,malicious,Market downtime - status update,"Having a dispute over an order, mediator requested, ticket number in my profile.",9,4
+172,1144,wraith88204,2025-04-14 00:19:29,benign_general,benign,PGP setup help,"Pinned thread on general operational security basics, please read before posting. No middlemen, direct contact only.",23,54
+173,1050,hexcore,2025-04-14 13:18:08,marketplace_general,malicious,Feedback for recent purchase,"Having a dispute over an order, mediator requested, ticket number in my profile.",37,2
+174,1181,specter9x,2025-04-14 14:24:32,extremism,malicious,Recruitment thread - new members,"Sharing material for the cause, redistribute within trusted circles only.",31,18
+175,1042,ghostprime,2025-04-15 11:49:01,marketplace_general,malicious,Feedback for recent purchase,"Market's been down for hours, anyone else seeing the same outage?",12,10
+176,1027,staticv2,2025-04-18 10:13:34,benign_general,benign,Site rules reminder,"New here, what's considered normal etiquette before messaging a vendor directly?",38,30
+177,1192,phantom13,2025-04-21 02:55:22,marketplace_general,malicious,Market downtime - status update,"How much is the vendor bond on this market currently, and how long does it last? No middlemen, direct contact only.",20,47
+178,1035,fenrir,2025-04-24 14:51:25,marketplace_general,malicious,Feedback for recent purchase,"How much is the vendor bond on this market currently, and how long does it last? Only dealing with verified members.",43,15
+179,1210,raven88,2025-04-26 20:06:14,marketplace_general,malicious,Vendor bond question,"How much is the vendor bond on this market currently, and how long does it last?",12,-5
+180,1150,ghostdark972,2025-04-27 02:26:13,weapons,malicious,"Trade offer, ammo for parts","Open to trading, have surplus accessories, looking for specific ammo type.",29,38
+181,1063,kryozero,2025-04-29 09:13:01,marketplace_general,malicious,Vendor bond question,"New here, been vending elsewhere for a year, moving over with existing vouches.",20,8
+182,1036,hex88,2025-04-30 12:30:51,benign_general,benign,"How to spot a scammer, general tips","Curious what people are using these days for their VPN, looking for recommendations. Will update thread as stock changes.",1,45
+183,1106,shadowroot108,2025-04-30 16:16:11,weapons,malicious,Shipping question - customs risk,"Open to trading, have surplus accessories, looking for specific ammo type.",26,5
+184,1078,staticzero,2025-05-03 01:26:30,marketplace_general,malicious,Feedback for recent purchase,"Market's been down for hours, anyone else seeing the same outage?",14,33
+185,1189,obscuracore489,2025-05-03 22:09:32,extremism,malicious,Manifesto discussion,"Coordinating a private meetup, details shared only with verified members. Will update thread as stock changes.",0,50
+186,1013,phantomnight661,2025-05-04 05:21:54,fraud_carding,malicious,"Chargeback question, need advice","Had a chargeback hit my account, anyone know how sellers usually handle it?",29,35
+187,1147,wraithzero,2025-05-04 09:03:04,marketplace_general,malicious,"Escrow dispute, need mediator","Market's been down for hours, anyone else seeing the same outage?",10,18
+188,1047,shadow99,2025-05-05 07:52:41,hacking_malware,malicious,Selling access to compromised servers,"Builder tool for sale, private support included, no source code shared publicly.",13,12
+189,1089,byte99,2025-05-05 14:18:39,marketplace_general,malicious,Market downtime - status update,"Left feedback for my last order, decent turnaround, packaging was solid.",9,23
+190,1072,hexnight,2025-05-05 20:27:23,benign_general,benign,Weekly check-in thread,"Pinned thread on general operational security basics, please read before posting.",30,26
+191,1070,nullzero157,2025-05-07 10:18:23,fraud_carding,malicious,Looking for cashout method,"Custom kit for sale, private deal only, proof available on request to serious buyers.",10,15
+192,1132,obscurazero,2025-05-11 06:10:51,extremism,malicious,Manifesto discussion,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",11,57
+193,1191,byteprime,2025-05-13 05:13:28,weapons,malicious,"Parts available, discreet shipping","Looking for a new supplier after my last contact went dark, vouches required. Only dealing with verified members.",31,42
+194,1125,hexdark872,2025-05-15 21:12:21,extremism,malicious,Recruitment thread - new members,"Sharing material for the cause, redistribute within trusted circles only.",25,36
+195,1118,shadowv2957,2025-05-17 00:29:31,drugs,malicious,"Reliable vendor, EU/US shipping","Payment through escrow only, will not deal outside the platform's system.",8,44
+196,1202,null_,2025-05-17 21:27:44,benign_general,benign,Market etiquette for new users,"New here, what's considered normal etiquette before messaging a vendor directly?",9,-2
+197,1140,rivendark,2025-05-19 13:34:35,marketplace_general,malicious,Vendor bond question,"Having a dispute over an order, mediator requested, ticket number in my profile.",4,6
+198,1198,wraith99,2025-05-20 08:00:38,hacking_malware,malicious,Zero-day rumor thread,"Renting out infrastructure by the hour or day, contact for current availability. No middlemen, direct contact only.",22,-2
+199,1113,obscuradark,2025-05-21 23:39:24,benign_general,benign,Weekly check-in thread,"Struggling to get my PGP key set up correctly, any beginner-friendly guides?",18,38
+200,1191,hex,2025-05-22 03:20:54,benign_general,benign,Which VPN do you use?,"Struggling to get my PGP key set up correctly, any beginner-friendly guides?",10,0
+201,1192,kryozero357,2025-05-22 14:51:46,extremism,malicious,Meetup coordination - private channel,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",29,30
+202,1212,glitchzero,2025-05-22 19:23:31,fraud_carding,malicious,"Chargeback question, need advice","Bulk verified account logs for sale, discount for buyers taking 10+. Only dealing with verified members.",0,9
+203,1212,kryo99,2025-05-27 22:15:25,hacking_malware,malicious,"RDP access, various countries","Heard rumors of an unpatched issue in a popular product, anyone have more info?",21,56
+204,1208,rivendark,2025-05-28 09:22:19,marketplace_general,malicious,Feedback for recent purchase,"New here, been vending elsewhere for a year, moving over with existing vouches. Only dealing with verified members.",5,1
+205,1075,ghost_731,2025-05-29 21:20:34,fraud_carding,malicious,"New phishing kit, private sale","Custom kit for sale, private deal only, proof available on request to serious buyers.",30,53
+206,1049,byte99,2025-05-29 21:51:47,weapons,malicious,"Trade offer, ammo for parts","Have a small batch of parts available this month, discreet packaging as always.",10,4
+207,1211,drift77,2025-05-30 11:21:10,weapons,malicious,"Parts available, discreet shipping","Looking for a new supplier after my last contact went dark, vouches required.",22,22
+208,1104,byteroot,2025-05-31 04:56:58,hacking_malware,malicious,Selling access to compromised servers,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",27,12
+209,1212,nomad,2025-05-31 11:54:39,benign_general,benign,OPSEC basics megathread,"New here, what's considered normal etiquette before messaging a vendor directly?",29,47
+210,1198,phantom_,2025-06-01 07:38:35,benign_general,benign,Which VPN do you use?,"Struggling to get my PGP key set up correctly, any beginner-friendly guides?",5,55
+211,1179,glitchdark,2025-06-04 06:26:15,hacking_malware,malicious,Custom malware builder for sale,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",7,60
+212,1018,null13445,2025-06-08 17:05:20,hacking_malware,malicious,Custom malware builder for sale,"Renting out infrastructure by the hour or day, contact for current availability.",20,50
+213,1068,bytenight,2025-06-10 01:29:27,marketplace_general,malicious,Vendor bond question,"New here, been vending elsewhere for a year, moving over with existing vouches.",45,3
+214,1030,cipherroot,2025-06-10 11:28:42,fraud_carding,malicious,"New phishing kit, private sale","Need a reliable cashout method for a specific region, willing to split profit.",26,37
+215,1054,phantom,2025-06-11 22:08:46,marketplace_general,malicious,Market downtime - status update,"Having a dispute over an order, mediator requested, ticket number in my profile.",19,45
+216,1016,ravennight106,2025-06-14 22:03:42,hacking_malware,malicious,"Looking for a coder, paid work","Have access to a number of compromised boxes, selling per-host, DM with your use case.",35,47
+217,1163,specterzero,2025-06-18 08:12:48,extremism,malicious,Recruitment thread - new members,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",4,35
+218,1082,staticnight,2025-06-19 11:33:03,hacking_malware,malicious,"Looking for a coder, paid work","Hiring a coder for a private project, paid in crypto, message with portfolio.",44,25
+219,1101,shadowdark456,2025-06-19 18:21:45,benign_general,benign,Market etiquette for new users,"Weekly thread to check in, how's everyone's week been on here?",17,8
+220,1222,onyx9x947,2025-06-20 01:16:01,fraud_carding,malicious,"Chargeback question, need advice","Daily updated list, DM for pricing tiers and sample checker output.",26,14
+221,1068,kryocore,2025-06-20 23:43:00,hacking_malware,malicious,"Looking for a coder, paid work","Builder tool for sale, private support included, no source code shared publicly.",32,23
+222,1108,nomad_,2025-06-24 07:53:25,weapons,malicious,"Parts available, discreet shipping","Looking for a new supplier after my last contact went dark, vouches required. Only dealing with verified members.",20,20
+223,1151,kryox,2025-06-24 22:46:26,marketplace_general,malicious,"Escrow dispute, need mediator","Having a dispute over an order, mediator requested, ticket number in my profile.",45,-1
+224,1192,staticzero,2025-06-25 08:29:27,extremism,malicious,Funding drive announcement,"Discussion thread on the recent manifesto circulating, thoughts welcome from members. First come first served.",29,-5
+225,1040,nomadx466,2025-06-26 11:56:55,benign_general,benign,Site rules reminder,"Curious what people are using these days for their VPN, looking for recommendations.",43,28
+226,1120,static_,2025-06-29 01:09:46,fraud_carding,malicious,Looking for cashout method,"Bulk verified account logs for sale, discount for buyers taking 10+.",8,29
+227,1045,null88757,2025-06-29 15:39:18,fraud_carding,malicious,"Chargeback question, need advice","Need a reliable cashout method for a specific region, willing to split profit. Only dealing with verified members.",8,2
+228,1006,vortex_,2025-06-30 15:16:24,extremism,malicious,Recruitment thread - new members,"Coordinating a private meetup, details shared only with verified members.",10,-5
+229,1057,onyxx,2025-07-01 09:53:34,hacking_malware,malicious,Selling access to compromised servers,"Selling RDP access across multiple regions, uptime guaranteed for the listed period. Will update thread as stock changes.",14,-2
+230,1165,glitch9x789,2025-07-01 10:44:19,benign_general,benign,Which VPN do you use?,"Weekly thread to check in, how's everyone's week been on here? Prices negotiable for bulk.",32,60
+231,1100,wraithzero,2025-07-01 19:28:50,hacking_malware,malicious,Selling access to compromised servers,"Heard rumors of an unpatched issue in a popular product, anyone have more info? No middlemen, direct contact only.",27,18
+232,1179,staticx,2025-07-07 10:33:37,weapons,malicious,Shipping question - customs risk,"Open to trading, have surplus accessories, looking for specific ammo type.",40,23
+233,1222,byte88,2025-07-07 12:43:47,hacking_malware,malicious,Selling access to compromised servers,"Builder tool for sale, private support included, no source code shared publicly.",25,43
+234,1121,ghostroot373,2025-07-07 16:16:08,extremism,malicious,Recruitment thread - new members,"Looking to expand our private channel, message if you share the cause and want in.",9,17
+235,1073,null77298,2025-07-08 14:05:09,hacking_malware,malicious,Custom malware builder for sale,"Selling RDP access across multiple regions, uptime guaranteed for the listed period. No middlemen, direct contact only.",39,48
+236,1075,nomaddark76,2025-07-10 07:04:41,hacking_malware,malicious,Selling access to compromised servers,"Selling RDP access across multiple regions, uptime guaranteed for the listed period. Will update thread as stock changes.",32,52
+237,1054,nomadnight,2025-07-10 11:05:35,drugs,malicious,"New product line, samples ready","Discount for bulk repeat buyers, ask for the loyalty menu.",18,27
+238,1066,kryoroot531,2025-07-10 18:58:54,weapons,malicious,Accessory bundle for sale,"Bundle deal this week, message for the full list and current prices. Only dealing with verified members.",35,10
+239,1054,wraith290,2025-07-11 02:58:56,weapons,malicious,Shipping question - customs risk,"Open to trading, have surplus accessories, looking for specific ammo type.",26,38
+240,1169,phantomv2,2025-07-15 01:42:49,fraud_carding,malicious,"Fresh dumps available, high balance","Custom kit for sale, private deal only, proof available on request to serious buyers. Will update thread as stock changes.",14,32
+241,1187,rivennight,2025-07-17 08:50:08,fraud_carding,malicious,"Selling verified accounts, bulk discount","Bulk verified account logs for sale, discount for buyers taking 10+.",17,51
+242,1176,staticnight,2025-07-18 22:05:47,hacking_malware,malicious,"Looking for a coder, paid work","Renting out infrastructure by the hour or day, contact for current availability.",13,47
+243,1155,nullprime,2025-07-21 02:13:08,extremism,malicious,Meetup coordination - private channel,"Looking to expand our private channel, message if you share the cause and want in.",29,29
+244,1182,wraithv2875,2025-07-21 08:36:05,extremism,malicious,Meetup coordination - private channel,"Coordinating a private meetup, details shared only with verified members. No middlemen, direct contact only.",17,52
+245,1218,hexzero473,2025-07-21 12:46:29,weapons,malicious,"Parts available, discreet shipping","Bundle deal this week, message for the full list and current prices.",37,47
+246,1030,hex88,2025-07-22 20:19:00,benign_general,benign,Off-topic: what are you reading lately,"Off-topic but what has everyone been reading or watching lately, need suggestions.",17,59
+247,1143,hex88519,2025-07-23 12:39:29,benign_general,benign,Site rules reminder,"Pinned thread on general operational security basics, please read before posting.",8,-2
+248,1186,riven13,2025-07-24 14:31:28,fraud_carding,malicious,CVV service - daily updates,"Had a chargeback hit my account, anyone know how sellers usually handle it?",4,5
+249,1220,kryodark,2025-07-25 09:33:25,extremism,malicious,Propaganda material share,"Coordinating a private meetup, details shared only with verified members.",4,8
+250,1069,obscurazero,2025-07-29 06:47:24,drugs,malicious,Fresh batch available - restock,"Looking for a mid-size supplier for my region, must have prior positive feedback.",26,4
+251,1228,cipher77,2025-07-29 15:14:48,marketplace_general,malicious,"Escrow dispute, need mediator","Left feedback for my last order, decent turnaround, packaging was solid.",6,8
+252,1117,phantom,2025-07-29 23:50:34,drugs,malicious,"Escrow release delayed, advice?","Discount for bulk repeat buyers, ask for the loyalty menu. Prices negotiable for bulk.",39,51
+253,1016,kryo,2025-07-30 10:44:20,marketplace_general,malicious,"Escrow dispute, need mediator","Having a dispute over an order, mediator requested, ticket number in my profile.",1,17
+254,1039,hexv2766,2025-08-01 22:33:11,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type.",11,20
+255,1072,kryoroot,2025-08-02 00:45:54,marketplace_general,malicious,Vendor bond question,"Left feedback for my last order, decent turnaround, packaging was solid.",30,54
+256,1084,rivenv2,2025-08-02 04:56:17,fraud_carding,malicious,CVV service - daily updates,"Daily updated list, DM for pricing tiers and sample checker output.",44,55
+257,1109,phantomzero398,2025-08-04 01:33:22,hacking_malware,malicious,Selling access to compromised servers,"Builder tool for sale, private support included, no source code shared publicly.",38,12
+258,1223,fenrirzero,2025-08-08 15:16:16,weapons,malicious,Shipping question - customs risk,"Open to trading, have surplus accessories, looking for specific ammo type.",35,52
+259,1021,nullcore,2025-08-09 10:18:49,fraud_carding,malicious,CVV service - daily updates,"Had a chargeback hit my account, anyone know how sellers usually handle it?",14,17
+260,1112,fenrirzero224,2025-08-09 10:28:19,extremism,malicious,Meetup coordination - private channel,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",6,26
+261,1176,specterx,2025-08-09 16:42:41,weapons,malicious,Shipping question - customs risk,"Bundle deal this week, message for the full list and current prices.",8,27
+262,1108,bytezero,2025-08-10 09:06:55,fraud_carding,malicious,"Chargeback question, need advice","Daily updated list, DM for pricing tiers and sample checker output.",29,24
+263,1044,nullv2,2025-08-10 16:28:18,fraud_carding,malicious,Looking for cashout method,"Bulk verified account logs for sale, discount for buyers taking 10+.",20,27
+264,1209,ciphercore,2025-08-11 02:54:28,drugs,malicious,Looking for trusted supplier in region,"Looking for a mid-size supplier for my region, must have prior positive feedback.",35,3
+265,1081,onyx9x,2025-08-11 09:58:50,benign_general,benign,PGP setup help,"New here, what's considered normal etiquette before messaging a vendor directly?",32,36
+266,1024,ciphernight,2025-08-12 02:56:07,extremism,malicious,Recruitment thread - new members,"Sharing material for the cause, redistribute within trusted circles only.",8,54
+267,1117,onyxv2,2025-08-12 17:24:01,drugs,malicious,Fresh batch available - restock,"Shipping worldwide, stealth methods discussed in private, vouches available on request.",20,12
+268,1183,ravenzero,2025-08-14 22:09:20,fraud_carding,malicious,"New phishing kit, private sale","Had a chargeback hit my account, anyone know how sellers usually handle it? Only dealing with verified members.",24,20
+269,1025,obscurax,2025-08-15 22:28:33,drugs,malicious,"Escrow release delayed, advice?","Discount for bulk repeat buyers, ask for the loyalty menu.",23,53
+270,1049,wraithx,2025-08-18 09:54:42,weapons,malicious,"Parts available, discreet shipping","Bundle deal this week, message for the full list and current prices. Will update thread as stock changes.",6,26
+271,1057,glitch_851,2025-08-19 00:05:37,extremism,malicious,Recruitment thread - new members,"Coordinating a private meetup, details shared only with verified members. First come first served.",5,23
+272,1022,ravendark,2025-08-20 20:50:01,fraud_carding,malicious,"Chargeback question, need advice","Bulk verified account logs for sale, discount for buyers taking 10+.",4,31
+273,1198,riven_,2025-08-21 07:50:51,fraud_carding,malicious,"Selling verified accounts, bulk discount","Custom kit for sale, private deal only, proof available on request to serious buyers.",2,24
+274,1028,obscuraroot,2025-08-21 07:56:51,fraud_carding,malicious,"Chargeback question, need advice","Need a reliable cashout method for a specific region, willing to split profit. Only dealing with verified members.",21,18
+275,1077,vortex77,2025-08-21 18:34:08,marketplace_general,malicious,"Escrow dispute, need mediator","New here, been vending elsewhere for a year, moving over with existing vouches.",20,48
+276,1143,cipher99,2025-08-22 07:12:30,weapons,malicious,Accessory bundle for sale,"Bundle deal this week, message for the full list and current prices.",13,47
+277,1064,kryo88,2025-08-24 00:03:58,marketplace_general,malicious,Feedback for recent purchase,"Left feedback for my last order, decent turnaround, packaging was solid.",22,52
+278,1041,wraith99455,2025-08-24 14:44:44,benign_general,benign,"How to spot a scammer, general tips","Weekly thread to check in, how's everyone's week been on here?",15,41
+279,1084,cipherzero,2025-08-26 05:00:00,benign_general,benign,PGP setup help,"Struggling to get my PGP key set up correctly, any beginner-friendly guides?",33,41
+280,1168,byteroot,2025-08-29 05:39:50,marketplace_general,malicious,"Escrow dispute, need mediator","New here, been vending elsewhere for a year, moving over with existing vouches. Only dealing with verified members.",21,34
+281,1165,driftprime,2025-08-29 14:36:21,extremism,malicious,Recruitment thread - new members,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",40,46
+282,1003,onyxdark,2025-08-31 09:11:41,fraud_carding,malicious,"Selling verified accounts, bulk discount","Selling fresh cards, high balance guaranteed, replacements offered within 24h.",40,41
+283,1205,shadow_,2025-08-31 14:14:09,extremism,malicious,Funding drive announcement,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",37,20
+284,1209,nomad_,2025-09-01 21:07:35,fraud_carding,malicious,CVV service - daily updates,"Had a chargeback hit my account, anyone know how sellers usually handle it? Will update thread as stock changes.",37,41
+285,1189,hexx653,2025-09-01 21:13:23,extremism,malicious,Meetup coordination - private channel,"Sharing material for the cause, redistribute within trusted circles only. Only dealing with verified members.",39,52
+286,1204,byte9x,2025-09-03 14:16:11,drugs,malicious,"Reliable vendor, EU/US shipping","Payment through escrow only, will not deal outside the platform's system.",15,49
+287,1002,ghost88,2025-09-05 01:18:52,weapons,malicious,"Parts available, discreet shipping","Bundle deal this week, message for the full list and current prices.",34,10
+288,1168,byte492,2025-09-07 17:07:59,marketplace_general,malicious,Vendor bond question,"Left feedback for my last order, decent turnaround, packaging was solid.",28,40
+289,1088,shadowdark,2025-09-07 20:01:56,extremism,malicious,Propaganda material share,"Starting a funding drive, crypto wallet shared in the pinned members-only post. First come first served.",43,49
+290,1091,phantomcore,2025-09-07 20:25:43,extremism,malicious,Propaganda material share,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",3,47
+291,1126,fenrirdark,2025-09-08 02:25:14,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type.",16,10
+292,1025,nomadcore496,2025-09-09 06:53:21,weapons,malicious,"Looking for supplier, serious buyers only","Open to trading, have surplus accessories, looking for specific ammo type.",27,29
+293,1092,hexprime,2025-09-10 08:33:09,marketplace_general,malicious,"Escrow dispute, need mediator","How much is the vendor bond on this market currently, and how long does it last?",34,40
+294,1069,nomad13378,2025-09-11 06:05:25,fraud_carding,malicious,CVV service - daily updates,"Daily updated list, DM for pricing tiers and sample checker output.",35,11
+295,1034,phantomx,2025-09-12 20:57:11,weapons,malicious,"Parts available, discreet shipping","Looking for a new supplier after my last contact went dark, vouches required.",16,38
+296,1191,onyxx557,2025-09-13 09:11:07,benign_general,benign,OPSEC basics megathread,"Reminder from the mods: no doxxing, no personal info, follow the posted rules. First come first served.",11,19
+297,1131,static77829,2025-09-14 13:50:54,hacking_malware,malicious,Custom malware builder for sale,"Have access to a number of compromised boxes, selling per-host, DM with your use case.",33,40
+298,1079,driftv2735,2025-09-15 03:15:40,marketplace_general,malicious,Market downtime - status update,"Having a dispute over an order, mediator requested, ticket number in my profile.",6,12
+299,1225,rivenx252,2025-09-15 04:08:59,marketplace_general,malicious,Market downtime - status update,"Left feedback for my last order, decent turnaround, packaging was solid.",40,4
+300,1187,cipher900,2025-09-15 17:50:12,marketplace_general,malicious,Feedback for recent purchase,"New here, been vending elsewhere for a year, moving over with existing vouches. No middlemen, direct contact only.",35,1
+301,1027,specterv2,2025-09-15 19:13:44,drugs,malicious,Fresh batch available - restock,"Looking for a mid-size supplier for my region, must have prior positive feedback. First come first served.",35,39
+302,1144,kryo9x,2025-09-16 19:52:09,marketplace_general,malicious,New vendor introduction,"New here, been vending elsewhere for a year, moving over with existing vouches. No middlemen, direct contact only.",37,39
+303,1027,raven88,2025-09-18 00:01:58,extremism,malicious,Manifesto discussion,"Looking to expand our private channel, message if you share the cause and want in. No middlemen, direct contact only.",41,57
+304,1188,byte9x,2025-09-18 01:10:54,fraud_carding,malicious,"New phishing kit, private sale","Daily updated list, DM for pricing tiers and sample checker output. Prices negotiable for bulk.",29,29
+305,1181,glitchcore434,2025-09-19 17:32:47,extremism,malicious,Meetup coordination - private channel,"Sharing material for the cause, redistribute within trusted circles only. Will update thread as stock changes.",34,-1
+306,1043,shadow77,2025-09-20 05:53:02,extremism,malicious,Recruitment thread - new members,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",25,49
+307,1076,ghost13,2025-09-21 09:13:43,benign_general,benign,OPSEC basics megathread,"General tips thread on spotting scam listings, share your own red flags. Will update thread as stock changes.",10,43
+308,1057,static77657,2025-09-21 11:52:23,weapons,malicious,"Looking for supplier, serious buyers only","Looking for a new supplier after my last contact went dark, vouches required.",23,8
+309,1176,nullx,2025-09-22 18:38:12,extremism,malicious,Funding drive announcement,"Looking to expand our private channel, message if you share the cause and want in.",42,11
+310,1107,vortexzero,2025-09-23 07:24:26,marketplace_general,malicious,"Escrow dispute, need mediator","Left feedback for my last order, decent turnaround, packaging was solid.",22,55
+311,1130,nomadcore,2025-09-24 16:05:40,benign_general,benign,OPSEC basics megathread,"Weekly thread to check in, how's everyone's week been on here?",22,59
+312,1167,vortex88595,2025-09-26 14:54:05,extremism,malicious,Propaganda material share,"Starting a funding drive, crypto wallet shared in the pinned members-only post. Only dealing with verified members.",21,40
+313,1040,ghost77312,2025-09-30 20:12:09,marketplace_general,malicious,Vendor bond question,"Left feedback for my last order, decent turnaround, packaging was solid.",7,7
+314,1202,hex99,2025-10-07 13:01:07,weapons,malicious,"Looking for supplier, serious buyers only","Have a small batch of parts available this month, discreet packaging as always.",17,2
+315,1224,raven88,2025-10-07 21:55:01,fraud_carding,malicious,CVV service - daily updates,"Need a reliable cashout method for a specific region, willing to split profit.",17,47
+316,1089,ghost_,2025-10-09 14:18:48,drugs,malicious,Stealth packaging question,"Payment through escrow only, will not deal outside the platform's system. First come first served.",18,24
+317,1124,specterx,2025-10-10 18:52:14,extremism,malicious,Propaganda material share,"Coordinating a private meetup, details shared only with verified members.",8,45
+318,1060,glitchzero,2025-10-12 06:17:16,weapons,malicious,"Looking for supplier, serious buyers only","Have a small batch of parts available this month, discreet packaging as always.",32,-3
+319,1111,obscurazero,2025-10-14 23:07:40,hacking_malware,malicious,Custom malware builder for sale,"Renting out infrastructure by the hour or day, contact for current availability. No middlemen, direct contact only.",7,9
+320,1119,cipherdark81,2025-10-15 08:25:28,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type.",13,14
+321,1127,ravenv2406,2025-10-17 00:35:46,benign_general,benign,Off-topic: what are you reading lately,"Pinned thread on general operational security basics, please read before posting. Prices negotiable for bulk.",3,33
+322,1113,cipherprime,2025-10-18 16:44:45,weapons,malicious,Shipping question - customs risk,"Have a small batch of parts available this month, discreet packaging as always.",17,42
+323,1213,null9x961,2025-10-19 02:41:04,marketplace_general,malicious,Market downtime - status update,"Left feedback for my last order, decent turnaround, packaging was solid.",43,11
+324,1030,kryoroot,2025-10-21 07:12:04,benign_general,benign,OPSEC basics megathread,"Off-topic but what has everyone been reading or watching lately, need suggestions.",41,51
+325,1188,specterprime,2025-10-24 19:00:43,fraud_carding,malicious,"Chargeback question, need advice","Custom kit for sale, private deal only, proof available on request to serious buyers. Will update thread as stock changes.",40,34
+326,1195,vortex99,2025-10-26 21:56:39,fraud_carding,malicious,"New phishing kit, private sale","Selling fresh cards, high balance guaranteed, replacements offered within 24h. First come first served.",42,26
+327,1098,null,2025-10-28 10:36:53,benign_general,benign,Weekly check-in thread,"Reminder from the mods: no doxxing, no personal info, follow the posted rules.",2,24
+328,1176,ghost88,2025-10-29 17:30:35,extremism,malicious,Recruitment thread - new members,"Sharing material for the cause, redistribute within trusted circles only.",27,24
+329,1149,shadow77,2025-11-01 19:26:35,marketplace_general,malicious,Vendor bond question,"How much is the vendor bond on this market currently, and how long does it last?",12,42
+330,1057,fenrir99,2025-11-01 23:42:12,hacking_malware,malicious,Zero-day rumor thread,"Heard rumors of an unpatched issue in a popular product, anyone have more info? No middlemen, direct contact only.",15,34
+331,1097,glitch88282,2025-11-03 07:53:46,drugs,malicious,Fresh batch available - restock,Anyone have experience with this vendor's turnaround time? First order feels slow.,18,-3
+332,1085,vortex13,2025-11-04 01:05:04,extremism,malicious,Recruitment thread - new members,"Looking to expand our private channel, message if you share the cause and want in.",9,16
+333,1013,nullx,2025-11-04 19:14:45,drugs,malicious,Fresh batch available - restock,"Payment through escrow only, will not deal outside the platform's system.",13,59
+334,1185,specternight665,2025-11-05 10:13:50,drugs,malicious,Looking for trusted supplier in region,"Discount for bulk repeat buyers, ask for the loyalty menu.",11,31
+335,1087,wraith8866,2025-11-07 13:01:58,benign_general,benign,OPSEC basics megathread,"Struggling to get my PGP key set up correctly, any beginner-friendly guides?",3,3
+336,1012,ghost13754,2025-11-08 08:15:55,marketplace_general,malicious,Market downtime - status update,"How much is the vendor bond on this market currently, and how long does it last? Prices negotiable for bulk.",3,35
+337,1062,onyx9x,2025-11-08 23:50:24,drugs,malicious,"Reliable vendor, EU/US shipping","Restocked over the weekend, usual quality, DM for the menu and pricing list.",30,27
+338,1099,static,2025-11-08 23:50:24,benign_general,benign,"How to spot a scammer, general tips","Off-topic but what has everyone been reading or watching lately, need suggestions. Only dealing with verified members.",36,-1
+339,1061,ghostv2,2025-11-11 07:26:53,marketplace_general,malicious,New vendor introduction,"Market's been down for hours, anyone else seeing the same outage?",21,17
+340,1181,static_,2025-11-13 06:58:37,weapons,malicious,"Trade offer, ammo for parts","Have a small batch of parts available this month, discreet packaging as always.",16,25
+341,1058,vortex9x154,2025-11-13 11:28:00,weapons,malicious,Shipping question - customs risk,"Open to trading, have surplus accessories, looking for specific ammo type. Only dealing with verified members.",38,49
+342,1031,ravenroot,2025-11-15 09:20:24,hacking_malware,malicious,Botnet rental - hourly / daily,"Heard rumors of an unpatched issue in a popular product, anyone have more info? No middlemen, direct contact only.",9,44
+343,1015,wraith13,2025-11-16 08:49:42,drugs,malicious,Fresh batch available - restock,"Discount for bulk repeat buyers, ask for the loyalty menu.",9,50
+344,1094,shadowdark,2025-11-16 23:29:21,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type.",37,48
+345,1166,wraith77,2025-11-17 03:27:10,fraud_carding,malicious,"Selling verified accounts, bulk discount","Had a chargeback hit my account, anyone know how sellers usually handle it?",35,13
+346,1138,drift88,2025-11-17 14:25:06,weapons,malicious,"Looking for supplier, serious buyers only","Have a small batch of parts available this month, discreet packaging as always. First come first served.",34,28
+347,1163,rivenzero487,2025-11-23 05:03:03,marketplace_general,malicious,Feedback for recent purchase,"Left feedback for my last order, decent turnaround, packaging was solid.",41,-4
+348,1040,riven,2025-11-23 06:24:22,benign_general,benign,Site rules reminder,"Curious what people are using these days for their VPN, looking for recommendations.",20,23
+349,1110,kryox,2025-11-26 08:47:35,weapons,malicious,Shipping question - customs risk,"Worried about customs on this route, anyone shipped through here recently?",1,23
+350,1081,shadowdark,2025-11-28 08:35:26,drugs,malicious,Stealth packaging question,"Payment through escrow only, will not deal outside the platform's system. Prices negotiable for bulk.",38,8
+351,1173,glitch77913,2025-12-01 16:53:13,drugs,malicious,"Reliable vendor, EU/US shipping",Anyone have experience with this vendor's turnaround time? First order feels slow.,9,2
+352,1113,hexdark,2025-12-02 01:34:45,extremism,malicious,Meetup coordination - private channel,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",17,60
+353,1048,specterprime,2025-12-02 13:57:32,benign_general,benign,OPSEC basics megathread,"Weekly thread to check in, how's everyone's week been on here? Only dealing with verified members.",25,48
+354,1021,drift645,2025-12-04 08:17:51,fraud_carding,malicious,Looking for cashout method,"Custom kit for sale, private deal only, proof available on request to serious buyers.",12,44
+355,1120,cipherdark730,2025-12-05 02:34:49,drugs,malicious,Fresh batch available - restock,"Looking for a mid-size supplier for my region, must have prior positive feedback.",40,4
+356,1176,staticdark,2025-12-05 21:12:43,extremism,malicious,Propaganda material share,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",22,45
+357,1226,kryo99,2025-12-05 23:11:33,weapons,malicious,Shipping question - customs risk,"Looking for a new supplier after my last contact went dark, vouches required.",22,1
+358,1050,spectercore,2025-12-07 07:04:56,extremism,malicious,Manifesto discussion,"Looking to expand our private channel, message if you share the cause and want in. No middlemen, direct contact only.",28,36
+359,1224,wraithx,2025-12-07 22:00:29,extremism,malicious,Meetup coordination - private channel,"Looking to expand our private channel, message if you share the cause and want in.",30,5
+360,1169,shadow9x,2025-12-09 04:14:20,marketplace_general,malicious,New vendor introduction,"New here, been vending elsewhere for a year, moving over with existing vouches.",37,46
+361,1074,raven99,2025-12-10 07:20:11,hacking_malware,malicious,"RDP access, various countries","Have access to a number of compromised boxes, selling per-host, DM with your use case. No middlemen, direct contact only.",22,1
+362,1005,specterprime920,2025-12-10 10:51:22,fraud_carding,malicious,CVV service - daily updates,"Had a chargeback hit my account, anyone know how sellers usually handle it?",25,41
+363,1149,wraithdark,2025-12-12 00:50:35,fraud_carding,malicious,"Chargeback question, need advice","Bulk verified account logs for sale, discount for buyers taking 10+.",18,54
+364,1041,nomadprime,2025-12-13 09:49:54,extremism,malicious,Manifesto discussion,"Sharing material for the cause, redistribute within trusted circles only.",9,48
+365,1163,wraithcore,2025-12-14 05:18:42,benign_general,benign,"How to spot a scammer, general tips","Struggling to get my PGP key set up correctly, any beginner-friendly guides?",34,20
+366,1140,driftcore,2025-12-15 06:18:42,marketplace_general,malicious,New vendor introduction,"New here, been vending elsewhere for a year, moving over with existing vouches.",14,2
+367,1132,wraith,2025-12-16 16:32:18,benign_general,benign,Market etiquette for new users,"New here, what's considered normal etiquette before messaging a vendor directly? Prices negotiable for bulk.",1,40
+368,1217,riven,2025-12-17 14:47:27,drugs,malicious,Fresh batch available - restock,"Payment through escrow only, will not deal outside the platform's system. No middlemen, direct contact only.",40,52
+369,1043,wraithzero,2025-12-18 07:45:03,marketplace_general,malicious,Vendor bond question,"Market's been down for hours, anyone else seeing the same outage? Only dealing with verified members.",6,52
+370,1028,spectercore538,2025-12-20 17:59:59,marketplace_general,malicious,Market downtime - status update,"Having a dispute over an order, mediator requested, ticket number in my profile. No middlemen, direct contact only.",18,7
+371,1195,kryozero,2025-12-23 04:15:14,fraud_carding,malicious,CVV service - daily updates,"Custom kit for sale, private deal only, proof available on request to serious buyers.",28,40
+372,1052,vortexv2,2025-12-27 03:08:25,extremism,malicious,Funding drive announcement,"Looking to expand our private channel, message if you share the cause and want in.",30,59
+373,1108,rivenprime,2026-01-01 00:37:44,hacking_malware,malicious,Zero-day rumor thread,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",25,9
+374,1156,onyxcore368,2026-01-01 01:33:40,extremism,malicious,Propaganda material share,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",1,11
+375,1014,nomad88310,2026-01-01 07:30:50,hacking_malware,malicious,Selling access to compromised servers,"Builder tool for sale, private support included, no source code shared publicly.",41,-4
+376,1186,cipherprime,2026-01-02 20:32:09,marketplace_general,malicious,Market downtime - status update,"How much is the vendor bond on this market currently, and how long does it last?",18,54
+377,1108,shadow88,2026-01-03 04:47:49,marketplace_general,malicious,"Escrow dispute, need mediator","Having a dispute over an order, mediator requested, ticket number in my profile.",12,52
+378,1133,byte,2026-01-03 05:18:57,drugs,malicious,"Reliable vendor, EU/US shipping",Anyone have experience with this vendor's turnaround time? First order feels slow. Will update thread as stock changes.,12,11
+379,1109,hex,2026-01-03 11:50:08,benign_general,benign,"How to spot a scammer, general tips","New here, what's considered normal etiquette before messaging a vendor directly?",37,5
+380,1078,phantomx,2026-01-04 10:03:57,fraud_carding,malicious,CVV service - daily updates,"Custom kit for sale, private deal only, proof available on request to serious buyers. Will update thread as stock changes.",37,25
+381,1103,obscura13,2026-01-05 04:33:13,hacking_malware,malicious,"RDP access, various countries","Have access to a number of compromised boxes, selling per-host, DM with your use case.",12,53
+382,1097,wraith77,2026-01-06 02:17:51,fraud_carding,malicious,"Fresh dumps available, high balance","Had a chargeback hit my account, anyone know how sellers usually handle it? First come first served.",40,56
+383,1191,obscurax703,2026-01-06 17:23:24,marketplace_general,malicious,Vendor bond question,"Market's been down for hours, anyone else seeing the same outage? Only dealing with verified members.",21,2
+384,1097,raven99,2026-01-07 14:33:59,marketplace_general,malicious,Vendor bond question,"Having a dispute over an order, mediator requested, ticket number in my profile. Only dealing with verified members.",33,27
+385,1192,wraithcore,2026-01-07 22:19:48,extremism,malicious,Propaganda material share,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",15,36
+386,1199,ghost99972,2026-01-08 13:20:19,hacking_malware,malicious,Custom malware builder for sale,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",9,31
+387,1029,hex13,2026-01-08 13:48:09,weapons,malicious,Shipping question - customs risk,"Worried about customs on this route, anyone shipped through here recently? Will update thread as stock changes.",3,7
+388,1207,phantom994,2026-01-09 18:22:47,hacking_malware,malicious,Zero-day rumor thread,"Selling RDP access across multiple regions, uptime guaranteed for the listed period. First come first served.",16,-4
+389,1192,obscurazero,2026-01-10 20:40:01,drugs,malicious,Fresh batch available - restock,Anyone have experience with this vendor's turnaround time? First order feels slow.,44,27
+390,1115,kryo77406,2026-01-12 03:07:23,hacking_malware,malicious,Selling access to compromised servers,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",19,24
+391,1212,shadowv2385,2026-01-12 20:01:22,benign_general,benign,Site rules reminder,"Curious what people are using these days for their VPN, looking for recommendations.",34,16
+392,1034,onyxv2,2026-01-13 01:23:51,weapons,malicious,"Parts available, discreet shipping","Bundle deal this week, message for the full list and current prices.",45,57
+393,1025,specter88851,2026-01-13 09:39:35,extremism,malicious,Propaganda material share,"Sharing material for the cause, redistribute within trusted circles only.",15,8
+394,1028,cipher13,2026-01-15 02:43:57,hacking_malware,malicious,"RDP access, various countries","Have access to a number of compromised boxes, selling per-host, DM with your use case.",43,1
+395,1128,onyxv2703,2026-01-15 18:36:43,fraud_carding,malicious,"Fresh dumps available, high balance","Selling fresh cards, high balance guaranteed, replacements offered within 24h. First come first served.",41,5
+396,1149,cipherroot341,2026-01-16 08:19:03,weapons,malicious,"Looking for supplier, serious buyers only","Bundle deal this week, message for the full list and current prices.",11,35
+397,1097,obscura77,2026-01-20 18:51:31,benign_general,benign,Which VPN do you use?,"Pinned thread on general operational security basics, please read before posting. No middlemen, direct contact only.",0,16
+398,1138,shadow99175,2026-01-21 21:45:01,hacking_malware,malicious,Zero-day rumor thread,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",18,5
+399,1145,bytedark,2026-01-23 18:33:56,benign_general,benign,Site rules reminder,"Off-topic but what has everyone been reading or watching lately, need suggestions. Only dealing with verified members.",20,30
+400,1071,cipherzero,2026-01-24 01:53:09,extremism,malicious,Meetup coordination - private channel,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",10,14
+401,1138,staticx,2026-01-24 18:16:14,drugs,malicious,Looking for trusted supplier in region,"Payment through escrow only, will not deal outside the platform's system.",34,44
+402,1197,null13,2026-01-25 01:30:29,fraud_carding,malicious,Looking for cashout method,"Had a chargeback hit my account, anyone know how sellers usually handle it?",19,-1
+403,1106,ghost13,2026-01-27 05:16:02,fraud_carding,malicious,"Chargeback question, need advice","Had a chargeback hit my account, anyone know how sellers usually handle it?",43,46
+404,1065,cipher99798,2026-01-27 07:43:18,fraud_carding,malicious,"New phishing kit, private sale","Had a chargeback hit my account, anyone know how sellers usually handle it?",23,41
+405,1053,cipherzero,2026-01-28 01:41:46,drugs,malicious,Stealth packaging question,"Restocked over the weekend, usual quality, DM for the menu and pricing list.",11,0
+406,1118,onyxdark,2026-01-28 02:29:30,marketplace_general,malicious,Feedback for recent purchase,"Having a dispute over an order, mediator requested, ticket number in my profile.",3,25
+407,1130,riven13252,2026-01-28 23:09:29,fraud_carding,malicious,CVV service - daily updates,"Bulk verified account logs for sale, discount for buyers taking 10+. First come first served.",18,58
+408,1080,obscuraroot,2026-01-31 11:56:03,extremism,malicious,Manifesto discussion,"Sharing material for the cause, redistribute within trusted circles only.",12,31
+409,1025,ciphercore981,2026-02-01 10:36:05,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type. Prices negotiable for bulk.",2,-2
+410,1087,nomad_,2026-02-02 19:46:21,weapons,malicious,Shipping question - customs risk,"Have a small batch of parts available this month, discreet packaging as always.",22,10
+411,1095,obscurazero,2026-02-03 15:47:27,fraud_carding,malicious,"Selling verified accounts, bulk discount","Daily updated list, DM for pricing tiers and sample checker output.",43,38
+412,1177,onyx13,2026-02-04 21:00:25,hacking_malware,malicious,Custom malware builder for sale,"Hiring a coder for a private project, paid in crypto, message with portfolio. Only dealing with verified members.",33,31
+413,1225,specter77,2026-02-04 23:42:12,extremism,malicious,Meetup coordination - private channel,"Looking to expand our private channel, message if you share the cause and want in.",18,-2
+414,1177,vortex9x,2026-02-05 10:13:24,extremism,malicious,Recruitment thread - new members,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",33,31
+415,1202,byte403,2026-02-05 11:06:35,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type.",8,6
+416,1123,shadowcore,2026-02-05 18:02:45,hacking_malware,malicious,Zero-day rumor thread,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",24,34
+417,1207,vortex13,2026-02-07 10:26:15,benign_general,benign,"How to spot a scammer, general tips","Pinned thread on general operational security basics, please read before posting.",30,53
+418,1201,cipherprime,2026-02-08 03:15:21,benign_general,benign,Off-topic: what are you reading lately,"Pinned thread on general operational security basics, please read before posting.",17,41
+419,1146,rivenprime,2026-02-08 06:11:30,marketplace_general,malicious,Feedback for recent purchase,"Having a dispute over an order, mediator requested, ticket number in my profile. First come first served.",20,12
+420,1156,nullprime,2026-02-09 04:14:36,marketplace_general,malicious,Feedback for recent purchase,"Market's been down for hours, anyone else seeing the same outage?",15,56
+421,1047,cipherdark454,2026-02-09 08:26:44,benign_general,benign,Which VPN do you use?,"Pinned thread on general operational security basics, please read before posting. Will update thread as stock changes.",27,57
+422,1181,ciphernight979,2026-02-10 12:08:07,benign_general,benign,Site rules reminder,"New here, what's considered normal etiquette before messaging a vendor directly?",31,-5
+423,1034,onyxprime,2026-02-10 17:04:14,benign_general,benign,Weekly check-in thread,"Pinned thread on general operational security basics, please read before posting.",41,14
+424,1113,fenrirnight,2026-02-11 01:33:08,weapons,malicious,Accessory bundle for sale,"Open to trading, have surplus accessories, looking for specific ammo type. Only dealing with verified members.",44,40
+425,1020,vortexprime,2026-02-11 16:11:49,weapons,malicious,Accessory bundle for sale,"Worried about customs on this route, anyone shipped through here recently?",24,17
+426,1134,wraith99,2026-02-12 03:25:25,fraud_carding,malicious,"Chargeback question, need advice","Custom kit for sale, private deal only, proof available on request to serious buyers.",37,17
+427,1026,fenrir13625,2026-02-14 04:57:00,fraud_carding,malicious,"Fresh dumps available, high balance","Bulk verified account logs for sale, discount for buyers taking 10+.",24,38
+428,1228,raven88,2026-02-17 01:56:55,hacking_malware,malicious,Selling access to compromised servers,"Hiring a coder for a private project, paid in crypto, message with portfolio.",37,19
+429,1088,ghostroot613,2026-02-17 04:26:33,weapons,malicious,"Trade offer, ammo for parts","Have a small batch of parts available this month, discreet packaging as always. Only dealing with verified members.",45,1
+430,1086,nomadroot,2026-02-17 18:18:47,weapons,malicious,"Looking for supplier, serious buyers only","Open to trading, have surplus accessories, looking for specific ammo type.",19,-3
+431,1076,shadowv2340,2026-02-18 13:40:32,extremism,malicious,Funding drive announcement,"Sharing material for the cause, redistribute within trusted circles only.",7,48
+432,1195,specterv2,2026-02-19 02:28:00,fraud_carding,malicious,"New phishing kit, private sale","Had a chargeback hit my account, anyone know how sellers usually handle it?",29,49
+433,1046,riven13,2026-02-19 11:29:31,hacking_malware,malicious,Botnet rental - hourly / daily,"Builder tool for sale, private support included, no source code shared publicly.",41,-2
+434,1000,phantom88105,2026-02-20 19:36:24,marketplace_general,malicious,New vendor introduction,"New here, been vending elsewhere for a year, moving over with existing vouches.",34,6
+435,1117,phantomnight,2026-02-21 03:45:51,hacking_malware,malicious,Custom malware builder for sale,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",9,3
+436,1047,driftx291,2026-02-21 23:54:43,weapons,malicious,Accessory bundle for sale,"Looking for a new supplier after my last contact went dark, vouches required.",43,57
+437,1089,kryonight,2026-02-22 09:50:00,hacking_malware,malicious,Selling access to compromised servers,"Renting out infrastructure by the hour or day, contact for current availability.",27,58
+438,1115,specter99532,2026-02-23 08:48:39,drugs,malicious,"New product line, samples ready","Restocked over the weekend, usual quality, DM for the menu and pricing list. No middlemen, direct contact only.",28,-4
+439,1189,rivencore711,2026-02-26 23:38:03,fraud_carding,malicious,"Selling verified accounts, bulk discount","Selling fresh cards, high balance guaranteed, replacements offered within 24h.",17,31
+440,1029,fenrirx,2026-03-01 02:47:52,extremism,malicious,Propaganda material share,"Coordinating a private meetup, details shared only with verified members. Prices negotiable for bulk.",14,28
+441,1106,glitchzero595,2026-03-01 08:00:28,hacking_malware,malicious,"RDP access, various countries","Have access to a number of compromised boxes, selling per-host, DM with your use case. Prices negotiable for bulk.",36,23
+442,1114,drift99,2026-03-02 01:17:49,benign_general,benign,Market etiquette for new users,"General tips thread on spotting scam listings, share your own red flags.",8,33
+443,1181,fenrirv2,2026-03-02 12:49:48,weapons,malicious,"Looking for supplier, serious buyers only","Worried about customs on this route, anyone shipped through here recently?",0,-4
+444,1100,phantomcore,2026-03-02 14:41:38,extremism,malicious,Propaganda material share,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",5,59
+445,1149,raven99,2026-03-05 21:15:08,hacking_malware,malicious,Botnet rental - hourly / daily,"Builder tool for sale, private support included, no source code shared publicly. Only dealing with verified members.",22,34
+446,1162,kryozero556,2026-03-06 11:55:38,extremism,malicious,Meetup coordination - private channel,"Coordinating a private meetup, details shared only with verified members.",40,36
+447,1155,null_,2026-03-07 22:33:40,marketplace_general,malicious,Vendor bond question,"How much is the vendor bond on this market currently, and how long does it last?",3,15
+448,1097,specter99,2026-03-08 18:26:28,hacking_malware,malicious,"RDP access, various countries","Have access to a number of compromised boxes, selling per-host, DM with your use case.",14,33
+449,1141,shadowcore,2026-03-11 05:38:32,weapons,malicious,"Trade offer, ammo for parts","Bundle deal this week, message for the full list and current prices.",39,48
+450,1044,nullcore,2026-03-12 07:07:50,extremism,malicious,Funding drive announcement,"Coordinating a private meetup, details shared only with verified members.",7,22
+451,1221,ghost77,2026-03-13 12:29:07,fraud_carding,malicious,"Selling verified accounts, bulk discount","Selling fresh cards, high balance guaranteed, replacements offered within 24h.",35,40
+452,1008,raven7773,2026-03-17 00:07:32,fraud_carding,malicious,"Fresh dumps available, high balance","Bulk verified account logs for sale, discount for buyers taking 10+. Will update thread as stock changes.",40,2
+453,1146,ghost13,2026-03-17 04:22:34,marketplace_general,malicious,Vendor bond question,"Left feedback for my last order, decent turnaround, packaging was solid. No middlemen, direct contact only.",36,19
+454,1031,rivencore246,2026-03-18 12:19:30,hacking_malware,malicious,"RDP access, various countries","Heard rumors of an unpatched issue in a popular product, anyone have more info?",10,34
+455,1219,cipher88954,2026-03-20 03:57:23,weapons,malicious,"Trade offer, ammo for parts","Bundle deal this week, message for the full list and current prices.",36,57
+456,1119,hexnight,2026-03-20 17:22:58,fraud_carding,malicious,"Fresh dumps available, high balance","Selling fresh cards, high balance guaranteed, replacements offered within 24h.",32,48
+457,1000,nomad99,2026-03-23 08:35:13,drugs,malicious,Fresh batch available - restock,"Restocked over the weekend, usual quality, DM for the menu and pricing list. Will update thread as stock changes.",41,48
+458,1174,shadow,2026-03-26 02:20:52,fraud_carding,malicious,"New phishing kit, private sale","Need a reliable cashout method for a specific region, willing to split profit.",42,31
+459,1006,shadow88897,2026-03-26 04:50:03,extremism,malicious,Meetup coordination - private channel,"Coordinating a private meetup, details shared only with verified members. No middlemen, direct contact only.",16,59
+460,1204,fenrirx,2026-03-28 12:07:36,drugs,malicious,"New product line, samples ready",Anyone have experience with this vendor's turnaround time? First order feels slow.,32,9
+461,1155,glitchx,2026-03-29 05:13:03,drugs,malicious,"Escrow release delayed, advice?","Discount for bulk repeat buyers, ask for the loyalty menu.",6,27
+462,1210,cipherroot,2026-03-29 14:44:03,drugs,malicious,"Escrow release delayed, advice?","Discount for bulk repeat buyers, ask for the loyalty menu.",44,31
+463,1040,raven9x693,2026-03-29 17:23:31,hacking_malware,malicious,Selling access to compromised servers,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",43,45
+464,1088,vortex897,2026-03-30 08:26:24,benign_general,benign,PGP setup help,"Struggling to get my PGP key set up correctly, any beginner-friendly guides?",7,-1
+465,1196,onyx77,2026-03-31 08:28:30,extremism,malicious,Meetup coordination - private channel,"Coordinating a private meetup, details shared only with verified members.",2,31
+466,1004,kryozero,2026-04-02 12:55:22,hacking_malware,malicious,Custom malware builder for sale,"Heard rumors of an unpatched issue in a popular product, anyone have more info? Only dealing with verified members.",15,15
+467,1170,phantom88,2026-04-04 18:33:59,fraud_carding,malicious,Looking for cashout method,"Daily updated list, DM for pricing tiers and sample checker output. Will update thread as stock changes.",30,40
+468,1205,kryo88,2026-04-05 18:00:53,drugs,malicious,Looking for trusted supplier in region,"Looking for a mid-size supplier for my region, must have prior positive feedback.",7,6
+469,1105,bytedark,2026-04-07 00:03:54,extremism,malicious,Manifesto discussion,"Sharing material for the cause, redistribute within trusted circles only.",44,57
+470,1081,kryo77,2026-04-08 08:34:01,fraud_carding,malicious,"Fresh dumps available, high balance","Bulk verified account logs for sale, discount for buyers taking 10+. No middlemen, direct contact only.",21,32
+471,1161,byte88,2026-04-08 12:18:33,marketplace_general,malicious,Market downtime - status update,"Left feedback for my last order, decent turnaround, packaging was solid.",35,22
+472,1191,fenrir99,2026-04-09 03:13:44,hacking_malware,malicious,"RDP access, various countries","Have access to a number of compromised boxes, selling per-host, DM with your use case. First come first served.",2,20
+473,1056,nomad9x,2026-04-09 22:20:10,fraud_carding,malicious,CVV service - daily updates,"Selling fresh cards, high balance guaranteed, replacements offered within 24h. Only dealing with verified members.",33,-1
+474,1076,onyx13,2026-04-10 10:55:33,extremism,malicious,Manifesto discussion,"Coordinating a private meetup, details shared only with verified members.",19,38
+475,1015,static_,2026-04-11 22:33:35,benign_general,benign,Off-topic: what are you reading lately,"Pinned thread on general operational security basics, please read before posting. First come first served.",28,49
+476,1204,drift99,2026-04-12 19:43:54,fraud_carding,malicious,CVV service - daily updates,"Daily updated list, DM for pricing tiers and sample checker output. Only dealing with verified members.",42,20
+477,1014,null110,2026-04-12 20:39:51,extremism,malicious,Meetup coordination - private channel,"Looking to expand our private channel, message if you share the cause and want in.",35,14
+478,1136,obscura_340,2026-04-15 03:13:15,hacking_malware,malicious,Botnet rental - hourly / daily,"Builder tool for sale, private support included, no source code shared publicly.",4,25
+479,1143,raven77,2026-04-15 10:47:54,extremism,malicious,Propaganda material share,"Looking to expand our private channel, message if you share the cause and want in.",30,29
+480,1092,vortex88121,2026-04-16 07:51:07,benign_general,benign,Site rules reminder,"Off-topic but what has everyone been reading or watching lately, need suggestions.",30,26
+481,1024,driftzero,2026-04-16 19:42:58,hacking_malware,malicious,"Looking for a coder, paid work","Selling RDP access across multiple regions, uptime guaranteed for the listed period.",34,23
+482,1162,driftnight,2026-04-17 02:17:51,benign_general,benign,Site rules reminder,"General tips thread on spotting scam listings, share your own red flags.",34,31
+483,1162,ghost99274,2026-04-18 21:28:35,weapons,malicious,"Parts available, discreet shipping","Open to trading, have surplus accessories, looking for specific ammo type. No middlemen, direct contact only.",10,31
+484,1025,onyxdark,2026-04-20 07:29:35,hacking_malware,malicious,"RDP access, various countries","Hiring a coder for a private project, paid in crypto, message with portfolio. Prices negotiable for bulk.",26,27
+485,1226,obscura88,2026-04-20 15:17:09,benign_general,benign,Which VPN do you use?,"Pinned thread on general operational security basics, please read before posting. No middlemen, direct contact only.",34,24
+486,1012,cipher,2026-04-21 12:29:35,drugs,malicious,Stealth packaging question,Anyone have experience with this vendor's turnaround time? First order feels slow. Will update thread as stock changes.,15,16
+487,1165,rivenx,2026-04-23 09:08:27,drugs,malicious,Stealth packaging question,"Discount for bulk repeat buyers, ask for the loyalty menu. Only dealing with verified members.",37,0
+488,1137,specternight,2026-04-25 03:41:53,hacking_malware,malicious,Botnet rental - hourly / daily,"Selling RDP access across multiple regions, uptime guaranteed for the listed period. No middlemen, direct contact only.",43,23
+489,1215,shadow13,2026-04-25 08:21:49,drugs,malicious,Fresh batch available - restock,Anyone have experience with this vendor's turnaround time? First order feels slow.,19,21
+490,1031,onyx9x,2026-04-26 21:45:26,drugs,malicious,"Reliable vendor, EU/US shipping","Looking for a mid-size supplier for my region, must have prior positive feedback.",35,-1
+491,1066,wraithroot,2026-04-28 21:56:23,extremism,malicious,Recruitment thread - new members,"Starting a funding drive, crypto wallet shared in the pinned members-only post. No middlemen, direct contact only.",4,12
+492,1055,vortexv2971,2026-05-01 07:12:03,weapons,malicious,"Trade offer, ammo for parts","Bundle deal this week, message for the full list and current prices. Prices negotiable for bulk.",31,19
+493,1218,kryodark,2026-05-02 16:28:53,drugs,malicious,Stealth packaging question,"Restocked over the weekend, usual quality, DM for the menu and pricing list.",22,11
+494,1100,byte13,2026-05-03 12:19:06,hacking_malware,malicious,Selling access to compromised servers,"Have access to a number of compromised boxes, selling per-host, DM with your use case.",39,45
+495,1057,fenrirroot,2026-05-03 20:23:18,benign_general,benign,"How to spot a scammer, general tips","Struggling to get my PGP key set up correctly, any beginner-friendly guides?",18,43
+496,1179,specterroot,2026-05-04 06:14:34,extremism,malicious,Funding drive announcement,"Coordinating a private meetup, details shared only with verified members.",15,38
+497,1165,null_995,2026-05-06 20:42:58,drugs,malicious,Looking for trusted supplier in region,"Discount for bulk repeat buyers, ask for the loyalty menu. Will update thread as stock changes.",34,-5
+498,1061,cipher88,2026-05-09 02:15:06,marketplace_general,malicious,Vendor bond question,"How much is the vendor bond on this market currently, and how long does it last?",29,-1
+499,1197,shadownight,2026-05-10 01:08:51,drugs,malicious,"Reliable vendor, EU/US shipping","Discount for bulk repeat buyers, ask for the loyalty menu.",40,43
+500,1154,riven99,2026-05-10 11:13:10,drugs,malicious,Looking for trusted supplier in region,"Restocked over the weekend, usual quality, DM for the menu and pricing list.",16,20
+501,1118,rivendark,2026-05-11 06:03:39,marketplace_general,malicious,New vendor introduction,"Having a dispute over an order, mediator requested, ticket number in my profile.",44,-2
+502,1202,static_,2026-05-11 08:38:16,weapons,malicious,Shipping question - customs risk,"Bundle deal this week, message for the full list and current prices.",12,8
+503,1162,ravenzero,2026-05-15 09:33:34,marketplace_general,malicious,Market downtime - status update,"Having a dispute over an order, mediator requested, ticket number in my profile.",44,31
+504,1122,vortexdark578,2026-05-15 13:17:19,hacking_malware,malicious,"Looking for a coder, paid work","Have access to a number of compromised boxes, selling per-host, DM with your use case.",19,26
+505,1149,kryoroot,2026-05-16 02:24:22,drugs,malicious,Stealth packaging question,"Looking for a mid-size supplier for my region, must have prior positive feedback. First come first served.",5,11
+506,1020,vortexprime,2026-05-16 12:37:13,hacking_malware,malicious,"RDP access, various countries","Renting out infrastructure by the hour or day, contact for current availability.",37,36
+507,1016,static_,2026-05-17 18:44:19,hacking_malware,malicious,"RDP access, various countries","Heard rumors of an unpatched issue in a popular product, anyone have more info?",44,8
+508,1032,driftv2957,2026-05-18 01:07:51,extremism,malicious,Funding drive announcement,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",32,29
+509,1192,ravenv2572,2026-05-18 16:52:19,marketplace_general,malicious,"Escrow dispute, need mediator","Market's been down for hours, anyone else seeing the same outage?",41,39
+510,1105,phantom88434,2026-05-19 02:28:16,benign_general,benign,Weekly check-in thread,"General tips thread on spotting scam listings, share your own red flags. Prices negotiable for bulk.",24,4
+511,1029,drift13611,2026-05-20 09:29:29,benign_general,benign,Off-topic: what are you reading lately,"Curious what people are using these days for their VPN, looking for recommendations.",39,23
+512,1171,vortexzero930,2026-05-20 22:54:23,benign_general,benign,"How to spot a scammer, general tips","Struggling to get my PGP key set up correctly, any beginner-friendly guides? Prices negotiable for bulk.",23,44
+513,1075,nullprime383,2026-05-23 14:58:20,hacking_malware,malicious,Botnet rental - hourly / daily,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",21,41
+514,1130,vortexnight906,2026-05-25 09:51:39,extremism,malicious,Propaganda material share,"Looking to expand our private channel, message if you share the cause and want in. No middlemen, direct contact only.",33,26
+515,1063,obscurav2947,2026-05-25 11:35:36,marketplace_general,malicious,Vendor bond question,"How much is the vendor bond on this market currently, and how long does it last?",33,29
+516,1105,vortexroot,2026-05-25 18:57:00,extremism,malicious,Manifesto discussion,"Starting a funding drive, crypto wallet shared in the pinned members-only post. No middlemen, direct contact only.",18,3
+517,1042,phantomzero257,2026-05-26 10:23:26,benign_general,benign,OPSEC basics megathread,"Off-topic but what has everyone been reading or watching lately, need suggestions.",11,9
+518,1037,hexcore,2026-05-26 16:50:46,extremism,malicious,Recruitment thread - new members,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",14,40
+519,1193,cipherroot,2026-05-28 09:06:29,fraud_carding,malicious,"New phishing kit, private sale","Had a chargeback hit my account, anyone know how sellers usually handle it? First come first served.",40,2
+520,1065,onyxv2526,2026-05-28 10:31:31,benign_general,benign,Site rules reminder,"Weekly thread to check in, how's everyone's week been on here? Only dealing with verified members.",43,15
+521,1092,cipher99,2026-05-31 04:47:19,marketplace_general,malicious,"Escrow dispute, need mediator","New here, been vending elsewhere for a year, moving over with existing vouches. Will update thread as stock changes.",37,22
+522,1161,hexroot,2026-05-31 07:30:52,marketplace_general,malicious,"Escrow dispute, need mediator","Left feedback for my last order, decent turnaround, packaging was solid.",8,12
+523,1170,raven9x,2026-06-01 16:00:37,extremism,malicious,Funding drive announcement,"Looking to expand our private channel, message if you share the cause and want in.",39,16
+524,1020,hex99,2026-06-01 16:26:10,extremism,malicious,Meetup coordination - private channel,"Looking to expand our private channel, message if you share the cause and want in.",12,13
+525,1042,specter99,2026-06-06 17:25:12,benign_general,benign,PGP setup help,"Curious what people are using these days for their VPN, looking for recommendations.",14,37
+526,1113,phantomcore212,2026-06-07 02:18:36,extremism,malicious,Meetup coordination - private channel,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",13,2
+527,1219,byte99,2026-06-07 09:30:09,fraud_carding,malicious,"New phishing kit, private sale","Daily updated list, DM for pricing tiers and sample checker output.",44,50
+528,1162,nomad77368,2026-06-07 11:33:45,fraud_carding,malicious,"Fresh dumps available, high balance","Had a chargeback hit my account, anyone know how sellers usually handle it?",28,8
+529,1172,wraith13735,2026-06-09 18:09:38,drugs,malicious,"Escrow release delayed, advice?","Discount for bulk repeat buyers, ask for the loyalty menu. First come first served.",7,24
+530,1220,cipher99,2026-06-09 19:37:27,extremism,malicious,Propaganda material share,"Coordinating a private meetup, details shared only with verified members.",8,-5
+531,1226,riven,2026-06-13 11:03:19,benign_general,benign,OPSEC basics megathread,"Reminder from the mods: no doxxing, no personal info, follow the posted rules.",9,58
+532,1004,ghost99,2026-06-13 12:31:29,hacking_malware,malicious,Zero-day rumor thread,"Heard rumors of an unpatched issue in a popular product, anyone have more info?",2,35
+533,1196,byte77791,2026-06-13 15:05:05,extremism,malicious,Manifesto discussion,"Coordinating a private meetup, details shared only with verified members. First come first served.",44,30
+534,1160,onyx99469,2026-06-15 15:49:02,marketplace_general,malicious,Vendor bond question,"New here, been vending elsewhere for a year, moving over with existing vouches. First come first served.",12,38
+535,1040,kryodark936,2026-06-15 18:20:47,extremism,malicious,Meetup coordination - private channel,"Starting a funding drive, crypto wallet shared in the pinned members-only post.",30,32
+536,1121,bytedark,2026-06-16 18:42:51,benign_general,benign,OPSEC basics megathread,"Weekly thread to check in, how's everyone's week been on here? First come first served.",4,42
+537,1171,glitchnight,2026-06-19 14:45:29,weapons,malicious,"Parts available, discreet shipping","Have a small batch of parts available this month, discreet packaging as always.",17,28
+538,1058,ghostdark940,2026-06-19 16:53:28,drugs,malicious,"New product line, samples ready","Discount for bulk repeat buyers, ask for the loyalty menu.",30,12
+539,1174,kryo99,2026-06-20 04:06:47,fraud_carding,malicious,Looking for cashout method,"Custom kit for sale, private deal only, proof available on request to serious buyers.",26,13
+540,1031,nullnight,2026-06-21 13:17:14,extremism,malicious,Propaganda material share,"Looking to expand our private channel, message if you share the cause and want in. Only dealing with verified members.",9,58
+541,1179,shadow88,2026-06-21 13:55:07,fraud_carding,malicious,"Selling verified accounts, bulk discount","Need a reliable cashout method for a specific region, willing to split profit.",16,26
+542,1139,fenrirdark232,2026-06-25 09:17:35,weapons,malicious,Accessory bundle for sale,"Looking for a new supplier after my last contact went dark, vouches required.",17,2
+543,1093,obscuracore,2026-06-27 10:44:16,hacking_malware,malicious,Botnet rental - hourly / daily,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",20,21
+544,1034,null9x,2026-07-01 13:41:26,drugs,malicious,"Reliable vendor, EU/US shipping",Anyone have experience with this vendor's turnaround time? First order feels slow.,28,7
+545,1036,staticroot,2026-07-01 18:37:17,hacking_malware,malicious,Botnet rental - hourly / daily,"Hiring a coder for a private project, paid in crypto, message with portfolio.",19,20
+546,1078,obscura9x,2026-07-04 03:54:27,marketplace_general,malicious,"Escrow dispute, need mediator","How much is the vendor bond on this market currently, and how long does it last?",3,12
+547,1108,null77,2026-07-04 18:52:36,marketplace_general,malicious,Vendor bond question,"Left feedback for my last order, decent turnaround, packaging was solid. Only dealing with verified members.",21,8
+548,1184,obscura_915,2026-07-04 22:47:23,marketplace_general,malicious,"Escrow dispute, need mediator","How much is the vendor bond on this market currently, and how long does it last?",40,35
+549,1166,onyxcore817,2026-07-05 00:14:05,marketplace_general,malicious,New vendor introduction,"How much is the vendor bond on this market currently, and how long does it last? First come first served.",34,32
+550,1135,specterprime,2026-07-06 00:16:24,marketplace_general,malicious,Feedback for recent purchase,"Having a dispute over an order, mediator requested, ticket number in my profile. Only dealing with verified members.",36,-1
+551,1204,wraith_,2026-07-07 01:51:29,marketplace_general,malicious,Vendor bond question,"Having a dispute over an order, mediator requested, ticket number in my profile.",24,57
+552,1155,kryo9x41,2026-07-07 04:04:52,weapons,malicious,Accessory bundle for sale,"Bundle deal this week, message for the full list and current prices.",18,41
+553,1187,kryo_,2026-07-08 16:40:37,hacking_malware,malicious,Zero-day rumor thread,"Renting out infrastructure by the hour or day, contact for current availability.",1,11
+554,1157,fenrirx,2026-07-10 12:59:40,weapons,malicious,Shipping question - customs risk,"Looking for a new supplier after my last contact went dark, vouches required. No middlemen, direct contact only.",31,52
+555,1226,rivendark282,2026-07-11 12:39:12,drugs,malicious,"Reliable vendor, EU/US shipping",Anyone have experience with this vendor's turnaround time? First order feels slow. Prices negotiable for bulk.,16,-4
+556,1218,bytecore,2026-07-13 19:19:56,extremism,malicious,Meetup coordination - private channel,"Coordinating a private meetup, details shared only with verified members.",20,53
+557,1010,driftroot,2026-07-16 04:05:53,weapons,malicious,Shipping question - customs risk,"Looking for a new supplier after my last contact went dark, vouches required. No middlemen, direct contact only.",3,7
+558,1051,hexx661,2026-07-16 11:48:08,drugs,malicious,Looking for trusted supplier in region,"Payment through escrow only, will not deal outside the platform's system.",5,59
+559,1113,ghostdark,2026-07-18 15:57:09,marketplace_general,malicious,New vendor introduction,"Having a dispute over an order, mediator requested, ticket number in my profile.",41,11
+560,1156,byte77722,2026-07-19 15:54:03,weapons,malicious,"Parts available, discreet shipping","Worried about customs on this route, anyone shipped through here recently?",43,23
+561,1031,shadownight,2026-07-20 11:11:55,hacking_malware,malicious,"Looking for a coder, paid work","Hiring a coder for a private project, paid in crypto, message with portfolio. No middlemen, direct contact only.",34,54
+562,1122,onyxx,2026-07-26 09:18:56,marketplace_general,malicious,New vendor introduction,"Having a dispute over an order, mediator requested, ticket number in my profile. Will update thread as stock changes.",29,31
+563,1070,wraith_,2026-07-27 03:22:39,hacking_malware,malicious,Zero-day rumor thread,"Have access to a number of compromised boxes, selling per-host, DM with your use case.",35,18
+564,1197,bytev2,2026-07-28 13:32:06,extremism,malicious,Propaganda material share,"Looking to expand our private channel, message if you share the cause and want in.",27,48
+565,1161,bytezero,2026-07-29 19:19:30,fraud_carding,malicious,"Fresh dumps available, high balance","Need a reliable cashout method for a specific region, willing to split profit.",24,48
+566,1171,shadowzero,2026-07-30 07:19:27,hacking_malware,malicious,"Looking for a coder, paid work","Selling RDP access across multiple regions, uptime guaranteed for the listed period.",8,51
+567,1075,drift_,2026-07-30 15:10:52,weapons,malicious,"Trade offer, ammo for parts","Worried about customs on this route, anyone shipped through here recently? Only dealing with verified members.",16,41
+568,1004,obscuraprime,2026-08-01 08:42:12,drugs,malicious,"Reliable vendor, EU/US shipping",Anyone have experience with this vendor's turnaround time? First order feels slow.,41,53
+569,1087,driftv2,2026-08-06 12:40:36,weapons,malicious,"Parts available, discreet shipping","Bundle deal this week, message for the full list and current prices.",24,52
+570,1180,bytev2224,2026-08-08 20:16:38,weapons,malicious,Accessory bundle for sale,"Have a small batch of parts available this month, discreet packaging as always.",36,29
+571,1145,staticprime,2026-08-09 18:01:36,drugs,malicious,"Reliable vendor, EU/US shipping","Looking for a mid-size supplier for my region, must have prior positive feedback.",24,39
+572,1159,null77,2026-08-10 20:00:55,hacking_malware,malicious,Zero-day rumor thread,"Hiring a coder for a private project, paid in crypto, message with portfolio.",10,58
+573,1154,drift9x,2026-08-12 04:32:27,marketplace_general,malicious,New vendor introduction,"Market's been down for hours, anyone else seeing the same outage? Will update thread as stock changes.",6,60
+574,1192,phantomdark,2026-08-12 05:18:27,weapons,malicious,"Looking for supplier, serious buyers only","Have a small batch of parts available this month, discreet packaging as always.",2,57
+575,1086,obscurax,2026-08-12 09:31:34,extremism,malicious,Propaganda material share,"Looking to expand our private channel, message if you share the cause and want in.",32,52
+576,1148,kryonight,2026-08-12 22:36:31,weapons,malicious,"Looking for supplier, serious buyers only","Bundle deal this week, message for the full list and current prices.",21,6
+577,1007,wraithroot,2026-08-12 23:02:10,extremism,malicious,Manifesto discussion,"Coordinating a private meetup, details shared only with verified members.",33,52
+578,1019,null88,2026-08-13 07:06:11,drugs,malicious,"New product line, samples ready","Looking for a mid-size supplier for my region, must have prior positive feedback.",19,59
+579,1102,cipher88,2026-08-14 03:24:27,benign_general,benign,Site rules reminder,"Weekly thread to check in, how's everyone's week been on here? No middlemen, direct contact only.",35,26
+580,1056,rivencore,2026-08-15 07:44:28,benign_general,benign,Market etiquette for new users,"Weekly thread to check in, how's everyone's week been on here? First come first served.",10,51
+581,1140,hexx405,2026-08-15 10:00:03,benign_general,benign,Weekly check-in thread,"General tips thread on spotting scam listings, share your own red flags.",45,-1
+582,1150,vortex_,2026-08-18 14:44:52,marketplace_general,malicious,"Escrow dispute, need mediator","Left feedback for my last order, decent turnaround, packaging was solid.",25,-3
+583,1015,static,2026-08-19 14:19:32,extremism,malicious,Manifesto discussion,"Coordinating a private meetup, details shared only with verified members. Prices negotiable for bulk.",3,6
+584,1202,driftdark,2026-08-20 19:42:39,extremism,malicious,Funding drive announcement,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",38,37
+585,1145,shadowroot,2026-08-22 04:53:36,hacking_malware,malicious,Zero-day rumor thread,"Selling RDP access across multiple regions, uptime guaranteed for the listed period.",8,17
+586,1078,kryoroot,2026-08-22 16:14:27,extremism,malicious,Meetup coordination - private channel,"Sharing material for the cause, redistribute within trusted circles only.",34,38
+587,1045,drift9x,2026-08-25 13:34:39,extremism,malicious,Funding drive announcement,"Coordinating a private meetup, details shared only with verified members.",3,31
+588,1227,drift13,2026-08-27 06:33:27,extremism,malicious,Recruitment thread - new members,"Looking to expand our private channel, message if you share the cause and want in.",41,29
+589,1161,glitchcore,2026-08-29 16:43:27,drugs,malicious,"Escrow release delayed, advice?","Payment through escrow only, will not deal outside the platform's system.",11,17
+590,1091,bytenight81,2026-08-30 12:33:17,extremism,malicious,Funding drive announcement,"Discussion thread on the recent manifesto circulating, thoughts welcome from members.",28,42
+591,1217,nomadx,2026-08-30 22:57:16,hacking_malware,malicious,"Looking for a coder, paid work","Builder tool for sale, private support included, no source code shared publicly.",29,11
+592,1078,cipherv2,2026-08-31 21:48:07,weapons,malicious,Accessory bundle for sale,"Looking for a new supplier after my last contact went dark, vouches required. Prices negotiable for bulk.",28,27
+593,1012,shadowprime272,2026-09-02 20:33:46,weapons,malicious,"Looking for supplier, serious buyers only","Worried about customs on this route, anyone shipped through here recently?",29,31
+594,1165,hexcore,2026-09-02 23:47:03,drugs,malicious,Looking for trusted supplier in region,Anyone have experience with this vendor's turnaround time? First order feels slow. Prices negotiable for bulk.,28,43
+595,1227,shadowdark,2026-09-03 09:41:41,marketplace_general,malicious,Vendor bond question,"How much is the vendor bond on this market currently, and how long does it last? Will update thread as stock changes.",28,43
+596,1184,wraithzero571,2026-09-06 23:51:21,marketplace_general,malicious,New vendor introduction,"How much is the vendor bond on this market currently, and how long does it last?",16,39
+597,1214,shadowdark,2026-09-07 09:02:31,drugs,malicious,Stealth packaging question,"Payment through escrow only, will not deal outside the platform's system.",2,6
+598,1081,obscura,2026-09-12 05:03:00,hacking_malware,malicious,"Looking for a coder, paid work","Selling RDP access across multiple regions, uptime guaranteed for the listed period.",8,59
+599,1204,onyx13,2026-09-12 15:50:11,drugs,malicious,"Escrow release delayed, advice?","Discount for bulk repeat buyers, ask for the loyalty menu.",36,-1
+600,1018,nomadv2,2026-09-12 17:39:48,hacking_malware,malicious,Selling access to compromised servers,"Hiring a coder for a private project, paid in crypto, message with portfolio.",1,9

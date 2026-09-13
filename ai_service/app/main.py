@@ -13,10 +13,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from .repository import IntelligenceRepository
+from .persona_intelligence import PersonaIntelligence
 
 
 ROOT = Path(os.getenv("DEIMOS_ROOT", Path(__file__).resolve().parents[2])).resolve()
 repository = IntelligenceRepository(ROOT)
+persona = PersonaIntelligence(ROOT)
 ALLOWED_ORIGINS = {origin.strip() for origin in os.getenv("DEIMOS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://10.12.13.8:3000").split(",") if origin.strip()}
 
 
@@ -25,6 +27,11 @@ class WorkspaceAnalysisRequest(BaseModel):
     page_url: str = Field(default="", max_length=2048)
     depth: int = Field(default=2, ge=1, le=4)
     max_activities: int = Field(default=12, ge=2, le=30)
+
+
+class PersonaTrainingRequest(BaseModel):
+    threshold: float = Field(default=0.55, ge=0.25, le=0.95)
+    max_matches: int = Field(default=750, ge=10, le=5000)
 
 
 class EventStream:
@@ -164,6 +171,38 @@ async def reanalyze_profiles(engine: str) -> dict[str, Any]:
     except sqlite3.DatabaseError as error:
         raise HTTPException(status_code=409, detail=f"Profile database is not ready: {error}") from error
     return {"message": f"Profile reanalysis queued for {engine}", "engine": engine}
+
+
+@app.get("/api/persona/status")
+async def persona_status() -> dict[str, Any]:
+    return await asyncio.to_thread(persona.status)
+
+
+@app.get("/api/persona/matches")
+async def persona_matches(limit: int = Query(default=100, ge=1, le=1000), minimum_confidence: float = Query(default=0.0, ge=0.0, le=1.0)) -> dict[str, Any]:
+    rows = await asyncio.to_thread(persona.matches, limit, minimum_confidence)
+    return {"matches": rows, "count": len(rows)}
+
+
+@app.post("/api/persona/train")
+async def train_persona(request: PersonaTrainingRequest) -> dict[str, Any]:
+    await stream.publish("persona.training", "Training stylometry and behavioural models", "info")
+    try:
+        status = await asyncio.to_thread(persona.train, request.threshold, request.max_matches)
+    except ValueError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    match_count = int((status.get("run") or {}).get("match_count") or 0)
+    await stream.publish("persona.trained", f"Persona models trained; generated {match_count} attribution hypotheses", "success", status)
+    return status
+
+
+@app.delete("/api/persona")
+async def clear_persona(confirmation: str = Query(default="")) -> dict[str, Any]:
+    if confirmation != "CLEAR":
+        raise HTTPException(status_code=400, detail="confirmation=CLEAR is required")
+    result = await asyncio.to_thread(persona.clear)
+    await stream.publish("persona.cleared", "Persona AI results and fitted local model were cleared", "warning", result)
+    return {"message": "Persona AI data cleared", **result}
 
 
 @app.post("/api/workspace/analyze")

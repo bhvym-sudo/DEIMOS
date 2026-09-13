@@ -223,7 +223,7 @@ func normalizeCrawlURL(value *url.URL) (string, bool) {
 	} else {
 		// Many classic forums use query parameters as their actual route. Keep a
 		// small safe allowlist while dropping sessions and tracking parameters.
-		for _, key := range []string{"page", "post", "thread", "topic", "id", "forum", "board", "category"} {
+		for _, key := range []string{"page", "post", "thread", "topic", "id", "forum", "board", "category", "u", "user", "author", "username"} {
 			if route := strings.TrimSpace(original.Get(key)); route != "" && len(route) <= 128 {
 				clean.Set(key, route)
 			}
