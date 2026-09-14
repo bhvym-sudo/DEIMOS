@@ -66,6 +66,22 @@ type PageRecord struct {
 	ReconScannedAt  string  `json:"recon_scanned_at"`
 }
 
+type PageFilters struct {
+	Query         string
+	ThreatLevel   string
+	AnalysisState string
+	HTTPStatus    int
+	ContentType   string
+	ReconState    string
+	TLSState      string
+	MinScore      *float64
+	MaxScore      *float64
+	DateFrom      string
+	DateTo        string
+	Sort          string
+	Order         string
+}
+
 func sqliteReadOnly(path string) (*sql.DB, error) {
 	abs, err := filepath.Abs(path)
 	if err != nil {
@@ -116,26 +132,90 @@ func Open(indexPath, analysisPath string) (*Store, error) {
 	return &Store{index: index, analysis: analysis}, nil
 }
 
-func (s *Store) Pages(query string, limit, offset int) ([]PageRecord, int, error) {
+func (s *Store) Pages(filters PageFilters, limit, offset int) ([]PageRecord, int, error) {
 	if limit < 1 || limit > 200 {
 		limit = 50
 	}
 	if offset < 0 {
 		offset = 0
 	}
-	pattern := "%" + strings.TrimSpace(query) + "%"
+	pattern := "%" + strings.TrimSpace(filters.Query) + "%"
 	where := "WHERE is_active = 1"
 	args := []any{}
-	if strings.TrimSpace(query) != "" {
-		where += " AND (url LIKE ? OR title LIKE ? OR domain LIKE ?)"
-		args = append(args, pattern, pattern, pattern)
+	if strings.TrimSpace(filters.Query) != "" {
+		where += " AND (url LIKE ? OR title LIKE ? OR domain LIKE ? OR content LIKE ? OR server_banner LIKE ? OR powered_by LIKE ? OR tls_subject LIKE ? OR tls_issuer LIKE ? OR EXISTS (SELECT 1 FROM threat_analysis ta WHERE ta.page_id=pages.id AND (ta.matched_keywords LIKE ? OR ta.origin_country LIKE ? OR ta.risk_classification LIKE ? OR ta.leak_type LIKE ?)))"
+		args = append(args, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern, pattern)
+	}
+	if level := strings.ToUpper(strings.TrimSpace(filters.ThreatLevel)); level != "" && level != "ALL" {
+		if level == "PENDING" {
+			where += " AND (analyzed_at IS NULL OR analyzed_at = '')"
+		} else if level == "CRITICAL" || level == "HIGH" {
+			where += " AND (UPPER(COALESCE(threat_level,'')) = ? OR EXISTS (SELECT 1 FROM threat_analysis ta WHERE ta.page_id=pages.id AND (UPPER(COALESCE(ta.threat_level,'')) = ? OR UPPER(COALESCE(ta.risk_classification,'')) = ?)))"
+			args = append(args, level, level, level+"_THREAT")
+		} else {
+			where += " AND UPPER(COALESCE(threat_level,'')) = ?"
+			args = append(args, level)
+		}
+	}
+	switch strings.ToLower(strings.TrimSpace(filters.AnalysisState)) {
+	case "analyzed":
+		where += " AND analyzed_at IS NOT NULL AND analyzed_at != ''"
+	case "pending":
+		where += " AND (analyzed_at IS NULL OR analyzed_at = '')"
+	}
+	if filters.HTTPStatus > 0 {
+		where += " AND status_code = ?"
+		args = append(args, filters.HTTPStatus)
+	}
+	if value := strings.TrimSpace(filters.ContentType); value != "" {
+		where += " AND LOWER(COALESCE(content_type,'')) LIKE ?"
+		args = append(args, "%"+strings.ToLower(value)+"%")
+	}
+	switch strings.ToLower(strings.TrimSpace(filters.ReconState)) {
+	case "scanned":
+		where += " AND recon_scanned_at IS NOT NULL AND recon_scanned_at != ''"
+	case "pending":
+		where += " AND (recon_scanned_at IS NULL OR recon_scanned_at = '')"
+	case "finding":
+		where += " AND (COALESCE(server_banner,'') != '' OR COALESCE(powered_by,'') != '' OR COALESCE(tls_subject,'') != '' OR COALESCE(status_pages,'') NOT IN ('', '[]', '{}'))"
+	}
+	switch strings.ToLower(strings.TrimSpace(filters.TLSState)) {
+	case "present":
+		where += " AND COALESCE(tls_fingerprint_sha256,'') != ''"
+	case "absent":
+		where += " AND COALESCE(tls_fingerprint_sha256,'') = ''"
+	}
+	if filters.MinScore != nil {
+		where += " AND COALESCE(threat_score,0) >= ?"
+		args = append(args, *filters.MinScore)
+	}
+	if filters.MaxScore != nil {
+		where += " AND COALESCE(threat_score,0) <= ?"
+		args = append(args, *filters.MaxScore)
+	}
+	if filters.DateFrom != "" {
+		where += " AND crawled_at >= ?"
+		args = append(args, filters.DateFrom)
+	}
+	if filters.DateTo != "" {
+		where += " AND crawled_at < datetime(?, '+1 day')"
+		args = append(args, filters.DateTo)
 	}
 	var total int
 	if err := s.index.QueryRow("SELECT COUNT(*) FROM pages "+where, args...).Scan(&total); err != nil {
 		return nil, 0, err
 	}
+	sortColumns := map[string]string{"crawled_at": "crawled_at", "threat_score": "COALESCE(threat_score,0)", "content_length": "COALESCE(content_length,0)", "status_code": "COALESCE(status_code,0)", "crawl_depth": "COALESCE(crawl_depth,0)", "title": "LOWER(COALESCE(title,''))", "domain": "LOWER(COALESCE(domain,''))"}
+	sortColumn := sortColumns[filters.Sort]
+	if sortColumn == "" {
+		sortColumn = "crawled_at"
+	}
+	order := "DESC"
+	if strings.EqualFold(filters.Order, "asc") {
+		order = "ASC"
+	}
 	args = append(args, limit, offset)
-	rows, err := s.index.Query(`SELECT id,url,COALESCE(title,''),COALESCE(domain,''),COALESCE(content_length,0),COALESCE(crawl_depth,0),COALESCE(crawled_at,''),COALESCE(status_code,0),COALESCE(crawl_count,0),COALESCE(threat_score,0),COALESCE(threat_level,''),COALESCE(analyzed_at,''),COALESCE(content_type,''),COALESCE(server_banner,''),COALESCE(powered_by,''),COALESCE(tls_subject,''),COALESCE(tls_issuer,''),COALESCE(tls_fingerprint_sha256,''),COALESCE(recon_scanned_at,'') FROM pages `+where+` ORDER BY crawled_at DESC LIMIT ? OFFSET ?`, args...)
+	rows, err := s.index.Query(`SELECT id,url,COALESCE(title,''),COALESCE(domain,''),COALESCE(content_length,0),COALESCE(crawl_depth,0),COALESCE(crawled_at,''),COALESCE(status_code,0),COALESCE(crawl_count,0),COALESCE(threat_score,0),COALESCE(threat_level,''),COALESCE(analyzed_at,''),COALESCE(content_type,''),COALESCE(server_banner,''),COALESCE(powered_by,''),COALESCE(tls_subject,''),COALESCE(tls_issuer,''),COALESCE(tls_fingerprint_sha256,''),COALESCE(recon_scanned_at,'') FROM pages `+where+` ORDER BY `+sortColumn+` `+order+`, id DESC LIMIT ? OFFSET ?`, args...)
 	if err != nil {
 		return nil, 0, err
 	}

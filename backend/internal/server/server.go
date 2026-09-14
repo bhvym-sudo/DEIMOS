@@ -155,7 +155,16 @@ func (s *Server) pages(value *engine) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 		offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
-		records, total, err := value.store.Pages(r.URL.Query().Get("q"), limit, offset)
+		statusCode, _ := strconv.Atoi(r.URL.Query().Get("status_code"))
+		var minScore, maxScore *float64
+		if parsed, err := strconv.ParseFloat(r.URL.Query().Get("min_score"), 64); err == nil {
+			minScore = &parsed
+		}
+		if parsed, err := strconv.ParseFloat(r.URL.Query().Get("max_score"), 64); err == nil {
+			maxScore = &parsed
+		}
+		filters := store.PageFilters{Query: r.URL.Query().Get("q"), ThreatLevel: r.URL.Query().Get("threat_level"), AnalysisState: r.URL.Query().Get("analysis"), HTTPStatus: statusCode, ContentType: r.URL.Query().Get("content_type"), ReconState: r.URL.Query().Get("recon"), TLSState: r.URL.Query().Get("tls"), MinScore: minScore, MaxScore: maxScore, DateFrom: r.URL.Query().Get("date_from"), DateTo: r.URL.Query().Get("date_to"), Sort: r.URL.Query().Get("sort"), Order: r.URL.Query().Get("order")}
+		records, total, err := value.store.Pages(filters, limit, offset)
 		if err != nil {
 			writeError(w, 500, err)
 			return

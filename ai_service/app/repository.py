@@ -63,6 +63,46 @@ class IntelligenceRepository:
                 continue
         return totals
 
+    def timeline(self, bucket: str = "hour", limit: int = 48) -> list[dict[str, Any]]:
+        date_format = "%Y-%m-%dT00:00:00" if bucket == "day" else "%Y-%m-%dT%H:00:00"
+        grouped: dict[str, dict[str, int]] = {}
+
+        def add(period: str | None, field: str, count: int) -> None:
+            if not period:
+                return
+            point = grouped.setdefault(period, {"crawler": 0, "index": 0, "analysis": 0, "profiles": 0, "critical": 0})
+            point[field] += int(count or 0)
+
+        for engine, path in self._paths():
+            field = "crawler" if engine == "crawler" else "index" if engine == "phobos-search" else None
+            if field is None:
+                continue
+            try:
+                with self._connect(path) as connection:
+                    for row in connection.execute("SELECT strftime(?, crawled_at) period, COUNT(*) count FROM pages WHERE is_active=1 AND crawled_at IS NOT NULL GROUP BY period", (date_format,)):
+                        add(row["period"], field, row["count"])
+                    for row in connection.execute("SELECT strftime(?, analyzed_at) period, COUNT(*) count FROM threat_analysis WHERE analyzed_at IS NOT NULL GROUP BY period", (date_format,)):
+                        add(row["period"], "analysis", row["count"])
+                    for row in connection.execute("SELECT strftime(?, analyzed_at) period, COUNT(*) count FROM threat_analysis WHERE analyzed_at IS NOT NULL AND (threat_level='CRITICAL' OR risk_classification='CRITICAL_THREAT') GROUP BY period", (date_format,)):
+                        add(row["period"], "critical", row["count"])
+            except sqlite3.DatabaseError:
+                continue
+        if self.profiles_path.exists():
+            try:
+                with self._connect_profile(self.profiles_path) as connection:
+                    for row in connection.execute("SELECT strftime(?, COALESCE(first_seen,crawled_at)) period, COUNT(*) count FROM profiles WHERE COALESCE(first_seen,crawled_at) IS NOT NULL GROUP BY period", (date_format,)):
+                        add(row["period"], "profiles", row["count"])
+            except sqlite3.DatabaseError:
+                pass
+
+        totals = {"crawler": 0, "index": 0, "analysis": 0, "profiles": 0, "critical": 0}
+        points = []
+        for period in sorted(grouped):
+            for field in totals:
+                totals[field] += grouped[period][field]
+            points.append({"time": period + "Z", **totals})
+        return points[-max(2, min(limit, 365)):]
+
     def reports(self, limit: int = 50) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         for engine, path in self._paths():

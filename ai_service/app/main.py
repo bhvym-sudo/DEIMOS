@@ -125,6 +125,12 @@ async def engine_stats(engine: str) -> dict[str, int]:
     return await asyncio.to_thread(repository.stats, engine)
 
 
+@app.get("/api/timeline")
+async def timeline(bucket: str = Query(default="hour", pattern="^(hour|day)$"), limit: int = Query(default=48, ge=2, le=365)) -> dict[str, Any]:
+    points = await asyncio.to_thread(repository.timeline, bucket, limit)
+    return {"points": points, "count": len(points), "bucket": bucket}
+
+
 @app.get("/api/reports")
 async def reports(limit: int = Query(default=50, ge=1, le=200)) -> dict[str, Any]:
     rows = await asyncio.to_thread(repository.reports, limit)

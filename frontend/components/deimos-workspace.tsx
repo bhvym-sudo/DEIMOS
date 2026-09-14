@@ -658,11 +658,11 @@ export function DeimosWorkspace() {
               stop={() => void runCrawlerAction("stop")}
             />
           )}
-          {view === "crawler-data" && <DatabaseView title="Crawler Data" eyebrow="INVESTIGATION DATABASE" pages={crawlerPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("crawler", id)} close={() => setSelectedPage(null)} />}
+          {view === "crawler-data" && <DatabaseView engine="crawler" title="Crawler Data" eyebrow="INVESTIGATION DATABASE" pages={crawlerPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("crawler", id)} close={() => setSelectedPage(null)} />}
           {view === "search" && (
             <SearchView query={searchQuery} setQuery={setSearchQuery} submit={runSearch} results={results} searching={searching} hasSearched={hasSearched} home={() => { setHasSearched(false); setResults([]); setSearchQuery(""); }} stats={searchStats} settingsOpen={searchSettingsOpen} setSettingsOpen={setSearchSettingsOpen} settings={searchSettings} setSettings={setSearchSettings} dirty={savedSearchSettings !== null && JSON.stringify(savedSearchSettings) !== JSON.stringify(searchSettings)} busy={searchBusy} save={() => void saveSearchConfig()} start={() => void runSearchEngineAction("start")} stop={() => void runSearchEngineAction("stop")} seeds={searchSeeds} seedDraft={searchSeedDraft} setSeedDraft={setSearchSeedDraft} addSeed={addSearchSeed} deleteSeed={(url) => void deleteSearchSeed(url)} />
           )}
-          {view === "intelligence" && <DatabaseView title="PHOBOS Search indexed pages" eyebrow="INDEX DATABASE" pages={indexPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("phobos-search", id)} close={() => setSelectedPage(null)} />}
+          {view === "intelligence" && <DatabaseView engine="phobos-search" title="PHOBOS Search indexed pages" eyebrow="INDEX DATABASE" pages={indexPages} selected={selectedPage} loading={pageLoading} open={(id) => void openDatabasePage("phobos-search", id)} close={() => setSelectedPage(null)} />}
           {view === "profiles" && <ProfilesView profiles={profiles} selected={selectedProfile} loading={pageLoading} open={(id) => void openProfile(id)} close={() => setSelectedProfile(null)} reanalyze={(engine) => void reanalyzeProfiles(engine)} send={sendProfileToWorkspace} twitter={(profile) => void analyzeProfileWithTwitter(profile)} />}
           {view === "twitter" && <PhobosTweeterView sendToWorkspace={sendTwitterPostToWorkspace} />}
           {view === "models" && <ModelsView />}
@@ -674,7 +674,22 @@ export function DeimosWorkspace() {
   );
 }
 
+type OverviewTrendPoint = { time: number; crawler: number; index: number; analysis: number; profiles: number; critical: number };
+
 function Overview({ crawlerStats, searchStats, profileCount }: { crawlerStats: OverviewStats; searchStats: OverviewStats; profileCount: number }) {
+  const [history, setHistory] = useState<OverviewTrendPoint[]>([]);
+  useEffect(() => {
+    let active = true;
+    const loadTimeline = async () => {
+      try {
+        const result = await pythonApi.get<{ points: Array<Omit<OverviewTrendPoint, "time"> & { time: string }> }>("/api/timeline?bucket=hour&limit=48");
+        if (active) setHistory(result.points.map((point) => ({ ...point, time: Date.parse(point.time) })));
+      } catch { /* Keep the inventory usable if historical data is unavailable. */ }
+    };
+    void loadTimeline();
+    const interval = window.setInterval(() => void loadTimeline(), 30000);
+    return () => { active = false; window.clearInterval(interval); };
+  }, []);
   const metrics = [
     { label: "Crawled pages", value: crawlerStats.indexed_pages },
     { label: "Indexed pages", value: searchStats.indexed_pages },
@@ -689,8 +704,36 @@ function Overview({ crawlerStats, searchStats, profileCount }: { crawlerStats: O
       <div className="overview-stat-grid">
         {metrics.map((metric) => <article key={metric.label}><span>{metric.label}</span><strong>{formatNumber(metric.value)}</strong></article>)}
       </div>
+      <OperationsTrendChart history={history} />
     </section>
   );
+}
+
+function OperationsTrendChart({ history }: { history: OverviewTrendPoint[] }) {
+  const series = [
+    { key: "crawler" as const, label: "Crawler URLs", color: "#d8ff3e" },
+    { key: "index" as const, label: "Indexed URLs", color: "#64d9ff" },
+    { key: "analysis" as const, label: "AI records", color: "#b48cff" },
+    { key: "profiles" as const, label: "Profiles", color: "#f2b84b" },
+    { key: "critical" as const, label: "Critical findings", color: "#ff5d5d" },
+  ];
+  const plotted = history.slice(-30);
+  const maximum = Math.max(1, ...plotted.flatMap((point) => series.map((item) => point[item.key])));
+  const width = 900, height = 270, left = 48, right = 18, top = 18, bottom = 38;
+  const x = (index: number) => left + (index / Math.max(1, plotted.length - 1)) * (width - left - right);
+  const y = (value: number) => top + (1 - value / maximum) * (height - top - bottom);
+  const path = (key: (typeof series)[number]["key"]) => plotted.map((point, index) => `${index ? "L" : "M"}${x(index).toFixed(1)},${y(point[key]).toFixed(1)}`).join(" ");
+  return <section className="overview-trend">
+    <div className="overview-trend-head"><div><span>HISTORICAL DATABASE GROWTH</span><h3>URLs and intelligence extracted over time</h3></div><small>Actual stored record totals by timestamp</small></div>
+    <div className="overview-legend">{series.map((item) => <span key={item.key}><i style={{ background: item.color }} />{item.label}<b>{formatNumber(plotted.length ? plotted[plotted.length - 1][item.key] : 0)}</b></span>)}</div>
+    <div className="overview-chart-wrap"><svg className="overview-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="URLs and intelligence records extracted over time">
+      {[0, .25, .5, .75, 1].map((ratio) => <g key={ratio}><line x1={left} y1={y(maximum * ratio)} x2={width - right} y2={y(maximum * ratio)} className="trend-grid" /><text x={left - 8} y={y(maximum * ratio) + 4} textAnchor="end">{Math.round(maximum * ratio)}</text></g>)}
+      {series.map((item) => plotted.length > 1 && <path key={item.key} d={path(item.key)} fill="none" stroke={item.color} strokeWidth="2.5" vectorEffect="non-scaling-stroke" />)}
+      {series.map((item) => plotted.map((point, index) => <circle key={`${item.key}-${point.time}`} cx={x(index)} cy={y(point[item.key])} r="2.4" fill={item.color} />))}
+      <text x={left} y={height - 10}>{plotted[0] ? new Date(plotted[0].time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Waiting"}</text>
+      <text x={width - right} y={height - 10} textAnchor="end">{plotted.length ? new Date(plotted[plotted.length - 1].time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "for data"}</text>
+    </svg>{plotted.length < 2 && <div className="trend-empty">Collecting timestamped totals. The graph will draw after the next database snapshot.</div>}</div>
+  </section>;
 }
 
 function CollectionView({ stats, settings, setSettings, seeds, busy, seedDraft, setSeedDraft, save, addSeed, deleteSeed, start, stop }: {
@@ -836,10 +879,69 @@ function ActivityTimeline({ activity }: { activity: ProfileActivity[] }) {
   return <div className="profile-activity"><h3>Activity timeline</h3>{section("post", "Posts")}{section("comment", "Comments")}</div>;
 }
 
-function DatabaseView({ title, eyebrow, pages, selected, loading, open, close }: { title: string; eyebrow: string; pages: DatabasePage[]; selected: DatabasePage | null; loading: boolean; open: (id: number) => void; close: () => void }) {
+type DatabaseFilterState = {
+  q: string; threat_level: string; analysis: string; status_code: string;
+  content_type: string; recon: string; tls: string; min_score: string;
+  max_score: string; date_from: string; date_to: string; sort: string;
+  order: string; limit: string;
+};
+
+const emptyDatabaseFilters: DatabaseFilterState = {
+  q: "", threat_level: "", analysis: "", status_code: "", content_type: "",
+  recon: "", tls: "", min_score: "", max_score: "", date_from: "", date_to: "",
+  sort: "crawled_at", order: "desc", limit: "50",
+};
+
+function DatabaseView({ engine, title, eyebrow, pages: initialPages, selected, loading, open, close }: { engine: "crawler" | "phobos-search"; title: string; eyebrow: string; pages: DatabasePage[]; selected: DatabasePage | null; loading: boolean; open: (id: number) => void; close: () => void }) {
+  const [filters, setFilters] = useState<DatabaseFilterState>(emptyDatabaseFilters);
+  const [pages, setPages] = useState<DatabasePage[]>(initialPages);
+  const [total, setTotal] = useState(initialPages.length);
+  const [offset, setOffset] = useState(0);
+  const [filtering, setFiltering] = useState(false);
+  const [filterError, setFilterError] = useState("");
+  const activeFilters = Object.entries(filters).filter(([key, value]) => !["sort", "order", "limit"].includes(key) && value).length;
+  const updateFilter = (key: keyof DatabaseFilterState, value: string) => {
+    setFilters((current) => ({ ...current, [key]: value }));
+    setOffset(0);
+  };
+  useEffect(() => {
+    const timer = window.setTimeout(async () => {
+      setFiltering(true);
+      const params = new URLSearchParams({ limit: filters.limit, offset: String(offset), sort: filters.sort, order: filters.order });
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value && !["limit", "sort", "order"].includes(key)) {
+          params.set(key, key === "min_score" || key === "max_score" ? String(Number(value) / 100) : value);
+        }
+      });
+      try {
+        const result = await goApi.get<{ pages: DatabasePage[]; total: number }>(`/api/${engine}/pages?${params.toString()}`);
+        setPages(result.pages); setTotal(result.total); setFilterError("");
+      } catch (error) {
+        setFilterError(error instanceof Error ? error.message : "Database query failed");
+      } finally { setFiltering(false); }
+    }, filters.q ? 350 : 50);
+    return () => window.clearTimeout(timer);
+  }, [engine, filters, offset]);
+  const clearFilters = () => { setFilters(emptyDatabaseFilters); setOffset(0); };
   const parsed = (value: string) => { try { return JSON.stringify(JSON.parse(value), null, 2); } catch { return value || "—"; } };
   return <div className={`database-layout ${selected ? "detail-open" : ""}`}>
-    <section className="table-panel database-browser"><div className="section-title"><div><span>{eyebrow}</span><h2>{title}</h2></div><span className="count">Latest {pages.length}</span></div>
+    <section className="table-panel database-browser"><div className="section-title"><div><span>{eyebrow}</span><h2>{title}</h2></div><span className="count">{filtering ? "Searching..." : `${formatNumber(total)} matching records`}</span></div>
+      <div className="database-filter-bar">
+        <label className="database-query"><Search size={15} /><input value={filters.q} onChange={(e) => updateFilter("q", e.target.value)} placeholder="Search URL, title, content, domain, server or certificate" /></label>
+        <select value={filters.threat_level} onChange={(e) => updateFilter("threat_level", e.target.value)}><option value="">All threat levels</option><option value="CRITICAL">Critical findings</option><option value="HIGH">High</option><option value="MEDIUM">Medium</option><option value="LOW">Low</option><option value="PENDING">Pending rating</option></select>
+        <select value={filters.analysis} onChange={(e) => updateFilter("analysis", e.target.value)}><option value="">All analysis states</option><option value="analyzed">AI analysed</option><option value="pending">Awaiting AI</option></select>
+        <select value={filters.recon} onChange={(e) => updateFilter("recon", e.target.value)}><option value="">All recon states</option><option value="finding">Recon findings</option><option value="scanned">Recon scanned</option><option value="pending">Recon pending</option></select>
+        <select value={filters.tls} onChange={(e) => updateFilter("tls", e.target.value)}><option value="">Any TLS state</option><option value="present">Certificate found</option><option value="absent">No certificate</option></select>
+        <input value={filters.status_code} onChange={(e) => updateFilter("status_code", e.target.value.replace(/\D/g, "").slice(0, 3))} placeholder="HTTP code" />
+        <select value={filters.content_type} onChange={(e) => updateFilter("content_type", e.target.value)}><option value="">All content types</option><option value="text/html">HTML</option><option value="application/json">JSON</option><option value="text/plain">Plain text</option><option value="application/pdf">PDF</option><option value="image/">Images</option></select>
+        <label className="score-filter"><span>Risk %</span><input type="number" min="0" max="100" value={filters.min_score} onChange={(e) => updateFilter("min_score", e.target.value)} placeholder="Min" /><i>-</i><input type="number" min="0" max="100" value={filters.max_score} onChange={(e) => updateFilter("max_score", e.target.value)} placeholder="Max" /></label>
+        <label className="date-filter"><span>From</span><input type="date" value={filters.date_from} onChange={(e) => updateFilter("date_from", e.target.value)} /></label>
+        <label className="date-filter"><span>To</span><input type="date" value={filters.date_to} onChange={(e) => updateFilter("date_to", e.target.value)} /></label>
+        <select value={filters.sort} onChange={(e) => updateFilter("sort", e.target.value)}><option value="crawled_at">Sort: crawl time</option><option value="threat_score">Sort: risk score</option><option value="status_code">Sort: HTTP code</option><option value="content_length">Sort: content size</option><option value="crawl_depth">Sort: crawl depth</option><option value="domain">Sort: domain</option><option value="title">Sort: title</option></select>
+        <select value={filters.order} onChange={(e) => updateFilter("order", e.target.value)}><option value="desc">Descending</option><option value="asc">Ascending</option></select>
+        <button className="secondary-action filter-reset" onClick={clearFilters} disabled={!activeFilters}><X size={14} /> Clear {activeFilters ? `(${activeFilters})` : ""}</button>
+      </div>
+      {filterError && <div className="database-filter-error">{filterError}</div>}
       <div className="table-scroll"><table><thead><tr><th>URL / title</th><th>HTTP</th><th>Server</th><th>Rating</th><th>Crawled</th><th /></tr></thead><tbody>{pages.map((page) => <tr key={page.id} className={selected?.id === page.id ? "selected" : ""}><td><strong className="full-url">{page.url}</strong><small>{page.title || page.domain || "Untitled page"}</small></td><td>{page.status_code || "—"}<small>{page.content_type || "Unknown type"}</small></td><td>{page.server_banner || "—"}<small>{page.powered_by || "No framework banner"}</small></td><td><span className={`severity ${page.threat_level.toLowerCase()}`}>{page.threat_level || "Pending"}</span><small>{Math.round((page.threat_score || 0) * 100)}%</small></td><td>{formatTime(page.crawled_at)}</td><td><button className="row-action" onClick={() => open(page.id)} aria-label={`Open ${page.url}`}><ChevronRight size={17} /></button></td></tr>)}</tbody></table>{!pages.length && <EmptyState icon={Database} title="No pages stored" copy="Start this engine and add a valid seed to populate its database." />}</div>
     </section>
     {selected && <aside className="record-detail"><div className="section-title"><div><span>PAGE RECORD #{selected.id}</span><h2>{selected.title || selected.domain}</h2></div><button className="row-action" onClick={close}>Close</button></div>{loading ? <p className="detail-loading">Loading record…</p> : <div className="detail-content">

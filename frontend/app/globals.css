@@ -19,6 +19,19 @@
 html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
 body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 button, input { font: inherit; }
+.database-filter-bar { display:grid; grid-template-columns:minmax(290px,2fr) repeat(3,minmax(135px,1fr)); gap:8px; padding:12px 14px; border-bottom:1px solid var(--line); background:#0a0d10; }
+.database-filter-bar input,.database-filter-bar select { min-width:0; height:37px; padding:0 9px; border:1px solid var(--line); outline:none; background:#080b0d; color:var(--text); font-size:10px; }
+.database-filter-bar input:focus,.database-filter-bar select:focus,.database-query:focus-within { border-color:#53616b; }
+.database-query { display:flex; align-items:center; gap:8px; padding:0 10px; border:1px solid var(--line); background:#080b0d; }
+.database-query svg { flex:0 0 auto; color:var(--signal); }
+.database-query input { width:100%; padding:0; border:0; }
+.score-filter,.date-filter { display:flex; align-items:center; gap:6px; height:37px; padding:0 8px; border:1px solid var(--line); color:var(--muted); font-size:9px; }
+.score-filter input { width:58px; height:27px; padding:0 5px; }
+.score-filter i { font-style:normal; }
+.date-filter input { flex:1; height:27px; border:0; padding:0 3px; }
+.filter-reset { height:37px; justify-content:center; }
+.database-filter-error { padding:9px 14px; border-bottom:1px solid rgba(255,93,93,.3); color:var(--red); font-size:10px; }
+@media (max-width:900px) { .database-filter-bar { grid-template-columns:1fr 1fr; } .database-query { grid-column:1 / -1; } }
 button { color: inherit; }
 
 .app-shell { min-height: 100vh; display: grid; grid-template-columns: 240px minmax(0, 1fr); background: radial-gradient(circle at 72% -15%, rgba(100,217,255,.05), transparent 32%), var(--bg); }
@@ -129,6 +142,21 @@ nav button.active svg { color: var(--signal); }
 .overview-stat-grid span { color: var(--muted); font-size: 13px; }
 .overview-stat-grid strong { color: var(--text); font: 500 36px/1 ui-monospace, monospace; letter-spacing: -.06em; }
 .overview-stat-grid article:nth-child(3) strong { color: var(--signal); }
+.overview-trend { margin-top: 22px; border: 1px solid var(--line); background: var(--surface); }
+.overview-trend-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.overview-trend-head span { color: var(--signal); font: 700 11px/1 ui-monospace,monospace; letter-spacing: .15em; }
+.overview-trend-head h3 { margin: 7px 0 0; font-size: 18px; }
+.overview-trend-head small { color: var(--muted-2); font-size: 12px; }
+.overview-legend { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 14px 20px 4px; }
+.overview-legend span { display: grid; grid-template-columns: 9px auto; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; }
+.overview-legend i { width: 9px; height: 3px; }
+.overview-legend b { grid-column: 2; color: var(--text); font: 600 11px/1 ui-monospace,monospace; }
+.overview-chart-wrap { position: relative; min-height: 290px; padding: 5px 14px 12px; }
+.overview-chart { display: block; width: 100%; height: 290px; overflow: visible; }
+.overview-chart text { fill: var(--muted-2); font: 10px ui-monospace,monospace; }
+.trend-grid { stroke: #242c31; stroke-width: 1; stroke-dasharray: 3 5; }
+.overview-chart path { filter: drop-shadow(0 0 3px rgba(255,255,255,.08)); }
+.trend-empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted-2); font-size: 13px; pointer-events: none; }
 
 .logs-dock { position: fixed; left: 240px; right: 0; bottom: 0; z-index: 45; min-height: 150px; display: grid; grid-template-rows: 6px 43px minmax(0, 1fr); border-top: 1px solid #3a444b; background: #080b0d; box-shadow: 0 -14px 45px rgba(0,0,0,.42); }
 .logs-resize-handle { position: relative; cursor: ns-resize; touch-action: none; background: transparent; }
@@ -260,3 +288,30 @@ th { font-size: 10px; } td { font-size: 13px; }.table-panel td small { font-size
 @media (max-width: 620px) {
   .settings-overlay { padding: 0; }.settings-dialog { width: 100vw; max-height: 100vh; min-height: 100vh; }.database-management article { align-items: flex-start; flex-direction: column; }.profile-actions { align-items: flex-end; flex-direction: column; }.profile-actions .count { margin: 0; }
 }
+
+/* Larger application-wide typography. */
+body { font-size: 16px; }
+nav button { font-size: 17px; }
+.brand strong { font-size: 18px; }
+.breadcrumb,.system-state,.service-indicator { font-size: 13px; }
+.topbar h1 { font-size: 25px; }
+.notice,.muted { font-size: 14px; }
+.section-title > div > span,.model-intro > span { font-size: 12px; }
+.section-title h2 { font-size: 20px; }
+.count,.service-indicator strong,.operator small { font-size: 13px; }
+.metric span { font-size: 15px; }.metric strong { font-size: 32px; }
+.primary-action,.secondary-action,.search-form button,.danger-action { font-size: 15px; }
+input,select,textarea,.database-filter-bar input,.database-filter-bar select { font-size: 14px; }
+th { font-size: 12px; } td { font-size: 15px; }.table-panel td small { font-size: 13px; }
+.detail-content h3,.detail-field > span { font-size: 12px; }
+.detail-field p { font-size: 15px; }.detail-field.code p,.record-detail pre { font-size: 13px; }
+.event-row strong,.service-card small,.model-list p,.workspace-toggle strong { font-size: 13px; }
+.event-row small,.terminal-toolbar,.terminal-toolbar select { font-size: 11px; }
+.service-card strong,.model-list h3,.activity-heading > span { font-size: 16px; }
+.terminal-output { font-size: 12px; }
+.activity-card h4,.activity-card p,.twitter-post-card > p { font-size: 15px; }
+.tree-node-copy strong,.graph-node strong { font-size: 14px; }
+.root > .tree-node .tree-node-copy strong { font-size: 17px; }
+.tree-node-copy > span,.graph-node span { font-size: 12px; }
+.twitter-command form > label,.twitter-session-copy { font-size: 13px; }
+.signal-grid span,.evidence-list,.persona-url,.persona-model-meta,.persona-actions label { font-size: 12px; }
