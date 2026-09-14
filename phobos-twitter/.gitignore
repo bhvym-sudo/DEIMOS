@@ -6,7 +6,6 @@ bin/
 sessions/
 logs/
 exports/
-backend/
 config/runtime.json
 *.exe
 *.log
