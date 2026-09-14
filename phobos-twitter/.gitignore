@@ -7,7 +7,6 @@ sessions/
 logs/
 exports/
 backend/
-python_worker/
 config/runtime.json
 *.exe
 *.log
